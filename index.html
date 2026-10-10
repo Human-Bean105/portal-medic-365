@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Medi - AI Family Doctor</title>
+<link rel="icon" type="image/png" href="/assets/medi-avatar.png" />
+<style>
+  :root {
+    --bg: #f2f7fd; --card: #fff; --ink: #14285e; --muted: #6b7c99; --line: #e1e9f4;
+    --brand: #2563eb; --brand-2: #1fc4a5; --navy: #14285e; --user: #2563eb;
+    --emergency: #d62839; --urgent: #f17105; --soon: #e9b10a; --routine: #3a86ff; --self_care: #2a9d8f; --unknown: #a0aec0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--ink); }
+  button { font: inherit; cursor: pointer; }
+  [hidden] { display: none !important; }
+
+  /* ---------- Home screen ---------- */
+  #home { min-height: 100vh; background: radial-gradient(ellipse at top, #e3efff 0%, #f2f7fd 55%) no-repeat; }
+  .home-nav { display: flex; align-items: center; justify-content: space-between; max-width: 1100px; margin: 0 auto; padding: 14px 24px; }
+  .nav-logo { height: 52px; }
+  .nav-link { border: 1px solid var(--line); background: #fff; color: var(--navy); border-radius: 999px; padding: 8px 16px; font-weight: 600; }
+  .nav-link:hover { border-color: var(--brand); color: var(--brand); }
+  .hero { max-width: 820px; margin: 0 auto; padding: 0 24px 30px; text-align: center; }
+  .hero-logo { width: min(520px, 100%); mix-blend-mode: multiply; animation: float 5s ease-in-out infinite; }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  .hero h2 { font-size: clamp(1.6rem, 3.5vw, 2.4rem); color: var(--navy); margin: 4px 0 10px; }
+  .inline-avatar { width: 1.3em; height: 1.3em; border-radius: 50%; vertical-align: -0.25em; box-shadow: 0 2px 8px #2563eb33; }
+  .grad { background: linear-gradient(90deg, var(--brand), var(--brand-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lead { font-size: 1.08rem; color: #3d4f78; line-height: 1.6; margin: 0 auto 22px; max-width: 640px; }
+  .hero-ask { display: flex; gap: 8px; background: #fff; padding: 8px; border-radius: 18px; box-shadow: 0 10px 30px #2563eb22; border: 1px solid var(--line); }
+  .hero-ask input { flex: 1; border: none; outline: none; font: inherit; font-size: 1rem; padding: 10px 12px; min-width: 0; }
+  .cta { border: none; border-radius: 12px; padding: 12px 22px; font-weight: 700; font-size: 1rem; color: #fff; background: linear-gradient(90deg, var(--brand), var(--brand-2)); box-shadow: 0 6px 18px #2563eb44; transition: transform .15s; white-space: nowrap; }
+  .cta:hover { transform: translateY(-2px); }
+  .hero-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 16px; }
+  .features { max-width: 1100px; margin: 10px auto; padding: 0 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .feature { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 20px; transition: transform .2s, box-shadow .2s; }
+  .feature:hover { transform: translateY(-4px); box-shadow: 0 12px 28px #14285e14; }
+  .f-icon { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; font-size: 1.4rem; background: linear-gradient(135deg, #e3efff, #dcfaf3); }
+  .feature h3 { margin: 12px 0 6px; font-size: 1.05rem; color: var(--navy); }
+  .feature p { margin: 0; color: var(--muted); font-size: .92rem; line-height: 1.5; }
+  .steps { max-width: 1100px; margin: 40px auto 0; padding: 0 24px; text-align: center; }
+  .steps h2 { color: var(--navy); }
+  .step-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 26px; }
+  .step { display: flex; gap: 12px; align-items: flex-start; text-align: left; background: #fff; border-radius: 16px; padding: 16px; border: 1px solid var(--line); }
+  .step span { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: #fff; background: linear-gradient(135deg, var(--brand), var(--brand-2)); }
+  .step p { margin: 0; line-height: 1.5; color: #3d4f78; }
+  .home-foot { max-width: 900px; margin: 40px auto 0; padding: 20px 24px 30px; text-align: center; color: var(--muted); font-size: .85rem; line-height: 1.6; border-top: 1px solid var(--line); }
+
+  /* ---------- Consultation ---------- */
+  #app { height: 100vh; display: flex; flex-direction: column; }
+  header { display: flex; align-items: center; gap: 16px; padding: 8px 20px; background: #fff; border-bottom: 1px solid var(--line); color: var(--navy); }
+  .header-logo { height: 46px; cursor: pointer; }
+  .header-id { display: flex; align-items: center; gap: 10px; padding-left: 16px; border-left: 1px solid var(--line); }
+  .doc-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #e3efff, #dcfaf3); display: grid; place-items: center; font-size: 1.4rem; }
+  header h1 { margin: 0; font-size: 1.2rem; }
+  header p { margin: 2px 0 0; font-size: .82rem; color: var(--muted); }
+  .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #7CFC9A; margin-right: 5px; }
+  .header-actions { margin-left: auto; display: flex; gap: 8px; }
+  .ghost { background: #fff; color: var(--navy); border: 1px solid var(--line); border-radius: 10px; padding: 7px 12px; font-size: .88rem; }
+  .ghost:hover { border-color: var(--brand); color: var(--brand); }
+  .ghost.on { background: var(--brand); border-color: var(--brand); color: #fff; }
+
+  .disclaimer { background: #fff7e6; color: #8a5a00; font-size: .8rem; text-align: center; padding: 6px 12px; border-bottom: 1px solid #f5deb0; }
+
+  main { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 380px; grid-template-rows: minmax(0, 1fr); gap: 16px; padding: 16px; min-height: 0; max-width: 1300px; width: 100%; margin: 0 auto; }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 16px; display: flex; flex-direction: column; min-height: 0; box-shadow: 0 4px 18px #1d2b3a0d; }
+
+  #chat { flex: 1; overflow-y: auto; padding: 18px; }
+  .msg { display: flex; gap: 10px; margin: 14px 0; align-items: flex-start; }
+  .msg.user { flex-direction: row-reverse; }
+  .avatar { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-size: 1.1rem; background: linear-gradient(135deg, #e3efff, #dcfaf3); }
+  .user .avatar { background: #e3eefc; }
+  img.avatar, img.doc-avatar { object-fit: cover; background: #fff; box-shadow: 0 0 0 2px #fff, 0 2px 8px #2563eb33; }
+  img.doc-avatar { box-shadow: 0 0 0 2px #fff, 0 0 0 4px #1fc4a555; }
+  .bubble { padding: 11px 15px; border-radius: 16px; max-width: 78%; line-height: 1.5; font-size: .96rem; }
+  .bot .bubble { background: #f0f5fd; border-top-left-radius: 4px; }
+  .user .bubble { background: var(--user); color: #fff; border-top-right-radius: 4px; white-space: pre-wrap; }
+  .bubble ul { margin: 6px 0; padding-left: 20px; }
+  .bubble p { margin: 0 0 6px; } .bubble p:last-child { margin: 0; }
+  .bubble img { display: block; max-width: 220px; border-radius: 10px; margin-top: 8px; }
+  .typing span { display: inline-block; width: 7px; height: 7px; margin: 0 2px; border-radius: 50%; background: var(--brand); animation: blink 1.2s infinite; }
+  .typing span:nth-child(2) { animation-delay: .2s; } .typing span:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink { 0%, 80%, 100% { opacity: .2; } 40% { opacity: 1; } }
+  .speak-btn { border: none; background: none; color: var(--muted); font-size: .8rem; padding: 4px 0 0; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 18px 10px; }
+  .chip { border: 1px solid var(--brand); color: var(--brand); background: #fff; border-radius: 999px; padding: 5px 12px; font-size: .85rem; }
+  .chip:hover { background: var(--brand); color: #fff; }
+
+  form { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--line); align-items: flex-end; }
+  textarea { flex: 1; resize: none; max-height: 140px; padding: 11px 13px; border-radius: 12px; border: 1px solid var(--line); font: inherit; font-size: .96rem; outline: none; background: #fafcfe; }
+  textarea:focus { border-color: var(--brand); }
+  .icon-btn { width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--line); background: #fff; font-size: 1.2rem; }
+  .icon-btn.on { background: #ffe9ec; border-color: var(--emergency); }
+  #send { height: 44px; padding: 0 20px; border: none; border-radius: 12px; background: var(--brand); color: #fff; font-weight: 600; }
+  #send:disabled { opacity: .5; cursor: not-allowed; }
+  #preview { display: none; padding: 8px 12px 0; font-size: .85rem; color: var(--muted); align-items: center; gap: 8px; }
+  #preview img { height: 48px; border-radius: 8px; }
+  #preview button { border: none; background: none; color: var(--emergency); }
+
+  .side { overflow-y: auto; padding: 16px; }
+  .side h2 { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 18px 0 8px; }
+  .side h2:first-child { margin-top: 0; }
+  .meter { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+  .meter div { height: 10px; border-radius: 4px; background: #edf1f5; transition: background .3s; }
+  .meter-labels { display: grid; grid-template-columns: repeat(4, 1fr); font-size: .66rem; color: var(--muted); text-align: center; margin-top: 4px; }
+  .triage-card { margin-top: 10px; border-radius: 12px; padding: 12px; background: #f6f8fa; border-left: 5px solid var(--unknown); }
+  .triage-card .level { font-weight: 700; font-size: 1rem; }
+  .triage-card .headline { margin: 4px 0 0; font-size: .9rem; }
+  .triage-card ul { margin: 8px 0 0; padding-left: 18px; font-size: .84rem; color: #3c4b5c; }
+
+  .cond { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; }
+  .cond-top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+  .cond-name { font-weight: 600; font-size: .95rem; }
+  .tag { flex: none; display: inline-block; font-size: .7rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: #e3efff; color: var(--brand); }
+  .tag.probable { background: #dcfaf3; color: #0f8a72; }
+  .tag.warn { background: #ffe9ec; color: var(--emergency); }
+  .cond-exp { margin: 6px 0 0; font-size: .86rem; color: #3c4b5c; line-height: 1.45; }
+  .mini-chips span.against { background: #fff3e6; }
+  .fine { font-size: .74rem; color: var(--muted); margin: 4px 0 0; }
+  .visit-for { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; padding: 10px 18px; border-bottom: 1px solid var(--line); font-size: .86rem; color: var(--muted); }
+  .visit-for button { border: 1px solid var(--line); background: #fff; color: var(--navy); border-radius: 999px; padding: 4px 12px; font-size: .84rem; }
+  .visit-for button.on { background: var(--brand); border-color: var(--brand); color: #fff; }
+  .visit-note { font-size: .78rem; }
+  .cond details { font-size: .84rem; color: #3c4b5c; margin-top: 4px; }
+  .cond summary { cursor: pointer; color: var(--muted); }
+  .mini-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .mini-chips span { font-size: .72rem; background: #f1f6f9; border-radius: 6px; padding: 2px 6px; }
+  .list { margin: 0; padding-left: 18px; font-size: .88rem; line-height: 1.5; }
+  .empty { color: var(--muted); font-size: .86rem; font-style: italic; }
+  .side-actions { display: flex; gap: 8px; margin-top: 18px; }
+  .btn { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid var(--brand); background: #fff; color: var(--brand); font-weight: 600; }
+  .btn.primary { background: var(--brand); color: #fff; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+  .overlay { position: fixed; inset: 0; background: #0d1b2a99; display: none; place-items: center; z-index: 10; padding: 16px; }
+  .overlay.show { display: grid; }
+  .modal { background: #fff; border-radius: 16px; width: min(560px, 100%); max-height: 90vh; overflow-y: auto; padding: 22px; }
+  .modal h3 { margin: 0 0 12px; }
+  .modal label { display: block; font-size: .82rem; color: var(--muted); margin: 10px 0 4px; }
+  .modal input, .modal select { width: 100%; padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; font: inherit; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .modal .side-actions { margin-top: 18px; }
+  .emergency .modal { border-top: 8px solid var(--emergency); text-align: center; }
+  .emergency h3 { color: var(--emergency); font-size: 1.4rem; }
+  .emergency .big { display: inline-block; margin: 12px 0; padding: 12px 26px; border-radius: 12px; background: var(--emergency); color: #fff; font-size: 1.3rem; font-weight: 700; text-decoration: none; }
+  #summaryBody h2 { font-size: 1rem; color: var(--brand); margin: 14px 0 4px; }
+  #summaryBody { font-size: .92rem; line-height: 1.5; }
+
+  @media (max-width: 900px) {
+    main { grid-template-columns: 1fr; grid-template-rows: minmax(420px, 1fr) auto; overflow-y: auto; }
+    .header-actions .ghost span { display: none; }
+    .header-logo { display: none; }
+    .header-id { border-left: none; padding-left: 0; }
+    .hero-ask { flex-direction: column; }
+  }
+  @media print {
+    body * { visibility: hidden; }
+    #summaryModal, #summaryModal * { visibility: visible; }
+    #summaryModal { position: absolute; inset: 0; background: #fff; display: block; }
+    #summaryModal .side-actions { display: none; }
+    .modal { max-height: none; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<div id="home">
+  <nav class="home-nav">
+    <img src="/assets/logo.png" alt="Portal Medic 365" class="nav-logo" />
+    <button class="nav-link" id="homeProfileBtn">🧾 My health profile</button>
+  </nav>
+
+  <section class="hero">
+    <img src="/assets/logo.png" alt="Portal Medic 365 - Your symptoms. Our AI. Healthier you." class="hero-logo" />
+    <h2>Meet <span class="grad">Medi</span>, your AI family health assistant <img src="/assets/medi-avatar.png" alt="" class="inline-avatar" /></h2>
+    <p class="lead">Describe how you feel in your own words. Medi checks for warning signs first, asks a few focused questions, and helps you understand what might be going on and what level of care makes sense. It supports your family's healthcare; it doesn't replace your doctor.</p>
+    <form class="hero-ask" id="homeForm">
+      <input id="homeInput" autocomplete="off" placeholder="e.g. I've had a sore throat and fever since yesterday..." />
+      <button class="cta">Talk to Medi →</button>
+    </form>
+    <div class="hero-chips" id="homeChips"></div>
+  </section>
+
+  <section class="features">
+    <div class="feature"><div class="f-icon">🩺</div><h3>Focused questions</h3><p>Medi asks only what matters: when it started, how it's changing, how severe it is, and what else you've noticed.</p></div>
+    <div class="feature"><div class="f-icon">🚦</div><h3>Right level of care</h3><p>A clear recommendation: home care, a routine appointment, same-day care, or emergency help now.</p></div>
+    <div class="feature"><div class="f-icon">🔍</div><h3>Honest possibilities</h3><p>Possible causes with what supports or weakens each one and what's still unknown. No made-up percentages.</p></div>
+    <div class="feature"><div class="f-icon">📷</div><h3>Photo check</h3><p>Snap a rash, wound, or swelling and Medi will factor what it sees into its assessment.</p></div>
+    <div class="feature"><div class="f-icon">🚨</div><h3>Emergency safety net</h3><p>Warning signs like chest pain or stroke symptoms trigger an instant call-for-help alert.</p></div>
+    <div class="feature"><div class="f-icon">📄</div><h3>Visit summary</h3><p>Print a doctor-style summary with questions to bring to your real appointment.</p></div>
+  </section>
+
+  <section class="steps">
+    <h2>How it works</h2>
+    <div class="step-row">
+      <div class="step"><span>1</span><p><strong>Tell Medi</strong> what's wrong by typing, speaking, or sending a photo.</p></div>
+      <div class="step"><span>2</span><p><strong>Answer a few questions</strong> so Medi can narrow things down.</p></div>
+      <div class="step"><span>3</span><p><strong>Get guidance</strong>: how urgent it is, what could be causing it, and safe next steps.</p></div>
+    </div>
+    <button class="cta" id="startBtn">Start a consultation</button>
+  </section>
+
+  <footer class="home-foot">
+    <p>⚠️ Medi is an AI for education and triage guidance, not a licensed physician, and does not replace professional care.
+    In an emergency call <strong>911</strong> (US) · <strong>112</strong> (EU) · <strong>999</strong> (UK). Thoughts of self-harm: call or text <strong>988</strong>.</p>
+  </footer>
+</div>
+
+<div id="app" hidden>
+<header>
+  <img src="/assets/logo.png" alt="Portal Medic 365" class="header-logo" id="logoHome" title="Back to home" />
+  <div class="header-id">
+    <img class="doc-avatar" src="/assets/medi-avatar.png" alt="Medi" />
+    <div>
+      <h1>Medi</h1>
+      <p><span class="status-dot"></span>AI family health assistant · Symptom guidance &amp; triage</p>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="ghost" id="homeBtn">🏠 <span>Home</span></button>
+    <button class="ghost" id="profileBtn">🧾 <span>My health profile</span></button>
+    <button class="ghost" id="voiceBtn" title="Read Medi's replies aloud">🔈 <span>Voice</span></button>
+    <button class="ghost" id="newBtn">↺ <span>New visit</span></button>
+  </div>
+</header>
+<div class="disclaimer">Medi is an AI assistant for education and triage guidance, not a licensed physician. If you think you're having an emergency, call 911 / 112 / 999 now.</div>
+
+<main>
+  <section class="panel">
+    <div class="visit-for" id="visitFor">
+      This visit is for:
+      <button type="button" data-patient="self" class="on">🙂 Me</button>
+      <button type="button" data-patient="other">👪 Someone else</button>
+      <span class="visit-note" id="visitNote">Your health profile will be used.</span>
+    </div>
+    <div id="chat"></div>
+    <div class="chips" id="chips"></div>
+    <div id="preview"><img alt="" /><span>Photo attached</span><button type="button" id="removePhoto">✕ remove</button></div>
+    <form id="form">
+      <input type="file" id="file" accept="image/*" hidden />
+      <button type="button" class="icon-btn" id="photoBtn" title="Attach a photo (rash, wound, swelling...)">📷</button>
+      <button type="button" class="icon-btn" id="micBtn" title="Speak your symptoms">🎤</button>
+      <textarea id="input" rows="1" placeholder="Describe how you're feeling..."></textarea>
+      <button id="send">Send</button>
+    </form>
+  </section>
+
+  <aside class="panel side">
+    <h2>Urgency</h2>
+    <div class="meter" id="meter"><div></div><div></div><div></div><div></div></div>
+    <div class="meter-labels"><span>Home care</span><span>Routine</span><span>Same day</span><span>Emergency</span></div>
+    <div class="triage-card" id="triage">
+      <div class="level">Waiting for symptoms</div>
+      <p class="headline">Tell Medi what's going on to get started.</p>
+    </div>
+
+    <h2 id="condTitle">What could be causing it</h2>
+    <div id="conditions"><p class="empty">Medi will discuss possible causes as it learns more.</p></div>
+    <p class="fine">Possibilities only, not a diagnosis. A text conversation can't replace an examination or tests.</p>
+
+    <h2>Still unknown</h2>
+    <div id="unknowns"><p class="empty">Nothing yet.</p></div>
+
+    <h2>Recommended next steps</h2>
+    <div id="nextsteps"><p class="empty">Nothing yet.</p></div>
+
+    <h2>Get help right away if</h2>
+    <div id="redflags"><p class="empty">Nothing yet.</p></div>
+
+    <div class="side-actions">
+      <button class="btn primary" id="summaryBtn" disabled>📄 Visit summary</button>
+    </div>
+  </aside>
+</main>
+</div>
+
+<div class="overlay" id="profileModal">
+  <div class="modal">
+    <h3>🧾 My health profile</h3>
+    <p class="empty" style="font-style:normal">Optional, and only for <strong>you</strong> (the account holder). It's used only when a visit is set to "Me", never for visits about someone else.
+      It's kept in this browser's storage on this device, and is sent to the AI service (OpenAI) along with your messages during a consultation. Please don't enter names, addresses, or ID numbers.</p>
+    <div class="row">
+      <div><label>Age</label><input id="p_age" type="number" min="0" max="120" placeholder="e.g. 34" /></div>
+      <div><label>Sex assigned at birth</label>
+        <select id="p_sex"><option value="">Prefer not to say</option><option>Female</option><option>Male</option><option>Intersex</option></select>
+      </div>
+    </div>
+    <div class="row">
+      <div><label>Pregnant or possibly pregnant?</label>
+        <select id="p_pregnant"><option value="">N/A</option><option>No</option><option>Yes</option><option>Possibly</option></select>
+      </div>
+      <div><label>Weight (optional)</label><input id="p_weight" placeholder="e.g. 70 kg" /></div>
+    </div>
+    <label>Medical conditions</label><input id="p_conditions" placeholder="e.g. asthma, type 2 diabetes" />
+    <label>Current medications</label><input id="p_medications" placeholder="e.g. metformin 500mg, inhaler" />
+    <label>Allergies</label><input id="p_allergies" placeholder="e.g. penicillin, peanuts" />
+    <label>Relevant family history</label><input id="p_family" placeholder="e.g. father had heart disease at 50" />
+    <div class="row">
+      <div><label>Breastfeeding?</label>
+        <select id="p_breastfeeding"><option value="">N/A</option><option>No</option><option>Yes</option></select>
+      </div>
+      <div><label>Country / region</label><input id="p_country" placeholder="e.g. United States" /></div>
+    </div>
+    <div class="side-actions">
+      <button class="btn" data-close="profileModal">Cancel</button>
+      <button class="btn primary" id="saveProfile">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay emergency" id="emergencyModal">
+  <div class="modal">
+    <h3>🚨 This may be an emergency</h3>
+    <p id="emergencyText">Based on what you described, you should get emergency help now.</p>
+    <a class="big" href="tel:911">📞 Call 911</a>
+    <p class="empty" style="font-style:normal">Outside the US: 112 (EU) · 999 (UK) · 000 (AU). Thoughts of self-harm: call or text 988 (US).</p>
+    <div class="side-actions"><button class="btn" data-close="emergencyModal">I understand, continue</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="summaryModal">
+  <div class="modal">
+    <h3>📄 Visit summary for your doctor</h3>
+    <div id="summaryBody"></div>
+    <div class="side-actions">
+      <button class="btn" data-close="summaryModal">Close</button>
+      <button class="btn" id="copySummary">Copy</button>
+      <button class="btn primary" onclick="window.print()">Print</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const chatEl = $("chat"), input = $("input"), sendBtn = $("send"), chipsEl = $("chips");
+  const LEVELS = {
+    self_care: { idx: 0, label: "Home care & monitoring", color: "var(--self_care)" },
+    routine: { idx: 1, label: "Routine appointment", color: "var(--routine)" },
+    urgent: { idx: 2, label: "Urgent / same-day care", color: "var(--urgent)" },
+    emergency: { idx: 3, label: "Emergency care now", color: "var(--emergency)" },
+    unknown: { idx: -1, label: "Still assessing", color: "var(--unknown)" },
+  };
+  const MEDI_AVATAR = `<img class="avatar" src="/assets/medi-avatar.png" alt="Medi" />`;
+  const STATUS_CLASS = { "probable explanation": "probable", "important to rule out": "warn" };
+  const STARTERS = ["🤕 Headache", "🤒 Fever", "😷 Sore throat", "🤢 Stomach pain", "😮‍💨 Cough", "🔴 Skin rash", "🦴 Back pain", "😰 Anxiety / stress"];
+  const PROFILE_FIELDS = ["age", "sex", "pregnant", "breastfeeding", "weight", "conditions", "medications", "allergies", "family", "country"];
+  let patient = "self";
+
+  let history = [];
+  let photo = null;
+  let busy = false;
+  let voiceOn = false;
+  let shownEmergency = false;
+  let profile = JSON.parse(localStorage.getItem("mediProfile") || "{}");
+
+  // ---------- Rendering helpers ----------
+
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  function md(text) {
+    const inline = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/\*(.+?)\*/g, "<em>$1</em>");
+    let html = "", list = false;
+    for (const raw of String(text).split("\n")) {
+      const line = raw.trim();
+      const bullet = line.match(/^[-*•]\s+(.*)/) || line.match(/^\d+\.\s+(.*)/);
+      if (bullet) { if (!list) { html += "<ul>"; list = true; } html += `<li>${inline(bullet[1])}</li>`; continue; }
+      if (list) { html += "</ul>"; list = false; }
+      if (!line) continue;
+      const h = line.match(/^#{1,4}\s+(.*)/);
+      html += h ? `<h2>${inline(h[1])}</h2>` : `<p>${inline(line)}</p>`;
+    }
+    return html + (list ? "</ul>" : "");
+  }
+
+  function addMessage(role, text, image) {
+    const row = document.createElement("div");
+    row.className = `msg ${role}`;
+    row.innerHTML = `${role === "bot" ? MEDI_AVATAR : `<div class="avatar">🙂</div>`}<div class="bubble"></div>`;
+    const bubble = row.querySelector(".bubble");
+    if (role === "bot") {
+      bubble.innerHTML = md(text);
+      const play = document.createElement("button");
+      play.className = "speak-btn";
+      play.textContent = "🔈 Listen";
+      play.onclick = () => speak(text, true);
+      bubble.appendChild(play);
+    } else {
+      bubble.textContent = text;
+    }
+    if (image) { const img = document.createElement("img"); img.src = image; bubble.appendChild(img); }
+    chatEl.appendChild(row);
+    chatEl.scrollTop = chatEl.scrollHeight;
+    return row;
+  }
+
+  function showTyping() {
+    const row = document.createElement("div");
+    row.className = "msg bot";
+    row.innerHTML = `${MEDI_AVATAR}<div class="bubble typing"><span></span><span></span><span></span></div>`;
+    chatEl.appendChild(row);
+    chatEl.scrollTop = chatEl.scrollHeight;
+    return row;
+  }
+
+  function setChips(list) {
+    chipsEl.innerHTML = "";
+    for (const text of list) {
+      const b = document.createElement("button");
+      b.className = "chip";
+      b.textContent = text;
+      b.onclick = () => send(text.replace(/^[^\w]+/u, "").trim());
+      chipsEl.appendChild(b);
+    }
+  }
+
+  function listHtml(items) {
+    return items && items.length ? `<ul class="list">${items.map((i) => `<li>${esc(i)}</li>`).join("")}</ul>` : `<p class="empty">Nothing yet.</p>`;
+  }
+
+  function renderPanel(r) {
+    const lvl = LEVELS[r.triage.level] || LEVELS.unknown;
+    [...$("meter").children].forEach((seg, i) => {
+      const color = Object.values(LEVELS).find((l) => l.idx === i).color;
+      seg.style.background = i <= lvl.idx ? color : "#edf1f5";
+    });
+    const card = $("triage");
+    card.style.borderLeftColor = lvl.color;
+    card.innerHTML = `<div class="level" style="color:${lvl.color}">${lvl.label}</div>
+      <p class="headline">${esc(r.triage.headline)}</p>${r.triage.reasons.length ? listHtml(r.triage.reasons) : ""}`;
+
+    $("condTitle").textContent = r.stage === "assessment" ? "What could be causing it" : "Early possibilities";
+    $("conditions").innerHTML = r.conditions.length
+      ? r.conditions.map((c) => `<div class="cond">
+            <div class="cond-top"><span class="cond-name">${esc(c.name)}</span><span class="tag ${STATUS_CLASS[c.status] || ""}">${esc(c.status)}</span></div>
+            <p class="cond-exp">${esc(c.explanation)}</p>
+            ${c.supporting.length || c.against.length ? `<details><summary>What fits and what doesn't</summary><div class="mini-chips">
+              ${c.supporting.map((s) => `<span>✓ ${esc(s)}</span>`).join("")}
+              ${c.against.map((s) => `<span class="against">✗ ${esc(s)}</span>`).join("")}
+            </div></details>` : ""}
+          </div>`).join("")
+      : `<p class="empty">Medi needs a bit more information first.</p>`;
+    $("unknowns").innerHTML = listHtml(r.important_unknowns);
+    $("nextsteps").innerHTML = listHtml(r.next_steps);
+    $("redflags").innerHTML = listHtml(r.red_flags_to_watch);
+  }
+
+  function resetPanel() {
+    renderPanel({ stage: "gathering", triage: { level: "unknown", headline: "Tell Medi what's going on to get started.", reasons: [] }, conditions: [], important_unknowns: [], next_steps: [], red_flags_to_watch: [] });
+    $("triage").querySelector(".level").textContent = "Waiting for symptoms";
+  }
+
+  // ---------- Conversation ----------
+
+  async function postJson(url, body) {
+    const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    let data;
+    try { data = await res.json(); } catch { throw new Error(res.status === 413 ? "the request was too large, try a smaller photo" : `server error ${res.status}`); }
+    if (data.error) throw new Error(data.error);
+    return data;
+  }
+
+  // Hosting limits request size, so only the two most recent photos are re-sent with each message.
+  function withRecentPhotos(messages) {
+    let photosLeft = 2;
+    return [...messages].reverse().map((m) => {
+      if (!Array.isArray(m.content)) return m;
+      if (photosLeft-- > 0) return m;
+      return { ...m, content: m.content[0].text + " [shared a photo earlier]" };
+    }).reverse();
+  }
+
+  function startVisit() {
+    history = [];
+    shownEmergency = false;
+    chatEl.innerHTML = "";
+    resetPanel();
+    $("summaryBtn").disabled = true;
+    const intro = `Hi, I'm **Medi**, the AI health assistant from Portal Medic 365. 👋 I can help you understand symptoms and decide on a sensible next step, but I'm not a replacement for a doctor who can examine you.`;
+    const greeting = patient === "other"
+      ? `${intro}\n\n**Who is this visit about, and how old are they?** Then tell me what's going on with them and when it started.`
+      : profile.age
+        ? `${intro}\n\nI'll use the health profile you saved. **What's been bothering you?** Tell me in your own words, and include when it started if you can.`
+        : `${intro}\n\nTell me what's been bothering you in your own words: what you're feeling, where, and when it started. You can also attach a photo (like a rash) or tap a symptom below.\n\nIf you're asking about someone else, switch **This visit is for** above to *Someone else*.`;
+    addMessage("bot", greeting);
+    history.push({ role: "assistant", content: greeting });
+    setChips(STARTERS);
+  }
+
+  async function send(text) {
+    text = (text || "").trim();
+    if ((!text && !photo) || busy) return;
+    if (!text) text = "Here's a photo of what I'm worried about.";
+    busy = true;
+    sendBtn.disabled = true;
+    input.value = "";
+    autosize();
+    setChips([]);
+
+    addMessage("user", text, photo);
+    history.push({ role: "user", content: photo ? [{ type: "text", text }, { type: "image_url", image_url: { url: photo } }] : text });
+    clearPhoto();
+
+    const typing = showTyping();
+    try {
+      const data = await postJson("/consult", { messages: withRecentPhotos(history), patient, profile: patient === "self" ? profile : {} });
+      typing.remove();
+
+      const { safety_alerts, ...turn } = data;
+      history.push({ role: "assistant", content: JSON.stringify(turn) });
+      addMessage("bot", turn.reply);
+      renderPanel(turn);
+      setChips(turn.quick_replies || []);
+      $("summaryBtn").disabled = false;
+      speak(turn.reply);
+
+      if ((turn.triage.level === "emergency" || safety_alerts.length) && !shownEmergency) {
+        shownEmergency = true;
+        const reasons = safety_alerts.length ? safety_alerts.map((a) => a.advice) : [turn.triage.headline];
+        $("emergencyText").innerHTML = reasons.map(esc).join("<br><br>");
+        $("emergencyModal").classList.add("show");
+      }
+    } catch (err) {
+      typing.remove();
+      history.pop();
+      addMessage("bot", `Sorry, I couldn't connect just now (${err.message}). Please try sending that again.`);
+    } finally {
+      busy = false;
+      sendBtn.disabled = false;
+      input.focus();
+    }
+  }
+
+  $("form").addEventListener("submit", (e) => { e.preventDefault(); send(input.value); });
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(input.value); } });
+  function autosize() { input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, 140) + "px"; }
+  input.addEventListener("input", autosize);
+  $("newBtn").onclick = () => { speechSynthesis.cancel(); startVisit(); };
+
+  // ---------- Photo upload (resized in the browser before sending) ----------
+
+  $("photoBtn").onclick = () => $("file").click();
+  $("file").onchange = async (e) => {
+    const file = e.target.files[0];
+    e.target.value = "";
+    if (!file) return;
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    await img.decode();
+    const scale = Math.min(1, 1024 / Math.max(img.width, img.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(img.width * scale);
+    canvas.height = Math.round(img.height * scale);
+    canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+    URL.revokeObjectURL(img.src);
+    photo = canvas.toDataURL("image/jpeg", 0.85);
+    $("preview").querySelector("img").src = photo;
+    $("preview").style.display = "flex";
+  };
+  function clearPhoto() { photo = null; $("preview").style.display = "none"; }
+  $("removePhoto").onclick = clearPhoto;
+
+  // ---------- Voice in (browser speech recognition) and voice out ----------
+
+  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recognizer = null;
+  if (!Recognition) $("micBtn").style.display = "none";
+  $("micBtn").onclick = () => {
+    if (recognizer) return recognizer.stop();
+    recognizer = new Recognition();
+    recognizer.lang = "en-US";
+    recognizer.interimResults = true;
+    const base = input.value ? input.value + " " : "";
+    recognizer.onresult = (e) => { input.value = base + [...e.results].map((r) => r[0].transcript).join(""); autosize(); };
+    recognizer.onend = () => { recognizer = null; $("micBtn").classList.remove("on"); };
+    recognizer.start();
+    $("micBtn").classList.add("on");
+  };
+
+  function speak(text, force = false) {
+    if (!(voiceOn || force) || !window.speechSynthesis) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text.replace(/\*\*/g, "").replace(/^[-*•]\s+/gm, ""));
+    const voices = speechSynthesis.getVoices();
+    u.voice = voices.find((v) => /en/i.test(v.lang) && /female|aria|jenny|samantha|zira|google us/i.test(v.name)) || null;
+    u.rate = 1;
+    speechSynthesis.speak(u);
+  }
+  $("voiceBtn").onclick = () => {
+    voiceOn = !voiceOn;
+    $("voiceBtn").classList.toggle("on", voiceOn);
+    if (!voiceOn) speechSynthesis.cancel();
+  };
+
+  // ---------- Profile ----------
+
+  $("profileBtn").onclick = $("homeProfileBtn").onclick = () => {
+    PROFILE_FIELDS.forEach((f) => ($("p_" + f).value = profile[f] || ""));
+    $("profileModal").classList.add("show");
+  };
+  $("saveProfile").onclick = () => {
+    profile = {};
+    PROFILE_FIELDS.forEach((f) => { const v = $("p_" + f).value.trim(); if (v) profile[f] = v; });
+    localStorage.setItem("mediProfile", JSON.stringify(profile));
+    $("profileModal").classList.remove("show");
+  };
+  document.querySelectorAll("#visitFor [data-patient]").forEach((b) => (b.onclick = () => {
+    if (b.dataset.patient === patient) return;
+    const started = history.some((m) => m.role === "user");
+    if (started && !confirm("Switching who this visit is for starts a new visit, so details about one person aren't mixed into another person's assessment. Continue?")) return;
+    patient = b.dataset.patient;
+    document.querySelectorAll("#visitFor [data-patient]").forEach((x) => x.classList.toggle("on", x === b));
+    $("visitNote").textContent = patient === "self" ? "Your health profile will be used." : "Your saved profile will NOT be used for this person.";
+    speechSynthesis.cancel();
+    startVisit();
+  }));
+  document.querySelectorAll("[data-close]").forEach((b) => (b.onclick = () => $(b.dataset.close).classList.remove("show")));
+
+  // ---------- Visit summary ----------
+
+  let summaryText = "";
+  $("summaryBtn").onclick = async () => {
+    const btn = $("summaryBtn");
+    btn.disabled = true;
+    btn.textContent = "Writing summary...";
+    try {
+      const messages = history.map((m) => {
+        if (m.role === "user") return { role: "user", content: typeof m.content === "string" ? m.content : m.content[0].text + " [shared a photo]" };
+        try { return { role: "assistant", content: JSON.parse(m.content).reply }; } catch { return m; }
+      });
+      const data = await postJson("/summary", { messages, patient, profile: patient === "self" ? profile : {} });
+      summaryText = data.summary;
+      $("summaryBody").innerHTML = `<p class="empty" style="font-style:normal">Generated ${new Date().toLocaleString()} · AI-assisted, not a medical diagnosis</p>` + md(summaryText);
+      $("summaryModal").classList.add("show");
+    } catch (err) {
+      alert("Couldn't create the summary: " + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "📄 Visit summary";
+    }
+  };
+  $("copySummary").onclick = () => navigator.clipboard.writeText(summaryText);
+
+  // ---------- Home screen ----------
+
+  function showView() {
+    const inChat = location.hash === "#chat";
+    $("home").hidden = inChat;
+    $("app").hidden = !inChat;
+    if (inChat) input.focus();
+    else { speechSynthesis.cancel(); window.scrollTo(0, 0); }
+  }
+  function openChat(firstMessage) {
+    location.hash = "chat";
+    showView();
+    if (firstMessage) send(firstMessage);
+  }
+  window.addEventListener("hashchange", showView);
+  $("homeBtn").onclick = $("logoHome").onclick = () => (location.hash = "");
+  $("startBtn").onclick = () => openChat();
+  $("homeForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const text = $("homeInput").value.trim();
+    $("homeInput").value = "";
+    openChat(text);
+  });
+  for (const text of STARTERS) {
+    const b = document.createElement("button");
+    b.className = "chip";
+    b.textContent = text;
+    b.onclick = () => openChat(text.replace(/^[^\w]+/u, "").trim());
+    $("homeChips").appendChild(b);
+  }
+
+  startVisit();
+  showView();
+</script>
+</body>
+</html>
