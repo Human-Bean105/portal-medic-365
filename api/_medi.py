@@ -232,7 +232,8 @@ def post_json(payload, timeout=90):
         return json.load(resp)
 
 
-def consult(messages, profile, patient):
+def consult_request(messages, profile, patient):
+    """Builds the chat request for a consultation turn and runs the keyword safety check on the latest message."""
     last_user = next((m for m in reversed(messages) if m.get("role") == "user"), {})
     flags = screen_red_flags(message_text(last_user))
     system = SYSTEM_PROMPT + "\n\n" + profile_note(profile, patient)
@@ -240,15 +241,56 @@ def consult(messages, profile, patient):
         system += ("\n\nSAFETY SCREENER ALERT for the latest message: " + "; ".join(f["label"] for f in flags) +
                    ". Treat this as an emergency unless the patient clearly says it is not happening now, "
                    "and begin your reply with the emergency instruction.")
-    data = post_json({
+    payload = {
         "model": MODEL,
         "temperature": 0.3,
         "messages": [{"role": "system", "content": system}] + messages[-30:],
         "response_format": {"type": "json_schema", "json_schema": RESPONSE_SCHEMA},
-    })
-    result = json.loads(data["choices"][0]["message"]["content"])
+    }
+    return payload, flags
+
+
+def consult(messages, profile, patient):
+    payload, flags = consult_request(messages, profile, patient)
+    result = json.loads(post_json(payload)["choices"][0]["message"]["content"])
     result["safety_alerts"] = flags
     return result
+
+
+def sse(event):
+    return f"data: {json.dumps(event)}\n\n".encode()
+
+
+def consult_stream(messages, profile, patient):
+    """Same as consult, but yields server-sent events: safety alerts first, then the raw JSON as the model writes it
+    (the reply field comes first, so the browser can show it word by word), then the finished result."""
+    payload, flags = consult_request(messages, profile, patient)
+    yield sse({"type": "alerts", "alerts": flags})
+    req = urllib.request.Request(
+        "https://api.openai.com/v1/chat/completions",
+        data=json.dumps({**payload, "stream": True}).encode(),
+        headers={"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"},
+    )
+    text = ""
+    try:
+        with urllib.request.urlopen(req, timeout=90) as resp:
+            for line in resp:
+                line = line.strip()
+                if not line.startswith(b"data: ") or line == b"data: [DONE]":
+                    continue
+                choices = json.loads(line[6:]).get("choices") or [{}]
+                delta = choices[0].get("delta", {}).get("content")
+                if delta:
+                    text += delta
+                    yield sse({"type": "delta", "text": delta})
+        result = json.loads(text)
+        result["safety_alerts"] = flags
+        yield sse({"type": "done", "result": result})
+    except urllib.error.HTTPError as e:
+        detail = "the OpenAI API key is invalid or expired" if e.code == 401 else e.read().decode(errors="replace")[:300]
+        yield sse({"type": "error", "error": f"OpenAI error {e.code}: {detail}"})
+    except Exception as e:
+        yield sse({"type": "error", "error": str(e)})
 
 
 SUMMARY_PROMPT = """You are writing a concise visit summary of an AI health-assistant consultation that the patient can print and bring to a healthcare professional.
@@ -349,6 +391,18 @@ def voice_session(sdp, profile, patient, history):
         return {"sdp": resp.read().decode()}
 
 
+def send_stream(handler, status, events):
+    """Writes server-sent events to the client as they're produced."""
+    handler.send_response(status)
+    handler.send_header("Content-Type", "text/event-stream")
+    handler.send_header("Cache-Control", "no-cache")
+    handler.send_header("X-Accel-Buffering", "no")
+    handler.end_headers()
+    for chunk in events:
+        handler.wfile.write(chunk)
+        handler.wfile.flush()
+
+
 def make_handler(kind):
     """Builds the request handler class a Vercel Python function exposes as `handler`."""
     from http.server import BaseHTTPRequestHandler
@@ -357,6 +411,8 @@ def make_handler(kind):
         def do_POST(self):
             raw = self.rfile.read(int(self.headers.get("Content-Length", 0)))
             status, body = handle_post(kind, raw)
+            if hasattr(body, "__next__"):
+                return send_stream(self, status, body)
             audio = isinstance(body, bytes)
             data = body if audio else json.dumps(body).encode()
             self.send_response(status)
@@ -380,6 +436,8 @@ def handle_post(kind, raw):
         patient = "self" if payload.get("patient") == "self" else "other"
         if kind == "summary":
             return 200, summarize(messages, profile, patient)
+        if kind == "stream":
+            return 200, consult_stream(messages, profile, patient)
         if kind == "speak":
             text = str(payload.get("text", "")).strip()
             return (200, speak(text)) if text else (400, {"error": "Nothing to read aloud."})

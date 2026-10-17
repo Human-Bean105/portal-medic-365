@@ -159,6 +159,23 @@
   .emergency .modal { border-top: 8px solid var(--emergency); text-align: center; }
   .emergency h3 { color: var(--emergency); font-size: 1.4rem; }
   .emergency .big { display: inline-block; margin: 12px 0; padding: 12px 26px; border-radius: 12px; background: var(--emergency); color: #fff; font-size: 1.3rem; font-weight: 700; text-decoration: none; }
+  #callScreen { position: fixed; inset: 0; z-index: 9; display: flex; flex-direction: column; background: var(--navy); color: #fff; }
+  .cs-top { display: flex; align-items: center; gap: 12px; padding: 14px 20px; }
+  .cs-title { font-size: 1rem; color: #c9d7f5; }
+  .cs-title strong { color: #fff; }
+  .cs-level { padding: 4px 12px; border-radius: 999px; background: #ffffff1f; font-size: .85rem; font-weight: 600; }
+  .cs-chat { margin-left: auto; border: 1px solid #ffffff55; background: transparent; color: #fff; border-radius: 10px; padding: 7px 14px; }
+  .cs-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 0 20px; text-align: center; min-height: 0; }
+  #callScreen #avatar { width: min(52vw, 42vh, 320px); height: min(52vw, 42vh, 320px); border-radius: 28px; }
+  .cs-status { font-size: 1.3rem; font-weight: 700; }
+  .cs-caption { font-size: 1.15rem; line-height: 1.5; max-width: 680px; min-height: 3em; color: #e3ebff; }
+  .cs-you { font-size: .95rem; color: #9fb3dd; max-width: 680px; }
+  .cs-controls { display: flex; gap: 22px; justify-content: center; padding: 16px; }
+  .cs-btn { width: 76px; height: 76px; border-radius: 50%; border: none; background: #ffffff1f; color: #fff; font-size: 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+  .cs-btn span { font-size: .7rem; }
+  .cs-btn.on { background: #fff; color: var(--navy); }
+  .cs-btn.end { background: var(--emergency); }
+  .cs-fine { text-align: center; color: #9fb3dd; font-size: .78rem; margin: 0 0 14px; }
   .map-modal { width: min(920px, 100%); }
   .map-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .map-head h3 { margin: 0; }
@@ -271,6 +288,7 @@
         <div class="voice-status" id="voiceStatus">Connecting to Medi...</div>
         <div class="voice-caption" id="voiceCaption">Allow microphone access when your browser asks.</div>
         <div class="voice-controls">
+          <button type="button" class="ghost" id="fullBtn">⤢ Full screen</button>
           <button type="button" class="ghost" id="muteBtn">🎙️ Mute</button>
           <button type="button" class="end-btn" id="endCallBtn">End call</button>
         </div>
@@ -361,6 +379,26 @@
     <p class="empty" style="font-style:normal">Outside the US: 112 (EU) · 999 (UK) · 000 (AU). Thoughts of self-harm: call or text 988 (US).</p>
     <div class="side-actions"><button class="btn" data-close="emergencyModal">I understand, continue</button></div>
   </div>
+</div>
+
+<div id="callScreen" hidden>
+  <div class="cs-top">
+    <div class="cs-title"><strong>Medi</strong> · voice call</div>
+    <span class="cs-level" id="csLevel">Still assessing</span>
+    <button type="button" class="cs-chat" id="csChatBtn">💬 Show chat</button>
+  </div>
+  <div class="cs-center">
+    <div id="csAvatarSlot"></div>
+    <div class="cs-status" id="csStatus">Connecting to Medi...</div>
+    <div class="cs-caption" id="csCaption"></div>
+    <div class="cs-you" id="csYou"></div>
+  </div>
+  <div class="cs-controls">
+    <button type="button" class="cs-btn" id="csMute">🎙️<span>Mute</span></button>
+    <button type="button" class="cs-btn" id="csMap">📍<span>Find care</span></button>
+    <button type="button" class="cs-btn end" id="csEnd">📞<span>End call</span></button>
+  </div>
+  <p class="cs-fine">Medi is an AI health assistant, not a doctor. In an emergency, call 911.</p>
 </div>
 
 <div class="overlay" id="mapModal">
@@ -490,6 +528,8 @@
   function renderPanel(r) {
     currentLevel = r.triage.level;
     const lvl = LEVELS[r.triage.level] || LEVELS.unknown;
+    $("csLevel").textContent = lvl.label;
+    $("csLevel").style.background = r.triage.level === "unknown" ? "" : lvl.color;
     [...$("meter").children].forEach((seg, i) => {
       const color = Object.values(LEVELS).find((l) => l.idx === i).color;
       seg.style.background = i <= lvl.idx ? color : "#edf1f5";
@@ -557,6 +597,43 @@
     setChips(STARTERS);
   }
 
+  // The model writes JSON with "reply" first; this pulls out however much of the reply has arrived so far.
+  function partialReply(raw) {
+    const m = raw.match(/^\s*\{\s*"reply"\s*:\s*"((?:[^"\\]|\\.)*)/);
+    if (!m) return "";
+    try { return JSON.parse(`"${m[1].replace(/\\u[0-9a-fA-F]{0,3}$|\\$/, "")}"`); } catch { return ""; }
+  }
+
+  async function streamConsult(body, onText, onAlerts) {
+    const res = await fetch("/stream", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (!res.ok || !res.headers.get("Content-Type")?.includes("event-stream")) {
+      let data = null;
+      try { data = await res.json(); } catch {}
+      throw new Error(data?.error || (res.status === 413 ? "the request was too large, try a smaller photo" : `server error ${res.status}`));
+    }
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "", raw = "", result = null;
+    for (;;) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      let end;
+      while ((end = buffer.indexOf("\n\n")) >= 0) {
+        const line = buffer.slice(0, end);
+        buffer = buffer.slice(end + 2);
+        if (!line.startsWith("data: ")) continue;
+        const ev = JSON.parse(line.slice(6));
+        if (ev.type === "alerts" && ev.alerts.length) onAlerts(ev.alerts);
+        else if (ev.type === "delta") onText(partialReply((raw += ev.text)));
+        else if (ev.type === "done") result = ev.result;
+        else if (ev.type === "error") throw new Error(ev.error);
+      }
+    }
+    if (!result) throw new Error("the reply was cut off");
+    return result;
+  }
+
   function showEmergency(reasons) {
     if (shownEmergency) return;
     shownEmergency = true;
@@ -580,8 +657,20 @@
     clearPhoto();
 
     const typing = showTyping();
+    const bubble = typing.querySelector(".bubble");
+    let shown = "";
     try {
-      const data = await postJson("/consult", { messages: withRecentPhotos(history), patient, profile: patient === "self" ? profile : {} });
+      const data = await streamConsult(
+        { messages: withRecentPhotos(history), patient, profile: patient === "self" ? profile : {} },
+        (text) => {
+          if (!text || text === shown) return;
+          shown = text;
+          bubble.classList.remove("typing");
+          bubble.innerHTML = md(text);
+          chatEl.scrollTop = chatEl.scrollHeight;
+        },
+        (alerts) => showEmergency(alerts.map((a) => a.advice)),
+      );
       typing.remove();
 
       const { safety_alerts, ...turn } = data;
@@ -627,8 +716,18 @@
 
   function setCallState(state, caption) {
     call.state = state;
-    $("voiceStatus").textContent = STATUS[state] || "";
-    if (caption !== undefined) $("voiceCaption").textContent = caption;
+    $("voiceStatus").textContent = $("csStatus").textContent = STATUS[state] || "";
+    if (caption !== undefined) setCaption(caption);
+  }
+
+  function setCaption(text) {
+    $("voiceCaption").textContent = $("csCaption").textContent = text;
+  }
+
+  // The full-screen call screen and the small panel above the chat share one avatar canvas.
+  function showCallScreen(full) {
+    $("callScreen").hidden = !full;
+    (full ? $("csAvatarSlot") : $("voiceStage")).prepend($("avatar"));
   }
 
   function levelMeter(stream) {
@@ -652,6 +751,8 @@
     if (call.pc) return;
     stopSpeaking();
     $("voiceStage").hidden = false;
+    showCallScreen(true);
+    $("csYou").textContent = "";
     $("callBtn").classList.add("on");
     setCallState("connecting", "Allow microphone access when your browser asks.");
     startAvatar();
@@ -701,9 +802,9 @@
     Object.assign(call, { pc: null, dc: null, mic: null, audio: null, ctx: null, micLevel: null, outLevel: null, state: "idle" });
     call.pending.clear();
     $("voiceStage").hidden = true;
+    showCallScreen(false);
     $("callBtn").classList.remove("on");
-    $("muteBtn").classList.remove("on");
-    $("muteBtn").textContent = "🎙️ Mute";
+    setMuteLook(false);
     stopAvatar();
     if (note) addMessage("bot", note);
   }
@@ -800,13 +901,14 @@
         }
         p.row.querySelector(".bubble").textContent = text;
         p.entry.content = text;
+        $("csYou").textContent = `You: ${text}`;
         screenForCall(text);
         assessFromCall();
         break;
       }
       case "response.output_audio_transcript.delta":
         call.caption += ev.delta;
-        $("voiceCaption").textContent = call.caption;
+        setCaption(call.caption);
         break;
       case "response.output_audio_transcript.done":
         call.caption = "";
@@ -830,13 +932,22 @@
   }
 
   $("callBtn").onclick = () => (call.pc ? endCall() : startCall());
-  $("endCallBtn").onclick = () => endCall();
-  $("muteBtn").onclick = () => {
+  $("endCallBtn").onclick = $("csEnd").onclick = () => endCall();
+  $("csChatBtn").onclick = () => showCallScreen(false);
+  $("fullBtn").onclick = () => showCallScreen(true);
+  $("csMap").onclick = () => openMap(currentLevel);
+
+  function setMuteLook(muted) {
+    $("muteBtn").classList.toggle("on", muted);
+    $("muteBtn").textContent = muted ? "🔇 Unmute" : "🎙️ Mute";
+    $("csMute").classList.toggle("on", muted);
+    $("csMute").innerHTML = muted ? "🔇<span>Unmute</span>" : "🎙️<span>Mute</span>";
+  }
+  $("muteBtn").onclick = $("csMute").onclick = () => {
     const track = call.mic?.getAudioTracks()[0];
     if (!track) return;
     track.enabled = !track.enabled;
-    $("muteBtn").classList.toggle("on", !track.enabled);
-    $("muteBtn").textContent = track.enabled ? "🎙️ Mute" : "🔇 Unmute";
+    setMuteLook(!track.enabled);
   };
 
   // ---------- Pixel avatar (32x32 canvas, scaled up with crisp pixels) ----------
