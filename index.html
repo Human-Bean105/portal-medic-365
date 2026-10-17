@@ -9,7 +9,7 @@
   :root {
     --bg: #f2f7fd; --card: #fff; --ink: #14285e; --muted: #6b7c99; --line: #e1e9f4;
     --brand: #2563eb; --brand-2: #1fc4a5; --navy: #14285e; --user: #2563eb;
-    --emergency: #d62839; --urgent: #f17105; --soon: #e9b10a; --routine: #3a86ff; --self_care: #2a9d8f; --unknown: #a0aec0;
+    --emergency: #d62839; --urgent_care: #f17105; --clinic: #3a86ff; --home_care: #2a9d8f; --unknown: #a0aec0;
   }
   * { box-sizing: border-box; }
   body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--ink); }
@@ -185,7 +185,7 @@
 
   <section class="features">
     <div class="feature"><div class="f-icon">🩺</div><h3>Focused questions</h3><p>Medi asks only what matters: when it started, how it's changing, how severe it is, and what else you've noticed.</p></div>
-    <div class="feature"><div class="f-icon">🚦</div><h3>Right level of care</h3><p>A clear recommendation: home care, a routine appointment, same-day care, or emergency help now.</p></div>
+    <div class="feature"><div class="f-icon">🚦</div><h3>Right level of care</h3><p>One of four clear answers: emergency (call 911), urgent care today, a normal clinic visit, or home care.</p></div>
     <div class="feature"><div class="f-icon">🔍</div><h3>Honest possibilities</h3><p>Possible causes with what supports or weakens each one and what's still unknown. No made-up percentages.</p></div>
     <div class="feature"><div class="f-icon">📷</div><h3>Photo check</h3><p>Snap a rash, wound, or swelling and Medi will factor what it sees into its assessment.</p></div>
     <div class="feature"><div class="f-icon">🚨</div><h3>Emergency safety net</h3><p>Warning signs like chest pain or stroke symptoms trigger an instant call-for-help alert.</p></div>
@@ -250,7 +250,7 @@
   <aside class="panel side">
     <h2>Urgency</h2>
     <div class="meter" id="meter"><div></div><div></div><div></div><div></div></div>
-    <div class="meter-labels"><span>Home care</span><span>Routine</span><span>Same day</span><span>Emergency</span></div>
+    <div class="meter-labels"><span>Home care</span><span>Normal clinic</span><span>Urgent care</span><span>Emergency</span></div>
     <div class="triage-card" id="triage">
       <div class="level">Waiting for symptoms</div>
       <p class="headline">Tell Medi what's going on to get started.</p>
@@ -315,6 +315,7 @@
     <h3>🚨 This may be an emergency</h3>
     <p id="emergencyText">Based on what you described, you should get emergency help now.</p>
     <a class="big" href="tel:911">📞 Call 911</a>
+    <p><a href="https://www.google.com/maps/search/emergency+room+near+me" target="_blank" rel="noopener">📍 Find the nearest emergency room</a> (only if you're stable enough to be driven there by someone else)</p>
     <p class="empty" style="font-style:normal">Outside the US: 112 (EU) · 999 (UK) · 000 (AU). Thoughts of self-harm: call or text 988 (US).</p>
     <div class="side-actions"><button class="btn" data-close="emergencyModal">I understand, continue</button></div>
   </div>
@@ -336,10 +337,10 @@
   const $ = (id) => document.getElementById(id);
   const chatEl = $("chat"), input = $("input"), sendBtn = $("send"), chipsEl = $("chips");
   const LEVELS = {
-    self_care: { idx: 0, label: "Home care & monitoring", color: "var(--self_care)" },
-    routine: { idx: 1, label: "Routine appointment", color: "var(--routine)" },
-    urgent: { idx: 2, label: "Urgent / same-day care", color: "var(--urgent)" },
-    emergency: { idx: 3, label: "Emergency care now", color: "var(--emergency)" },
+    home_care: { idx: 0, label: "Home care", color: "var(--home_care)" },
+    clinic: { idx: 1, label: "Normal clinic visit", color: "var(--clinic)" },
+    urgent_care: { idx: 2, label: "Urgent care today", color: "var(--urgent_care)" },
+    emergency: { idx: 3, label: "Emergency: call 911", color: "var(--emergency)" },
     unknown: { idx: -1, label: "Still assessing", color: "var(--unknown)" },
   };
   const MEDI_AVATAR = `<img class="avatar" src="/assets/medi-avatar.png" alt="Medi" />`;
