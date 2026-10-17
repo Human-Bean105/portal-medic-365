@@ -2,7 +2,9 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     { "source": "/consult", "destination": "/api/consult" },
-    { "source": "/summary", "destination": "/api/summary" }
+    { "source": "/summary", "destination": "/api/summary" },
+    { "source": "/voice", "destination": "/api/voice" },
+    { "source": "/screen", "destination": "/api/screen" }
   ],
   "functions": {
     "api/*.py": { "maxDuration": 60 }

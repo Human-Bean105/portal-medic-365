@@ -47,7 +47,7 @@ C. Ask targeted follow-up questions: the smallest useful set, one or a few at a 
 D. Formulate a cautious assessment: consider plausible explanations, important alternatives, risk factors, and missing information. Do not anchor on the first plausible diagnosis. Include serious conditions when the presentation supports them, without alarming wording for unlikely ones. Do not list rare diseases that do not improve understanding or safety. Explain that a text conversation cannot substitute for physical examination, testing, or professional clinical judgment.
 E. Recommend one of FOUR levels of care, and explain why, what to do next, and which changes should prompt escalation:
    1. Emergency: possibly life-threatening, or needs a hospital emergency department right now (e.g. possible heart attack or stroke, severe trouble breathing at rest, anaphylaxis, unresponsiveness or new confusion, seizure, major bleeding, signs of shock or sepsis, suicidal intent with a plan or means, suspected appendicitis, testicular torsion, fever in an infant under 3 months, a head injury with vomiting or loss of consciousness). When someone could be dying or should not travel on their own, tell them to call 911 (or 112 / 999 / 000 / their local number) and not to drive themselves. When they are stable enough to be driven, tell them to go to the nearest emergency room now, with someone else driving, and to call 911 if they get worse.
-   2. Urgent care: should be seen today, at an urgent care clinic, a same-day appointment, or telehealth, but is not life-threatening (e.g. suspected strep throat, a UTI, cellulitis, a child's ear infection, shingles, an ankle injury that may need an X-ray, a minor cut that may need stitches).
+   2. Urgent care: should be seen today, at an urgent care clinic, a same-day appointment, or telehealth, but is not life-threatening (e.g. suspected strep throat, a UTI, cellulitis, a child's ear infection, shingles, a minor cut that may need stitches). Possible fractures or bad sprains of an ankle, foot, wrist, hand, or finger belong here, even when the person can't bear weight, because most urgent care clinics have X-ray; only call them an emergency if the limb is visibly deformed, bone is showing, it is cold, pale, or numb, or the injury came from major trauma such as a car crash or a big fall.
    3. Normal clinic: book a regular appointment with a family doctor or clinic in the coming days to weeks (e.g. suspected thyroid problems, high blood pressure readings, ongoing low mood or anxiety, IBS-type symptoms, carpal tunnel).
    4. Home care: safe to manage at home with self-care and monitoring (e.g. a common cold, a tension headache, mild sunburn, a minor muscle strain), with clear advice on when to escalate.
    Never recommend home care when emergency evaluation is indicated, do not under-call true emergencies, and do not send people to the emergency room for problems urgent care can handle.
@@ -155,10 +155,10 @@ RED_FLAGS = [
     (r"\b(suicid\w*|kill (my|him|her)self|end (my|it all)|self[- ]?harm|want to die|hurt myself)\b",
      "Thoughts of suicide or self-harm",
      "You deserve support right now. Call or text 988 (Suicide & Crisis Lifeline, US) or your local emergency number."),
-    (r"\bchest (pain|pressure|tightness|tight)\b|\bcrushing\b.*\bchest\b|\bheart attack\b",
+    (r"\bchest (pain|pressure|tightness|tight|hurts|is hurting|feels heavy)\b|\bcrushing\b.*\bchest\b|\bheart attack\b",
      "Chest pain or pressure",
      "Chest pain can be a heart attack. Call emergency services (911 / 112 / 999) now."),
-    (r"\b(can'?t|cannot|unable to|hard to|trouble|difficulty|struggling to) breath\w*|\bshort(ness)? of breath\b|\bgasping\b|\blips? (are |turning )?blue\b",
+    (r"\b(can'?t|cannot|unable to|hard to|trouble|difficulty|struggling to) breath\w*|\bshort(ness)? of breath\b|\bgasping\b|\b(lips?|face)\b[^.,;!?]{0,20}\b(blue|bluish)\b",
      "Trouble breathing",
      "Severe breathing difficulty needs emergency care. Call emergency services now."),
     (r"\b(face|mouth|smile) (is )?(droop\w*|drooping)\b|\bslurred speech\b|\bslurring\b|\b(sudden )?(numb|weak)\w* (on )?one side\b|\bstroke\b",
@@ -181,13 +181,25 @@ RED_FLAGS = [
 
 NEGATION = re.compile(r"\b(no|not|never|without|denies|don'?t have|doesn'?t have|haven'?t had|no sign of)\b[^.,;!?]{0,25}$")
 
+# Breathlessness only during activity ("short of breath on the stairs") is not an emergency on its own;
+# the model still judges it in context.
+EXERTIONAL = re.compile(r"^[^.,;!?]{0,25}\b(on|when|with|after|while|during|going up|climbing|walking)\b[^.,;!?]{0,25}"
+                        r"\b(stairs|steps|exercis\w*|exert\w*|walk\w*|run\w*|climb\w*|activity|hills?|working out|sports?)\b")
+SKIP_IF_FOLLOWED_BY = {"Trouble breathing": EXERTIONAL}
+
 
 def screen_red_flags(text):
     text = text.lower()
     flags = []
     for pattern, label, advice in RED_FLAGS:
-        if any(not NEGATION.search(text[:m.start()]) for m in re.finditer(pattern, text)):
+        skip_after = SKIP_IF_FOLLOWED_BY.get(label)
+        for m in re.finditer(pattern, text):
+            if NEGATION.search(text[:m.start()]):
+                continue
+            if skip_after and m.group(0).startswith("short") and skip_after.search(text[m.end():]):
+                continue
             flags.append({"label": label, "advice": advice})
+            break
     return flags
 
 
@@ -266,6 +278,74 @@ def summarize(messages, profile, patient):
     return {"summary": data["choices"][0]["message"]["content"].strip()}
 
 
+REALTIME_MODEL = os.environ.get("REALTIME_MODEL", "gpt-realtime")
+REALTIME_VOICE = os.environ.get("REALTIME_VOICE", "marin")
+
+VOICE_PROMPT = """
+
+VOICE MODE (this conversation is spoken out loud, overriding the OUTPUT format above)
+- You are talking with the person over a live voice call. Speak warmly and naturally, like a family doctor on the phone.
+- Keep each turn short: usually one to three sentences, then at most one question. Never read out lists, markdown, symbols, or long explanations; offer to say more instead.
+- Speak English unless the person speaks another language; then match their language.
+- When the call starts, greet them briefly: say you're Medi, the AI health assistant from Portal Medic 365, that you're an AI and not a replacement for a doctor, and ask what's going on.
+- For emergencies, say the action first in plain words: "Please call 911 right now." or "Please go to the nearest emergency room now."
+- The app's assessment engine shows the level of care, possibilities, unknowns, next steps, and warning signs on the person's screen, and reports them to you in ASSESSMENT ENGINE system messages. Keep your spoken advice consistent with the latest one unless the person has since given new information, and never downplay an emergency it reports. You may tell them the details are on their screen.
+- If a SAFETY SCREENER ALERT system message appears, follow it immediately."""
+
+
+def voice_session(sdp, profile, patient, history):
+    """Starts a Realtime voice call through OpenAI's unified WebRTC interface and returns the SDP answer."""
+    instructions = SYSTEM_PROMPT + VOICE_PROMPT + "\n\n" + profile_note(profile, patient)
+    earlier = [f"{'Patient' if m.get('role') == 'user' else 'Medi'}: {message_text(m)}" for m in history[-20:]]
+    if any(m.get("role") == "user" for m in history):
+        instructions += ("\n\nEarlier in this same visit, by text chat (continue from here instead of greeting from scratch):\n"
+                         + "\n".join(earlier))
+    session = {
+        "type": "realtime",
+        "model": REALTIME_MODEL,
+        "instructions": instructions,
+        "audio": {
+            "input": {
+                "transcription": {"model": "gpt-4o-mini-transcribe"},
+                "turn_detection": {"type": "semantic_vad"},
+                "noise_reduction": {"type": "far_field"},
+            },
+            "output": {"voice": REALTIME_VOICE},
+        },
+    }
+    boundary = "----medi" + os.urandom(12).hex()
+    body = (
+        f"--{boundary}\r\nContent-Disposition: form-data; name=\"sdp\"\r\nContent-Type: application/sdp\r\n\r\n{sdp}\r\n"
+        f"--{boundary}\r\nContent-Disposition: form-data; name=\"session\"\r\nContent-Type: application/json\r\n\r\n"
+        f"{json.dumps(session)}\r\n--{boundary}--\r\n"
+    ).encode()
+    req = urllib.request.Request(
+        "https://api.openai.com/v1/realtime/calls",
+        data=body,
+        headers={"Authorization": f"Bearer {API_KEY}", "Content-Type": f"multipart/form-data; boundary={boundary}"},
+    )
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        return {"sdp": resp.read().decode()}
+
+
+def make_handler(kind):
+    """Builds the request handler class a Vercel Python function exposes as `handler`."""
+    from http.server import BaseHTTPRequestHandler
+
+    class Handler(BaseHTTPRequestHandler):
+        def do_POST(self):
+            raw = self.rfile.read(int(self.headers.get("Content-Length", 0)))
+            status, body = handle_post(kind, raw)
+            data = json.dumps(body).encode()
+            self.send_response(status)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+
+    return Handler
+
+
 def handle_post(kind, raw):
     """Shared request handling for the local server and the Vercel functions. Returns (status, json_obj)."""
     try:
@@ -278,6 +358,12 @@ def handle_post(kind, raw):
         patient = "self" if payload.get("patient") == "self" else "other"
         if kind == "summary":
             return 200, summarize(messages, profile, patient)
+        if kind == "screen":
+            return 200, {"alerts": screen_red_flags(str(payload.get("text", "")))}
+        if kind == "voice":
+            if not str(payload.get("sdp", "")).strip():
+                return 400, {"error": "Missing voice connection offer."}
+            return 200, voice_session(payload["sdp"], profile, patient, messages)
         return 200, consult(messages, profile, patient)
     except urllib.error.HTTPError as e:
         detail = e.read().decode(errors="replace")

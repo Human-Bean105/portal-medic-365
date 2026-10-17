@@ -120,6 +120,19 @@
   .cond-exp { margin: 6px 0 0; font-size: .86rem; color: #3c4b5c; line-height: 1.45; }
   .mini-chips span.against { background: #fff3e6; }
   .fine { font-size: .74rem; color: var(--muted); margin: 4px 0 0; }
+  #voiceStage { display: flex; gap: 18px; align-items: center; padding: 14px 18px; background: var(--navy); color: #fff; }
+  #avatar { width: 136px; height: 136px; flex: none; image-rendering: pixelated; image-rendering: crisp-edges; background: #1b3478; border-radius: 16px; }
+  .voice-info { flex: 1; min-width: 0; }
+  .voice-status { font-weight: 700; font-size: 1.05rem; }
+  .voice-caption { margin: 6px 0 12px; color: #c9d7f5; font-size: .92rem; line-height: 1.45; max-height: 4.4em; overflow: hidden; }
+  .voice-controls { display: flex; gap: 8px; }
+  .voice-controls .ghost { background: transparent; color: #fff; border-color: #ffffff55; }
+  .voice-controls .ghost.on { background: #fff; color: var(--navy); }
+  .end-btn { border: none; border-radius: 10px; padding: 7px 14px; background: var(--emergency); color: #fff; font-weight: 600; }
+  .ghost.call-btn { border-color: var(--brand-2); color: #0f8a72; font-weight: 600; }
+  .ghost.call-btn.on { background: var(--brand-2); color: #fff; }
+  .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .cta.secondary { background: #fff; color: var(--brand); border: 2px solid var(--brand); box-shadow: none; }
   .visit-for { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; padding: 10px 18px; border-bottom: 1px solid var(--line); font-size: .86rem; color: var(--muted); }
   .visit-for button { border: 1px solid var(--line); background: #fff; color: var(--navy); border-radius: 999px; padding: 4px 12px; font-size: .84rem; }
   .visit-for button.on { background: var(--brand); border-color: var(--brand); color: #fff; }
@@ -150,6 +163,7 @@
   #summaryBody { font-size: .92rem; line-height: 1.5; }
 
   @media (max-width: 900px) {
+    #avatar { width: 96px; height: 96px; }
     main { grid-template-columns: 1fr; grid-template-rows: minmax(420px, 1fr) auto; overflow-y: auto; }
     .header-actions .ghost span { display: none; }
     .header-logo { display: none; }
@@ -199,7 +213,10 @@
       <div class="step"><span>2</span><p><strong>Answer a few questions</strong> so Medi can narrow things down.</p></div>
       <div class="step"><span>3</span><p><strong>Get guidance</strong>: how urgent it is, what could be causing it, and safe next steps.</p></div>
     </div>
-    <button class="cta" id="startBtn">Start a consultation</button>
+    <div class="cta-row">
+      <button class="cta" id="startBtn">Start a consultation</button>
+      <button class="cta secondary" id="homeCallBtn">📞 Talk to Medi by voice</button>
+    </div>
   </section>
 
   <footer class="home-foot">
@@ -221,7 +238,8 @@
   <div class="header-actions">
     <button class="ghost" id="homeBtn">🏠 <span>Home</span></button>
     <button class="ghost" id="profileBtn">🧾 <span>My health profile</span></button>
-    <button class="ghost" id="voiceBtn" title="Read Medi's replies aloud">🔈 <span>Voice</span></button>
+    <button class="ghost call-btn" id="callBtn" title="Have a spoken conversation with Medi">📞 <span>Talk to Medi</span></button>
+    <button class="ghost" id="voiceBtn" title="Read Medi's typed replies aloud">🔈 <span>Read aloud</span></button>
     <button class="ghost" id="newBtn">↺ <span>New visit</span></button>
   </div>
 </header>
@@ -234,6 +252,17 @@
       <button type="button" data-patient="self" class="on">🙂 Me</button>
       <button type="button" data-patient="other">👪 Someone else</button>
       <span class="visit-note" id="visitNote">Your health profile will be used.</span>
+    </div>
+    <div id="voiceStage" hidden>
+      <canvas id="avatar" width="32" height="32" aria-label="Medi"></canvas>
+      <div class="voice-info">
+        <div class="voice-status" id="voiceStatus">Connecting to Medi...</div>
+        <div class="voice-caption" id="voiceCaption">Allow microphone access when your browser asks.</div>
+        <div class="voice-controls">
+          <button type="button" class="ghost" id="muteBtn">🎙️ Mute</button>
+          <button type="button" class="end-btn" id="endCallBtn">End call</button>
+        </div>
+      </div>
     </div>
     <div id="chat"></div>
     <div class="chips" id="chips"></div>
@@ -489,8 +518,16 @@
     setChips(STARTERS);
   }
 
+  function showEmergency(reasons) {
+    if (shownEmergency) return;
+    shownEmergency = true;
+    $("emergencyText").innerHTML = reasons.map(esc).join("<br><br>");
+    $("emergencyModal").classList.add("show");
+  }
+
   async function send(text) {
     text = (text || "").trim();
+    if (inCall()) return sendToCall(text);
     if ((!text && !photo) || busy) return;
     if (!text) text = "Here's a photo of what I'm worried about.";
     busy = true;
@@ -516,11 +553,8 @@
       $("summaryBtn").disabled = false;
       speak(turn.reply);
 
-      if ((turn.triage.level === "emergency" || safety_alerts.length) && !shownEmergency) {
-        shownEmergency = true;
-        const reasons = safety_alerts.length ? safety_alerts.map((a) => a.advice) : [turn.triage.headline];
-        $("emergencyText").innerHTML = reasons.map(esc).join("<br><br>");
-        $("emergencyModal").classList.add("show");
+      if (turn.triage.level === "emergency" || safety_alerts.length) {
+        showEmergency(safety_alerts.length ? safety_alerts.map((a) => a.advice) : [turn.triage.headline]);
       }
     } catch (err) {
       typing.remove();
@@ -537,7 +571,338 @@
   input.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(input.value); } });
   function autosize() { input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, 140) + "px"; }
   input.addEventListener("input", autosize);
-  $("newBtn").onclick = () => { speechSynthesis.cancel(); startVisit(); };
+  $("newBtn").onclick = () => { endCall(); speechSynthesis.cancel(); startVisit(); };
+
+  // ---------- Voice call (OpenAI Realtime over WebRTC) ----------
+
+  const CALL_LIMIT_MS = 10 * 60 * 1000;
+  const STATUS = {
+    connecting: "Connecting to Medi...",
+    listening: "Listening... just talk",
+    thinking: "Medi is thinking...",
+    speaking: "Medi is speaking (you can interrupt)",
+  };
+  const call = { pc: null, dc: null, mic: null, audio: null, ctx: null, micLevel: null, outLevel: null, state: "idle", caption: "", pending: new Map(), timer: null };
+
+  const inCall = () => call.dc && call.dc.readyState === "open";
+
+  function setCallState(state, caption) {
+    call.state = state;
+    $("voiceStatus").textContent = STATUS[state] || "";
+    if (caption !== undefined) $("voiceCaption").textContent = caption;
+  }
+
+  function levelMeter(stream) {
+    const analyser = call.ctx.createAnalyser();
+    analyser.fftSize = 512;
+    call.ctx.createMediaStreamSource(stream).connect(analyser);
+    const buf = new Uint8Array(analyser.fftSize);
+    return () => {
+      analyser.getByteTimeDomainData(buf);
+      let sum = 0;
+      for (const v of buf) sum += ((v - 128) / 128) ** 2;
+      return Math.sqrt(sum / buf.length);
+    };
+  }
+
+  function callSend(event) {
+    if (inCall()) call.dc.send(JSON.stringify(event));
+  }
+
+  async function startCall() {
+    if (call.pc) return;
+    speechSynthesis.cancel();
+    $("voiceStage").hidden = false;
+    $("callBtn").classList.add("on");
+    setCallState("connecting", "Allow microphone access when your browser asks.");
+    startAvatar();
+    try {
+      call.ctx = new AudioContext();
+      call.ctx.resume();
+      call.mic = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
+      call.micLevel = levelMeter(call.mic);
+      const pc = new RTCPeerConnection();
+      call.pc = pc;
+      call.audio = new Audio();
+      call.audio.autoplay = true;
+      pc.ontrack = (e) => {
+        call.audio.srcObject = e.streams[0];
+        call.outLevel = levelMeter(e.streams[0]);
+      };
+      pc.addTrack(call.mic.getAudioTracks()[0], call.mic);
+      pc.onconnectionstatechange = () => {
+        if (["failed", "closed"].includes(pc.connectionState) && call.pc === pc) endCall("The voice connection dropped. Tap Talk to Medi to reconnect.");
+      };
+      call.dc = pc.createDataChannel("oai-events");
+      call.dc.onmessage = (e) => onCallEvent(JSON.parse(e.data));
+      call.dc.onopen = () => {
+        setCallState("thinking", "");
+        callSend({ type: "response.create" });
+      };
+
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      const earlier = history.map((m) => ({ role: m.role, content: callText(m) }));
+      const data = await postJson("/voice", { sdp: offer.sdp, patient, profile: patient === "self" ? profile : {}, messages: earlier });
+      await pc.setRemoteDescription({ type: "answer", sdp: data.sdp });
+      call.timer = setTimeout(() => endCall("Voice calls end after 10 minutes. Tap Talk to Medi to keep going."), CALL_LIMIT_MS);
+    } catch (err) {
+      endCall(`Sorry, I couldn't start the voice call (${err.message}).`);
+    }
+  }
+
+  function endCall(note) {
+    if (!call.pc && $("voiceStage").hidden) return;
+    clearTimeout(call.timer);
+    call.dc?.close();
+    call.pc?.close();
+    call.mic?.getTracks().forEach((t) => t.stop());
+    call.ctx?.close();
+    if (call.audio) call.audio.srcObject = null;
+    Object.assign(call, { pc: null, dc: null, mic: null, audio: null, ctx: null, micLevel: null, outLevel: null, state: "idle" });
+    call.pending.clear();
+    $("voiceStage").hidden = true;
+    $("callBtn").classList.remove("on");
+    $("muteBtn").classList.remove("on");
+    $("muteBtn").textContent = "🎙️ Mute";
+    stopAvatar();
+    if (note) addMessage("bot", note);
+  }
+
+  // Text of a stored message, whether it came from text chat (JSON or photo parts) or a voice call.
+  function callText(m) {
+    if (Array.isArray(m.content)) return m.content[0].text + " [shared a photo]";
+    if (m.role === "assistant") { try { return JSON.parse(m.content).reply; } catch { return m.content; } }
+    return m.content;
+  }
+
+  function sendToCall(text) {
+    input.value = "";
+    autosize();
+    if (photo) {
+      clearPhoto();
+      addMessage("bot", "Photos only work in text chat. End the voice call, then attach the photo again.");
+    }
+    if (!text) return;
+    addMessage("user", text);
+    history.push({ role: "user", content: text });
+    screenForCall(text);
+    assessFromCall();
+    callSend({ type: "conversation.item.create", item: { type: "message", role: "user", content: [{ type: "input_text", text }] } });
+    callSend({ type: "response.create" });
+  }
+
+  async function screenForCall(text) {
+    try {
+      const { alerts } = await postJson("/screen", { text });
+      if (!alerts.length) return;
+      showEmergency(alerts.map((a) => a.advice));
+      callSend({
+        type: "conversation.item.create",
+        item: { type: "message", role: "system", content: [{ type: "input_text", text:
+          `SAFETY SCREENER ALERT for what the patient just said: ${alerts.map((a) => a.label).join("; ")}. ` +
+          "Treat this as an emergency unless they clearly say it is not happening now, and say the emergency instruction first." }] },
+      });
+    } catch (err) {
+      console.warn("Safety screen failed:", err);
+    }
+  }
+
+  // The tested text engine fills the panel during calls, and its verdict is passed back so Medi's voice stays consistent.
+  let assessSeq = 0;
+  async function assessFromCall() {
+    const seq = ++assessSeq;
+    try {
+      const messages = withRecentPhotos(history.filter((m) => m.content));
+      const { safety_alerts, ...turn } = await postJson("/consult", { messages, patient, profile: patient === "self" ? profile : {} });
+      if (seq !== assessSeq) return;
+      renderPanel(turn);
+      $("summaryBtn").disabled = false;
+      if (turn.triage.level === "emergency" || safety_alerts.length) {
+        showEmergency(safety_alerts.length ? safety_alerts.map((a) => a.advice) : [turn.triage.headline]);
+      }
+      if (turn.triage.level === "unknown") return;
+      const possibilities = turn.conditions.map((c) => `${c.name} (${c.status})`).join("; ") || "none listed";
+      callSend({
+        type: "conversation.item.create",
+        item: { type: "message", role: "system", content: [{ type: "input_text", text:
+          `ASSESSMENT ENGINE (now on the person's screen): level of care = ${LEVELS[turn.triage.level].label}. ` +
+          `${turn.triage.headline} Possibilities: ${possibilities}.` }] },
+      });
+    } catch (err) {
+      console.warn("Assessment failed:", err);
+    }
+  }
+
+  function onCallEvent(ev) {
+    switch (ev.type) {
+      case "input_audio_buffer.speech_started":
+        setCallState("listening", "...");
+        break;
+      case "input_audio_buffer.speech_stopped":
+        setCallState("thinking");
+        break;
+      case "input_audio_buffer.committed": {
+        const row = addMessage("user", "...");
+        const entry = { role: "user", content: "" };
+        history.push(entry);
+        call.pending.set(ev.item_id, { row, entry });
+        break;
+      }
+      case "conversation.item.input_audio_transcription.completed": {
+        const p = call.pending.get(ev.item_id);
+        if (!p) break;
+        call.pending.delete(ev.item_id);
+        const text = (ev.transcript || "").trim();
+        if (!text) {
+          p.row.remove();
+          history.splice(history.indexOf(p.entry), 1);
+          break;
+        }
+        p.row.querySelector(".bubble").textContent = text;
+        p.entry.content = text;
+        screenForCall(text);
+        assessFromCall();
+        break;
+      }
+      case "response.output_audio_transcript.delta":
+        call.caption += ev.delta;
+        $("voiceCaption").textContent = call.caption;
+        break;
+      case "response.output_audio_transcript.done":
+        call.caption = "";
+        if (ev.transcript?.trim()) {
+          addMessage("bot", ev.transcript.trim());
+          history.push({ role: "assistant", content: ev.transcript.trim() });
+          $("summaryBtn").disabled = false;
+        }
+        break;
+      case "output_audio_buffer.started":
+        setCallState("speaking");
+        break;
+      case "output_audio_buffer.stopped":
+      case "output_audio_buffer.cleared":
+        setCallState("listening");
+        break;
+      case "error":
+        console.warn("Voice error:", ev.error);
+        break;
+    }
+  }
+
+  $("callBtn").onclick = () => (call.pc ? endCall() : startCall());
+  $("endCallBtn").onclick = () => endCall();
+  $("muteBtn").onclick = () => {
+    const track = call.mic?.getAudioTracks()[0];
+    if (!track) return;
+    track.enabled = !track.enabled;
+    $("muteBtn").classList.toggle("on", !track.enabled);
+    $("muteBtn").textContent = track.enabled ? "🎙️ Mute" : "🔇 Unmute";
+  };
+
+  // ---------- Pixel avatar (32x32 canvas, scaled up with crisp pixels) ----------
+
+  const C = {
+    line: "#14285e", white: "#ffffff", shade: "#d6e2f5", visor: "#0b1640", eye: "#46f0e0",
+    blue: "#2f6fe8", light: "#8cb8ff", teal: "#1fc4a5", red: "#ff4d5e", grey: "#9aa9c2",
+  };
+  const avatar = { g: $("avatar").getContext("2d"), raf: 0, blinkUntil: 0, nextBlink: 0 };
+
+  function px(x, y, color, w = 1, h = 1) {
+    avatar.g.fillStyle = color;
+    avatar.g.fillRect(x, y, w, h);
+  }
+  function roundBox(x, y, w, h, color) {
+    px(x + 1, y, color, w - 2, h);
+    px(x, y + 1, color, w, h - 2);
+  }
+
+  function drawAvatar(now) {
+    const g = avatar.g;
+    g.clearRect(0, 0, 32, 32);
+    const state = call.state;
+    const mic = call.micLevel && !$("muteBtn").classList.contains("on") ? call.micLevel() : 0;
+    const out = call.outLevel ? call.outLevel() : 0;
+    const alarm = shownEmergency && Math.floor(now / 400) % 2 === 0;
+    const o = state === "speaking" ? 0 : Math.round(Math.sin(now / 700));
+
+    if (now > avatar.nextBlink) {
+      avatar.blinkUntil = now + 140;
+      avatar.nextBlink = now + 2500 + Math.random() * 3000;
+    }
+    const blinking = now < avatar.blinkUntil && state !== "thinking";
+
+    // Antenna, with a light that shows what Medi is doing
+    px(15, 4 + o, C.grey, 2, 4);
+    const pulse = 0.5 + 0.5 * Math.sin(now / 180);
+    const bulb = alarm ? C.red
+      : state === "listening" ? (mic > 0.03 ? C.teal : pulse > 0.5 ? C.teal : C.light)
+      : state === "thinking" ? (Math.floor(now / 250) % 2 ? C.white : C.blue)
+      : state === "speaking" ? C.eye : C.blue;
+    roundBox(14, 1 + o, 4, 4, bulb);
+
+    // Headphones (they light up with your voice while Medi listens)
+    const ear = state === "listening" && mic > 0.03 ? C.teal : C.light;
+    roundBox(3, 13 + o, 4, 8, C.blue);
+    px(4, 14 + o, ear, 2, 6);
+    roundBox(25, 13 + o, 4, 8, C.blue);
+    px(26, 14 + o, ear, 2, 6);
+
+    // Helmet head and visor
+    roundBox(6, 8 + o, 20, 18, C.line);
+    roundBox(7, 9 + o, 18, 16, C.white);
+    px(8, 22 + o, C.shade, 16, 2);
+    roundBox(9, 11 + o, 14, 10, alarm ? "#3a0b1a" : C.visor);
+
+    // Eyes
+    const ey = 14 + o;
+    if (blinking) {
+      px(11, ey + 1, C.eye, 4, 1);
+      px(17, ey + 1, C.eye, 4, 1);
+    } else if (state === "thinking") {
+      px(13, ey - 1, C.eye, 2, 2);
+      px(19, ey - 1, C.eye, 2, 2);
+    } else if (state === "listening" || state === "connecting" || shownEmergency) {
+      px(12, ey - 1, C.eye, 2, 3);
+      px(18, ey - 1, C.eye, 2, 3);
+    } else {
+      px(11, ey + 1, C.eye); px(12, ey, C.eye, 2, 1); px(14, ey + 1, C.eye);
+      px(17, ey + 1, C.eye); px(18, ey, C.eye, 2, 1); px(20, ey + 1, C.eye);
+    }
+
+    // Mouth: opens with Medi's voice
+    const my = 18 + o;
+    if (state === "speaking" && out > 0.01) {
+      const open = Math.min(3, 1 + Math.round(out * 14));
+      px(14, my, C.eye, 4, open);
+    } else if (shownEmergency) {
+      px(14, my + 1, C.eye, 4, 1);
+    } else {
+      px(14, my, C.eye); px(15, my + 1, C.eye, 2, 1); px(17, my, C.eye);
+    }
+
+    // Body with a medical cross
+    roundBox(9, 26 + o, 14, 7, C.line);
+    px(10, 27 + o, C.white, 12, 5);
+    px(15, 28 + o, C.blue, 2, 4);
+    px(14, 29 + o, C.blue, 4, 2);
+
+    // Thinking dots
+    if (state === "thinking" || state === "connecting") {
+      const step = Math.floor(now / 300) % 4;
+      [[27, 6], [29, 4], [31, 2]].forEach(([x, y], i) => i < step && px(x - 1, y, C.white, 1, 1));
+    }
+
+    avatar.raf = requestAnimationFrame(drawAvatar);
+  }
+
+  function startAvatar() {
+    cancelAnimationFrame(avatar.raf);
+    avatar.raf = requestAnimationFrame(drawAvatar);
+  }
+  function stopAvatar() {
+    cancelAnimationFrame(avatar.raf);
+  }
 
   // ---------- Photo upload (resized in the browser before sending) ----------
 
@@ -613,6 +978,7 @@
     patient = b.dataset.patient;
     document.querySelectorAll("#visitFor [data-patient]").forEach((x) => x.classList.toggle("on", x === b));
     $("visitNote").textContent = patient === "self" ? "Your health profile will be used." : "Your saved profile will NOT be used for this person.";
+    endCall();
     speechSynthesis.cancel();
     startVisit();
   }));
@@ -650,7 +1016,7 @@
     $("home").hidden = inChat;
     $("app").hidden = !inChat;
     if (inChat) input.focus();
-    else { speechSynthesis.cancel(); window.scrollTo(0, 0); }
+    else { endCall(); speechSynthesis.cancel(); window.scrollTo(0, 0); }
   }
   function openChat(firstMessage) {
     location.hash = "chat";
@@ -660,6 +1026,7 @@
   window.addEventListener("hashchange", showView);
   $("homeBtn").onclick = $("logoHome").onclick = () => (location.hash = "");
   $("startBtn").onclick = () => openChat();
+  $("homeCallBtn").onclick = () => { openChat(); startCall(); };
   $("homeForm").addEventListener("submit", (e) => {
     e.preventDefault();
     const text = $("homeInput").value.trim();

@@ -24,13 +24,14 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def do_GET(self):
-        if self.path not in STATIC:
+        path = self.path.split("?", 1)[0]
+        if path not in STATIC:
             return self._send(404, "text/plain", b"Not found")
-        file, content_type = STATIC[self.path]
+        file, content_type = STATIC[path]
         self._send(200, content_type, (HERE / file).read_bytes())
 
     def do_POST(self):
-        if self.path not in ("/consult", "/summary"):
+        if self.path not in ("/consult", "/summary", "/voice", "/screen"):
             return self._send(404, "text/plain", b"Not found")
         raw = self.rfile.read(int(self.headers.get("Content-Length", 0)))
         status, body = handle_post(self.path.strip("/"), raw)
