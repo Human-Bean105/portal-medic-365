@@ -376,7 +376,7 @@
       <button type="button" data-kind="home_care">💊 Pharmacies</button>
     </div>
     <form class="map-where" id="mapWhere">
-      <input id="mapPlace" autocomplete="postal-code" placeholder="Your city or ZIP code, e.g. Seattle, WA" />
+      <input id="mapPlace" autocomplete="postal-code" placeholder="Your city or postal code, e.g. Vancouver, BC" />
       <button class="btn primary">Search here</button>
       <button type="button" class="btn" id="mapUseLocation">📍 Use my location</button>
     </form>
@@ -1060,7 +1060,10 @@
   }
 
   let mapKind = "urgent_care";
-  let mapPlace = localStorage.getItem("mediMapPlace") || "";
+  const DEFAULT_MAP_PLACE = "Vancouver, BC";
+  // An empty saved value means the person chose "Use my location".
+  const savedPlace = localStorage.getItem("mediMapPlace");
+  let mapPlace = savedPlace === null ? DEFAULT_MAP_PLACE : savedPlace;
   $("mapPlace").value = mapPlace;
 
   function showMap(where, note) {
@@ -1079,22 +1082,21 @@
       const pos = await locate();
       if (pos) return showMap(`${pos.lat},${pos.lng}`, "Showing places near your current location. Call ahead to check hours and wait times.");
     }
-    if (mapPlace) return showMap(mapPlace, `Showing places near ${mapPlace}. Call ahead to check hours and wait times.`);
-    $("mapFrame").removeAttribute("src");
-    $("mapNote").textContent = "Couldn't get your location. Type your city or ZIP code above, or allow location access for this site.";
-    $("mapPlace").focus();
+    if (mapPlace) return showMap(mapPlace, `Showing places near ${mapPlace}. Type another city above, or use your location.`);
+    showMap(DEFAULT_MAP_PLACE, `Couldn't get your location, so this shows ${DEFAULT_MAP_PLACE}. Type your city above, or allow location access for this site.`);
   }
 
   $("mapWhere").addEventListener("submit", (e) => {
     e.preventDefault();
-    mapPlace = $("mapPlace").value.trim();
+    mapPlace = $("mapPlace").value.trim() || DEFAULT_MAP_PLACE;
+    $("mapPlace").value = mapPlace;
     localStorage.setItem("mediMapPlace", mapPlace);
-    if (mapPlace) openMap(mapKind, { useLocation: false });
+    openMap(mapKind, { useLocation: false });
   });
   $("mapUseLocation").onclick = () => {
     mapPlace = "";
     $("mapPlace").value = "";
-    localStorage.removeItem("mediMapPlace");
+    localStorage.setItem("mediMapPlace", "");
     openMap(mapKind, { useLocation: true });
   };
   $("mapBtn").onclick = () => openMap(currentLevel);
