@@ -31,10 +31,12 @@ class Handler(BaseHTTPRequestHandler):
         self._send(200, content_type, (HERE / file).read_bytes())
 
     def do_POST(self):
-        if self.path not in ("/consult", "/summary", "/voice", "/screen"):
+        if self.path not in ("/consult", "/summary", "/voice", "/screen", "/speak"):
             return self._send(404, "text/plain", b"Not found")
         raw = self.rfile.read(int(self.headers.get("Content-Length", 0)))
         status, body = handle_post(self.path.strip("/"), raw)
+        if isinstance(body, bytes):
+            return self._send(status, "audio/mpeg", body)
         self._send(status, "application/json", json.dumps(body).encode())
 
     def log_message(self, *args):

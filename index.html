@@ -159,6 +159,18 @@
   .emergency .modal { border-top: 8px solid var(--emergency); text-align: center; }
   .emergency h3 { color: var(--emergency); font-size: 1.4rem; }
   .emergency .big { display: inline-block; margin: 12px 0; padding: 12px 26px; border-radius: 12px; background: var(--emergency); color: #fff; font-size: 1.3rem; font-weight: 700; text-decoration: none; }
+  .map-modal { width: min(920px, 100%); }
+  .map-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .map-head h3 { margin: 0; }
+  .map-head .btn { flex: none; padding: 6px 14px; }
+  .map-kinds { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 4px; }
+  .map-kinds button { border: 1px solid var(--line); background: #fff; color: var(--navy); border-radius: 999px; padding: 6px 12px; font-size: .86rem; }
+  .map-kinds button.on { background: var(--brand); border-color: var(--brand); color: #fff; }
+  .map-where { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 0; }
+  .map-where input { flex: 1; min-width: 180px; padding: 8px 11px; border: 1px solid var(--line); border-radius: 8px; font: inherit; }
+  .map-where .btn { flex: none; padding: 8px 12px; }
+  .map-note { font-size: .8rem; color: var(--muted); margin: 6px 0; }
+  #mapFrame { width: 100%; height: min(60vh, 520px); border: 1px solid var(--line); border-radius: 12px; display: block; }
   #summaryBody h2 { font-size: 1rem; color: var(--brand); margin: 14px 0 4px; }
   #summaryBody { font-size: .92rem; line-height: 1.5; }
 
@@ -299,6 +311,7 @@
     <div id="redflags"><p class="empty">Nothing yet.</p></div>
 
     <div class="side-actions">
+      <button class="btn" id="mapBtn">📍 Find care nearby</button>
       <button class="btn primary" id="summaryBtn" disabled>📄 Visit summary</button>
     </div>
   </aside>
@@ -344,9 +357,33 @@
     <h3>🚨 This may be an emergency</h3>
     <p id="emergencyText">Based on what you described, you should get emergency help now.</p>
     <a class="big" href="tel:911">📞 Call 911</a>
-    <p><a href="https://www.google.com/maps/search/emergency+room+near+me" target="_blank" rel="noopener">📍 Find the nearest emergency room</a> (only if you're stable enough to be driven there by someone else)</p>
+    <p><a href="#" id="emergencyMapLink">📍 Find the nearest emergency room</a> (only if you're stable enough to be driven there by someone else)</p>
     <p class="empty" style="font-style:normal">Outside the US: 112 (EU) · 999 (UK) · 000 (AU). Thoughts of self-harm: call or text 988 (US).</p>
     <div class="side-actions"><button class="btn" data-close="emergencyModal">I understand, continue</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="mapModal">
+  <div class="modal map-modal">
+    <div class="map-head">
+      <h3>📍 Find care nearby</h3>
+      <button class="btn" data-close="mapModal">Close</button>
+    </div>
+    <div class="map-kinds" id="mapKinds">
+      <button type="button" data-kind="emergency">🚨 Emergency rooms</button>
+      <button type="button" data-kind="urgent_care">🏥 Urgent care</button>
+      <button type="button" data-kind="clinic">🩺 Clinics &amp; doctors</button>
+      <button type="button" data-kind="home_care">💊 Pharmacies</button>
+    </div>
+    <form class="map-where" id="mapWhere">
+      <input id="mapPlace" autocomplete="postal-code" placeholder="Your city or ZIP code, e.g. Seattle, WA" />
+      <button class="btn primary">Search here</button>
+      <button type="button" class="btn" id="mapUseLocation">📍 Use my location</button>
+    </form>
+    <p class="map-note" id="mapNote"></p>
+    <iframe id="mapFrame" title="Map of nearby care" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    <p class="map-note">If this is an emergency, don't wait to find a place: call <strong>911</strong> (or 112 / 999 / 000).
+      <a href="#" id="mapDirections" target="_blank" rel="noopener">Open in the Google Maps app for directions</a></p>
   </div>
 </div>
 
@@ -383,6 +420,7 @@
   let busy = false;
   let voiceOn = false;
   let shownEmergency = false;
+  let currentLevel = "unknown";
   let profile = JSON.parse(localStorage.getItem("mediProfile") || "{}");
 
   // ---------- Rendering helpers ----------
@@ -450,6 +488,7 @@
   }
 
   function renderPanel(r) {
+    currentLevel = r.triage.level;
     const lvl = LEVELS[r.triage.level] || LEVELS.unknown;
     [...$("meter").children].forEach((seg, i) => {
       const color = Object.values(LEVELS).find((l) => l.idx === i).color;
@@ -571,7 +610,7 @@
   input.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(input.value); } });
   function autosize() { input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, 140) + "px"; }
   input.addEventListener("input", autosize);
-  $("newBtn").onclick = () => { endCall(); speechSynthesis.cancel(); startVisit(); };
+  $("newBtn").onclick = () => { endCall(); stopSpeaking(); startVisit(); };
 
   // ---------- Voice call (OpenAI Realtime over WebRTC) ----------
 
@@ -611,7 +650,7 @@
 
   async function startCall() {
     if (call.pc) return;
-    speechSynthesis.cancel();
+    stopSpeaking();
     $("voiceStage").hidden = false;
     $("callBtn").classList.add("on");
     setCallState("connecting", "Allow microphone access when your browser asks.");
@@ -944,19 +983,39 @@
     $("micBtn").classList.add("on");
   };
 
-  function speak(text, force = false) {
-    if (!(voiceOn || force) || !window.speechSynthesis) return;
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text.replace(/\*\*/g, "").replace(/^[-*•]\s+/gm, ""));
-    const voices = speechSynthesis.getVoices();
-    u.voice = voices.find((v) => /en/i.test(v.lang) && /female|aria|jenny|samantha|zira|google us/i.test(v.name)) || null;
-    u.rate = 1;
-    speechSynthesis.speak(u);
+  // Typed replies are read aloud with OpenAI's natural voice; the browser's built-in voice is only a fallback.
+  let readAloud = null;
+  let speakSeq = 0;
+
+  function stopSpeaking() {
+    speakSeq++;
+    readAloud?.pause();
+    readAloud = null;
+    window.speechSynthesis?.cancel();
+  }
+
+  async function speak(text, force = false) {
+    if (!(voiceOn || force) || inCall()) return;
+    stopSpeaking();
+    const seq = speakSeq;
+    try {
+      const res = await fetch("/speak", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) });
+      if (!res.ok || !res.headers.get("Content-Type")?.includes("audio")) throw new Error(`speech error ${res.status}`);
+      const url = URL.createObjectURL(await res.blob());
+      if (seq !== speakSeq) return URL.revokeObjectURL(url);
+      readAloud = new Audio(url);
+      readAloud.onended = () => URL.revokeObjectURL(url);
+      await readAloud.play();
+    } catch (err) {
+      console.warn("Natural voice unavailable, using the browser voice:", err);
+      if (seq !== speakSeq || !window.speechSynthesis) return;
+      speechSynthesis.speak(new SpeechSynthesisUtterance(text.replace(/\*\*/g, "").replace(/^[-*•]\s+/gm, "")));
+    }
   }
   $("voiceBtn").onclick = () => {
     voiceOn = !voiceOn;
     $("voiceBtn").classList.toggle("on", voiceOn);
-    if (!voiceOn) speechSynthesis.cancel();
+    if (!voiceOn) stopSpeaking();
   };
 
   // ---------- Profile ----------
@@ -979,10 +1038,72 @@
     document.querySelectorAll("#visitFor [data-patient]").forEach((x) => x.classList.toggle("on", x === b));
     $("visitNote").textContent = patient === "self" ? "Your health profile will be used." : "Your saved profile will NOT be used for this person.";
     endCall();
-    speechSynthesis.cancel();
+    stopSpeaking();
     startVisit();
   }));
   document.querySelectorAll("[data-close]").forEach((b) => (b.onclick = () => $(b.dataset.close).classList.remove("show")));
+
+  // ---------- Map of nearby care (Google Maps embedded in the page) ----------
+
+  const MAP_QUERY = { emergency: "emergency room", urgent_care: "urgent care", clinic: "family doctor clinic", home_care: "pharmacy" };
+  let here = null;
+  let locating = null;
+
+  function locate() {
+    if (here || !navigator.geolocation) return Promise.resolve(here);
+    locating ||= new Promise((resolve) => navigator.geolocation.getCurrentPosition(
+      (p) => resolve((here = { lat: p.coords.latitude.toFixed(4), lng: p.coords.longitude.toFixed(4) })),
+      () => resolve((locating = null)),
+      { timeout: 8000, maximumAge: 10 * 60 * 1000 },
+    ));
+    return locating;
+  }
+
+  let mapKind = "urgent_care";
+  let mapPlace = localStorage.getItem("mediMapPlace") || "";
+  $("mapPlace").value = mapPlace;
+
+  function showMap(where, note) {
+    const q = `${MAP_QUERY[mapKind]} near ${where}`;
+    $("mapFrame").src = `https://www.google.com/maps?q=${encodeURIComponent(q)}&z=13&output=embed`;
+    $("mapDirections").href = `https://www.google.com/maps/search/${encodeURIComponent(q)}`;
+    $("mapNote").textContent = note;
+  }
+
+  async function openMap(kind, { useLocation = !mapPlace } = {}) {
+    mapKind = MAP_QUERY[kind] ? kind : mapKind;
+    document.querySelectorAll("#mapKinds [data-kind]").forEach((b) => b.classList.toggle("on", b.dataset.kind === mapKind));
+    $("mapModal").classList.add("show");
+    if (useLocation) {
+      $("mapNote").textContent = "Finding places near you... (your location is only shared with Google Maps, not with Medi)";
+      const pos = await locate();
+      if (pos) return showMap(`${pos.lat},${pos.lng}`, "Showing places near your current location. Call ahead to check hours and wait times.");
+    }
+    if (mapPlace) return showMap(mapPlace, `Showing places near ${mapPlace}. Call ahead to check hours and wait times.`);
+    $("mapFrame").removeAttribute("src");
+    $("mapNote").textContent = "Couldn't get your location. Type your city or ZIP code above, or allow location access for this site.";
+    $("mapPlace").focus();
+  }
+
+  $("mapWhere").addEventListener("submit", (e) => {
+    e.preventDefault();
+    mapPlace = $("mapPlace").value.trim();
+    localStorage.setItem("mediMapPlace", mapPlace);
+    if (mapPlace) openMap(mapKind, { useLocation: false });
+  });
+  $("mapUseLocation").onclick = () => {
+    mapPlace = "";
+    $("mapPlace").value = "";
+    localStorage.removeItem("mediMapPlace");
+    openMap(mapKind, { useLocation: true });
+  };
+  $("mapBtn").onclick = () => openMap(currentLevel);
+  document.querySelectorAll("#mapKinds [data-kind]").forEach((b) => (b.onclick = () => openMap(b.dataset.kind)));
+  $("emergencyMapLink").onclick = (e) => {
+    e.preventDefault();
+    $("emergencyModal").classList.remove("show");
+    openMap("emergency");
+  };
 
   // ---------- Visit summary ----------
 
@@ -1016,7 +1137,7 @@
     $("home").hidden = inChat;
     $("app").hidden = !inChat;
     if (inChat) input.focus();
-    else { endCall(); speechSynthesis.cancel(); window.scrollTo(0, 0); }
+    else { endCall(); stopSpeaking(); window.scrollTo(0, 0); }
   }
   function openChat(firstMessage) {
     location.hash = "chat";

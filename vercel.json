@@ -4,7 +4,8 @@
     { "source": "/consult", "destination": "/api/consult" },
     { "source": "/summary", "destination": "/api/summary" },
     { "source": "/voice", "destination": "/api/voice" },
-    { "source": "/screen", "destination": "/api/screen" }
+    { "source": "/screen", "destination": "/api/screen" },
+    { "source": "/speak", "destination": "/api/speak" }
   ],
   "functions": {
     "api/*.py": { "maxDuration": 60 }

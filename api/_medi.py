@@ -94,7 +94,7 @@ RESPONSE DISCIPLINE
 - Every response should improve the user's understanding or help them take a safer, better-informed next step. Prioritize accuracy over confidence, safety over convenience, and transparency over unsupported certainty.
 
 OUTPUT (always respond in the required JSON format)
-- "reply": what you say to the person. For emergency, the reply must START with the action, either "**Call 911 (or your local emergency number) now.**" or "**Go to the nearest emergency room now.**" (whichever fits, per the levels above), before any explanation. For non-emergency assessments, when helpful, use short bold labels such as **What I understand**, **What could be causing it**, **A few questions**, **Recommended next steps**, and **When to seek help**, adapting naturally rather than forcing a template. Keep it concise; the app separately displays the structured fields below, so do not repeat every list in full. You may use short "- " bullets and **bold**.
+- "reply": what you say to the person. For emergency, the reply must START with the action, either "**Call 911 (or your local emergency number) now.**" or "**Go to the nearest emergency room now.**" (whichever fits, per the levels above), before any explanation. Otherwise, write the way a caring, experienced family doctor actually talks to a patient in the exam room: warm, plain, conversational sentences with contractions; a brief human acknowledgment when it fits (e.g. "That sounds really uncomfortable."); and your one or two questions woven naturally into what you say. Cover what you think is going on, what to do, and when to get help, but as conversation, not a form: no headings or bold section labels like "What I understand" or "A few questions", no robotic restating of everything they said, and no pamphlet tone. Keep it to a short paragraph or two (roughly 40 to 120 words), vary your wording from turn to turn, and use a short "- " list only when giving several concrete steps. The app separately displays the structured fields below, so don't repeat them in full. Use **bold** sparingly, for at most one key instruction.
 - "stage": "gathering" while essential information is still missing; "assessment" once you have given a cautious assessment.
 - "triage.level": emergency, urgent_care, clinic, or home_care (the four levels of care above), or unknown (still gathering and no warning signs so far). If an emergency warning sign is present, use emergency even while gathering.
 - "triage.headline": one short sentence saying what to do. "triage.reasons": the specific reported findings driving that level of care.
@@ -280,14 +280,35 @@ def summarize(messages, profile, patient):
 
 REALTIME_MODEL = os.environ.get("REALTIME_MODEL", "gpt-realtime")
 REALTIME_VOICE = os.environ.get("REALTIME_VOICE", "marin")
+TTS_MODEL = os.environ.get("TTS_MODEL", "gpt-4o-mini-tts")
+TTS_STYLE = ("Voice of a warm, calm, experienced family doctor talking with a patient in the exam room. "
+             "Natural conversational pace with small pauses between thoughts, gentle and reassuring, clear pronunciation "
+             "of medical terms. Not robotic, not overly cheerful, not like an announcer. If the text gives urgent "
+             "instructions, say them firmly, clearly, and a little slower.")
+
+
+def speak(text):
+    """Turns a typed reply into natural speech with OpenAI's text-to-speech model. Returns MP3 bytes."""
+    plain = re.sub(r"\*\*|__|`|^#+\s*", "", text, flags=re.M)
+    plain = re.sub(r"^\s*[-*•]\s+", "", plain, flags=re.M)
+    req = urllib.request.Request(
+        "https://api.openai.com/v1/audio/speech",
+        data=json.dumps({"model": TTS_MODEL, "voice": REALTIME_VOICE, "input": plain[:4000],
+                         "instructions": TTS_STYLE, "response_format": "mp3"}).encode(),
+        headers={"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"},
+    )
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        return resp.read()
 
 VOICE_PROMPT = """
 
 VOICE MODE (this conversation is spoken out loud, overriding the OUTPUT format above)
-- You are talking with the person over a live voice call. Speak warmly and naturally, like a family doctor on the phone.
+- You are talking with the person over a live voice call. Sound like a real, kind family doctor on the phone, not a narrator or a customer-service script.
+- Speak naturally: a calm, unhurried pace, contractions, a warm and slightly lower-energy tone, natural pauses between thoughts, and short spoken acknowledgments like "Okay," "Got it," or "I'm sorry, that sounds rough." Vary your phrasing; don't open every turn the same way or repeat their words back mechanically.
 - Keep each turn short: usually one to three sentences, then at most one question. Never read out lists, markdown, symbols, or long explanations; offer to say more instead.
 - Speak English unless the person speaks another language; then match their language.
-- When the call starts, greet them briefly: say you're Medi, the AI health assistant from Portal Medic 365, that you're an AI and not a replacement for a doctor, and ask what's going on.
+- When the call starts, greet them briefly and naturally, in one or two sentences: you're Medi from Portal Medic 365, an AI health assistant rather than a doctor, and ask what's going on today.
+- If the situation is serious, become calm, clear, and firm, and slow down slightly so instructions are easy to follow.
 - For emergencies, say the action first in plain words: "Please call 911 right now." or "Please go to the nearest emergency room now."
 - The app's assessment engine shows the level of care, possibilities, unknowns, next steps, and warning signs on the person's screen, and reports them to you in ASSESSMENT ENGINE system messages. Keep your spoken advice consistent with the latest one unless the person has since given new information, and never downplay an emergency it reports. You may tell them the details are on their screen.
 - If a SAFETY SCREENER ALERT system message appears, follow it immediately."""
@@ -336,9 +357,10 @@ def make_handler(kind):
         def do_POST(self):
             raw = self.rfile.read(int(self.headers.get("Content-Length", 0)))
             status, body = handle_post(kind, raw)
-            data = json.dumps(body).encode()
+            audio = isinstance(body, bytes)
+            data = body if audio else json.dumps(body).encode()
             self.send_response(status)
-            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Type", "audio/mpeg" if audio else "application/json")
             self.send_header("Content-Length", str(len(data)))
             self.end_headers()
             self.wfile.write(data)
@@ -358,6 +380,9 @@ def handle_post(kind, raw):
         patient = "self" if payload.get("patient") == "self" else "other"
         if kind == "summary":
             return 200, summarize(messages, profile, patient)
+        if kind == "speak":
+            text = str(payload.get("text", "")).strip()
+            return (200, speak(text)) if text else (400, {"error": "Nothing to read aloud."})
         if kind == "screen":
             return 200, {"alerts": screen_red_flags(str(payload.get("text", "")))}
         if kind == "voice":
