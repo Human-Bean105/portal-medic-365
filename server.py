@@ -31,7 +31,7 @@ class Handler(BaseHTTPRequestHandler):
         self._send(200, content_type, (HERE / file).read_bytes())
 
     def do_POST(self):
-        if self.path not in ("/consult", "/stream", "/summary", "/voice", "/screen", "/speak"):
+        if self.path not in ("/consult", "/stream", "/summary", "/voice", "/screen", "/speak", "/retrieve"):
             return self._send(404, "text/plain", b"Not found")
         raw = self.rfile.read(int(self.headers.get("Content-Length", 0)))
         status, body = handle_post(self.path.strip("/"), raw)

@@ -698,6 +698,7 @@
     history = [];
     shownEmergency = false;
     shownCrisis = false;
+    lastConditions = [];
     chatEl.innerHTML = "";
     resetPanel();
     $("summaryBtn").disabled = true;
@@ -861,7 +862,7 @@
     thinking: "Medi is thinking...",
     speaking: "Medi is speaking (you can interrupt)",
   };
-  const call = { pc: null, dc: null, mic: null, audio: null, ctx: null, micLevel: null, outLevel: null, state: "idle", caption: "", pending: new Map(), timer: null };
+  const call = { pc: null, dc: null, mic: null, audio: null, ctx: null, micLevel: null, outLevel: null, state: "idle", caption: "", pending: new Map(), timer: null, replySources: [] };
 
   const inCall = () => call.dc && call.dc.readyState === "open";
 
@@ -1012,6 +1013,38 @@
     screenForCall(text);
     assessFromCall();
     callSend({ type: "conversation.item.create", item: { type: "message", role: "user", content: [{ type: "input_text", text }] } });
+    groundAndRespond();
+  }
+
+  // Every spoken reply is grounded: look up reference passages for what was just said, give them to Medi, then
+  // trigger the reply. If the lookup fails, Medi still answers, just without sources.
+  let groundSeq = 0;
+  let lastConditions = [];
+  async function groundAndRespond() {
+    if (!call.pc) return;
+    const seq = ++groundSeq;
+    setCallState("thinking");
+    let sources = [];
+    try {
+      const messages = history.filter((m) => m.content).map((m) => ({ role: m.role, content: callText(m) }));
+      const hint = mode === "health" ? lastConditions.join(", ") : "";
+      const { passages } = await postJson("/retrieve", { ...requestBase(), messages, hint });
+      if (seq !== groundSeq) return;
+      if (passages.length) {
+        callSend({
+          type: "conversation.item.create",
+          item: { type: "message", role: "system", content: [{ type: "input_text", text: "REFERENCE MATERIAL for your next reply:\n\n" +
+            passages.map((p, i) => `[${i + 1}] ${p.t} (${p.s})\n${p.x}`).join("\n\n") }] },
+        });
+        const seen = new Set();
+        sources = passages.filter((p) => !seen.has(p.u) && seen.add(p.u)).slice(0, 3)
+          .map((p) => ({ title: p.t, source: p.s, url: p.u }));
+      }
+    } catch (err) {
+      console.warn("Reference lookup failed, answering without sources:", err);
+    }
+    if (seq !== groundSeq) return;
+    call.replySources = sources;
     callSend({ type: "response.create" });
   }
 
@@ -1055,6 +1088,7 @@
         return;
       }
       renderPanel(turn);
+      lastConditions = turn.conditions.map((c) => c.name);
       $("summaryBtn").disabled = false;
       if (turn.triage.level === "emergency") showEmergency([turn.triage.headline]);
       if (turn.triage.level === "unknown") return;
@@ -1082,17 +1116,25 @@
         const row = addMessage("user", "...");
         const entry = { role: "user", content: "" };
         history.push(entry);
-        call.pending.set(ev.item_id, { row, entry });
+        // If the transcript never arrives, answer anyway so the call doesn't stall.
+        const fallback = setTimeout(() => {
+          if (call.pending.get(ev.item_id)?.entry === entry) { call.pending.delete(ev.item_id); groundAndRespond(); }
+        }, 4000);
+        call.pending.set(ev.item_id, { row, entry, fallback });
         break;
       }
+      case "conversation.item.input_audio_transcription.failed":
       case "conversation.item.input_audio_transcription.completed": {
         const p = call.pending.get(ev.item_id);
         if (!p) break;
         call.pending.delete(ev.item_id);
+        clearTimeout(p.fallback);
         const text = (ev.transcript || "").trim();
         if (!text) {
           p.row.remove();
           history.splice(history.indexOf(p.entry), 1);
+          if (ev.type.endsWith("failed")) groundAndRespond();
+          else setCallState("listening");
           break;
         }
         p.row.querySelector(".bubble").textContent = text;
@@ -1100,6 +1142,7 @@
         $("csYou").textContent = `You: ${text}`;
         screenForCall(text);
         assessFromCall();
+        groundAndRespond();
         break;
       }
       case "response.output_audio_transcript.delta":
@@ -1109,7 +1152,8 @@
       case "response.output_audio_transcript.done":
         call.caption = "";
         if (ev.transcript?.trim()) {
-          addMessage("bot", ev.transcript.trim());
+          addSources(addMessage("bot", ev.transcript.trim()), call.replySources);
+          call.replySources = [];
           history.push({ role: "assistant", content: ev.transcript.trim() });
           $("summaryBtn").disabled = false;
         }

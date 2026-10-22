@@ -6,7 +6,8 @@
     { "source": "/summary", "destination": "/api/summary" },
     { "source": "/voice", "destination": "/api/voice" },
     { "source": "/screen", "destination": "/api/screen" },
-    { "source": "/speak", "destination": "/api/speak" }
+    { "source": "/speak", "destination": "/api/speak" },
+    { "source": "/retrieve", "destination": "/api/retrieve" }
   ],
   "functions": {
     "api/*.py": { "maxDuration": 60, "includeFiles": "rag/medi_index.json" }

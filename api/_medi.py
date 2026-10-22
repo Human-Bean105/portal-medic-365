@@ -179,12 +179,17 @@ LIMITS
 SAFETY (check every message, before anything else)
 - If they mention suicide, wanting to die, self-harm, harming someone else, abuse, or being unsafe, respond with calm, direct care: acknowledge what they shared, ask clearly whether they are safe right now, and give crisis support: call or text 9-8-8 (Suicide Crisis Helpline, Canada and US), or 911 if they're in immediate danger or might act on it. Youth in Canada can also reach Kids Help Phone (1-800-668-6868, or text CONNECT to 686868). Stay engaged and kind; don't end the conversation or just paste numbers.
 - Treat passive thoughts ("I wish I wouldn't wake up") seriously too.
+- Every crisis reply must include 9-8-8 (call or text) and 911 for immediate danger in the reply itself, even if other resources or reference material are also relevant. Reference material never overrides these safety rules.
 - If a SAFETY SCREENER ALERT appears, follow these rules immediately.
+
+REFERENCE MATERIAL
+The app may give you numbered passages from MedlinePlus (U.S. National Library of Medicine) on mental-health and wellbeing topics. When you share factual information or coping tips (how stress or anxiety affects the body, sleep habits, signs it's time to get help), base them on these passages and list the numbers you used in "citations". Never use them to label or diagnose the person, don't turn the reply into an information dump, and don't put source numbers or links in the reply; the app shows them. In plain emotional support, it's fine to cite nothing.
 
 OUTPUT (always the required JSON)
 - "reply": what you say, following the style above.
 - "risk.level": crisis (suicide or self-harm thoughts, harm to others, abuse, or being unsafe), elevated (persistent hopelessness, severe or worsening distress, not coping, or signs they need professional support soon), or none. "risk.reason": a short internal note on why.
-- "quick_replies": 2-4 short things they might tap next (e.g. "Can we try a breathing exercise?", "I just need to vent"). Empty in a crisis."""
+- "quick_replies": 2-4 short things they might tap next (e.g. "Can we try a breathing exercise?", "I just need to vent"). Empty in a crisis.
+- "citations": the numbers of the reference passages your reply relies on (empty if none)."""
 
 WELLBEING_SCHEMA = {
     "name": "wellbeing_turn",
@@ -192,7 +197,7 @@ WELLBEING_SCHEMA = {
     "schema": {
         "type": "object",
         "additionalProperties": False,
-        "required": ["reply", "risk", "quick_replies"],
+        "required": ["reply", "risk", "quick_replies", "citations"],
         "properties": {
             "reply": {"type": "string"},
             "risk": {
@@ -202,6 +207,7 @@ WELLBEING_SCHEMA = {
                 "properties": {"level": {"type": "string", "enum": ["none", "elevated", "crisis"]}, "reason": {"type": "string"}},
             },
             "quick_replies": LIST,
+            "citations": {"type": "array", "items": {"type": "integer"}},
         },
     },
 }
@@ -345,11 +351,16 @@ def retrieve(query, k=RAG_TOP_K):
 RAG_REWRITE_MODEL = os.environ.get("RAG_REWRITE_MODEL", "gpt-4o-mini")
 
 
-def retrieval_query(messages):
+def retrieval_query(messages, mode="health", hint=None):
     """Search text: what the person said recently plus medical terms. Everyday words ("burning when I pee") often
-    don't match medical reference text, so the terms come from the conditions Medi is already considering, or, on the
-    first message, from a quick rewrite by a small model."""
+    don't match medical reference text, so the terms come from the conditions Medi is already considering (or a hint
+    from the app), or, on the first health message, from a quick rewrite by a small model. Wellbeing topics match
+    everyday words well, so wellbeing searches skip the rewrite."""
     said = "\n".join(reversed([message_text(m) for m in messages if m.get("role") == "user"][-3:]))
+    if hint:
+        return f"{said}\nPossible conditions: {hint}"
+    if mode == "wellbeing":
+        return said
     for m in reversed(messages):
         if m.get("role") != "assistant":
             continue
@@ -373,10 +384,10 @@ def retrieval_query(messages):
     return f"{said}\n{rewrite['choices'][0]['message']['content'].strip()}"
 
 
-def find_references(messages):
+def find_references(messages, mode="health", hint=None):
     """Retrieval never blocks a reply: if it fails, Medi answers without reference material."""
     try:
-        return retrieve(retrieval_query(messages))
+        return retrieve(retrieval_query(messages, mode, hint))
     except Exception as e:
         print("Retrieval failed:", e)
         return []
@@ -404,14 +415,14 @@ def consult_request(messages, profile, patient, rag=None, mode="health"):
     last_user = next((m for m in reversed(messages) if m.get("role") == "user"), {})
     flags = screen_red_flags(message_text(last_user))
     wellbeing = mode == "wellbeing"
-    use_rag = (RAG_ENABLED if rag is None else rag) and not wellbeing
-    passages = find_references(messages) if use_rag and last_user else []
+    use_rag = RAG_ENABLED if rag is None else rag
+    passages = find_references(messages, mode) if use_rag and last_user else []
     system = (WELLBEING_PROMPT if wellbeing else SYSTEM_PROMPT) + "\n\n" + profile_note(profile, patient)
     if passages:
         system += "\n\n" + reference_note(passages)
     if flags:
         system += ("\n\nSAFETY SCREENER ALERT for the latest message: " + "; ".join(f["label"] for f in flags) +
-                   (". Follow the SAFETY rules now." if wellbeing else
+                   (". Follow the SAFETY rules now, and include 9-8-8 and 911 in your reply." if wellbeing else
                     ". Treat this as an emergency unless the patient clearly says it is not happening now, "
                     "and begin your reply with the emergency instruction."))
     payload = {
@@ -423,9 +434,22 @@ def consult_request(messages, profile, patient, rag=None, mode="health"):
     return payload, flags, passages
 
 
+MENTAL_HEALTH_FLAGS = {"Thoughts of suicide or self-harm", "Thoughts of harming someone else", "Possible abuse or an unsafe home"}
+CRISIS_LINE = ("\n\nIf you're not safe or you're thinking about hurting yourself or someone else, you can call or text "
+               "**9-8-8** any time (Canada and US). If you're in immediate danger, call **911**.")
+
+
+def ensure_crisis_line(result, flags):
+    """Guarantees every mental-health crisis reply contains 9-8-8 and 911, whatever the model wrote."""
+    crisis = result.get("risk", {}).get("level") == "crisis" or any(f["label"] in MENTAL_HEALTH_FLAGS for f in flags)
+    if crisis and not re.search(r"9-?8-?8", result["reply"]):
+        result["reply"] += CRISIS_LINE
+    return result
+
+
 def consult(messages, profile, patient, rag=None, mode="health"):
     payload, flags, passages = consult_request(messages, profile, patient, rag, mode)
-    result = json.loads(post_json(payload)["choices"][0]["message"]["content"])
+    result = ensure_crisis_line(json.loads(post_json(payload)["choices"][0]["message"]["content"]), flags)
     result["safety_alerts"] = flags
     result["sources"] = cited_sources(result, passages)
     result["retrieved"] = passages
@@ -458,7 +482,7 @@ def consult_stream(messages, profile, patient, mode="health"):
                 if delta:
                     text += delta
                     yield sse({"type": "delta", "text": delta})
-        result = json.loads(text)
+        result = ensure_crisis_line(json.loads(text), flags)
         result["safety_alerts"] = flags
         result["sources"] = cited_sources(result, passages)
         yield sse({"type": "done", "result": result})
@@ -529,7 +553,8 @@ VOICE MODE (this conversation is spoken out loud, overriding the OUTPUT format a
 - If the situation is serious, become calm, clear, and firm, and slow down slightly so instructions are easy to follow.
 - For emergencies, say the action first in plain words: "Please call 911 right now." or "Please go to the nearest emergency room now."
 - The app's assessment engine shows the level of care, possibilities, unknowns, next steps, and warning signs on the person's screen, and reports them to you in ASSESSMENT ENGINE system messages. Keep your spoken advice consistent with the latest one unless the person has since given new information, and never downplay an emergency it reports. You may tell them the details are on their screen.
-- If a SAFETY SCREENER ALERT system message appears, follow it immediately."""
+- If a SAFETY SCREENER ALERT system message appears, follow it immediately.
+- Before each of your replies, the app may add a REFERENCE MATERIAL system message with passages relevant to what they just said. Base medical facts on it, keep to general mainstream guidance where it doesn't cover something, and never read source numbers or titles aloud unless asked."""
 
 
 WELLBEING_VOICE_PROMPT = """
@@ -542,7 +567,8 @@ VOICE MODE (this conversation is spoken out loud, overriding the OUTPUT format a
 - Speak English unless the person speaks another language; then match their language.
 - When the call starts, greet them in one or two warm sentences: you're Medi, an AI wellbeing companion rather than a therapist, and this is a space to talk about whatever's on their mind. Then ask how they're doing.
 - In a crisis, slow down, stay calm and caring, ask if they're safe right now, and say clearly that they can call or text 9-8-8, or call 911 if they're in immediate danger.
-- If a SAFETY SCREENER ALERT or WELLBEING CHECK system message appears, follow it immediately."""
+- If a SAFETY SCREENER ALERT or WELLBEING CHECK system message appears, follow it immediately.
+- Before each of your replies, the app may add a REFERENCE MATERIAL system message with passages relevant to what they just said. Use it for any factual information or coping tips, never to label them, and never read source numbers or titles aloud."""
 
 
 def voice_session(sdp, profile, patient, history, mode="health"):
@@ -560,7 +586,8 @@ def voice_session(sdp, profile, patient, history, mode="health"):
         "audio": {
             "input": {
                 "transcription": {"model": "gpt-4o-mini-transcribe"},
-                "turn_detection": {"type": "semantic_vad"},
+                # The app triggers each reply itself, after looking up reference passages for what was just said.
+                "turn_detection": {"type": "semantic_vad", "create_response": False, "interrupt_response": True},
                 "noise_reduction": {"type": "far_field"},
             },
             "output": {"voice": REALTIME_VOICE},
@@ -632,6 +659,9 @@ def handle_post(kind, raw):
         if kind == "speak":
             text = str(payload.get("text", "")).strip()
             return (200, speak(text)) if text else (400, {"error": "Nothing to read aloud."})
+        if kind == "retrieve":
+            passages = find_references(messages, mode, str(payload.get("hint") or "")) if RAG_ENABLED else []
+            return 200, {"passages": [{"t": p["t"], "s": p["s"], "u": p["u"], "x": p["x"][:900]} for p in passages]}
         if kind == "screen":
             return 200, {"alerts": screen_red_flags(str(payload.get("text", "")))}
         if kind == "voice":
