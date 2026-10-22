@@ -397,6 +397,7 @@
   <div class="cs-controls">
     <button type="button" class="cs-btn" id="csMute">🎙️<span>Mute</span></button>
     <button type="button" class="cs-btn" id="csMap">📍<span>Find care</span></button>
+    <button type="button" class="cs-btn" id="csRetry" hidden>🔄<span>Try again</span></button>
     <button type="button" class="cs-btn end" id="csEnd">📞<span>End call</span></button>
   </div>
   <p class="cs-fine">Medi is an AI health assistant, not a doctor. In an emergency, call 911.</p>
@@ -753,6 +754,7 @@
     stopSpeaking();
     $("voiceStage").hidden = false;
     showCallScreen(true);
+    setCallButtons(false);
     $("csYou").textContent = "";
     $("callBtn").classList.add("on");
     $("micBtn").classList.add("on");
@@ -773,7 +775,7 @@
       };
       pc.addTrack(call.mic.getAudioTracks()[0], call.mic);
       pc.onconnectionstatechange = () => {
-        if (["failed", "closed"].includes(pc.connectionState) && call.pc === pc) endCall("The voice connection dropped. Tap Talk to Medi to reconnect.");
+        if (["failed", "closed"].includes(pc.connectionState) && call.pc === pc) failCall("The voice connection dropped, probably because of the internet connection.");
       };
       call.dc = pc.createDataChannel("oai-events");
       call.dc.onmessage = (e) => onCallEvent(JSON.parse(e.data));
@@ -789,12 +791,18 @@
       await pc.setRemoteDescription({ type: "answer", sdp: data.sdp });
       call.timer = setTimeout(() => endCall("Voice calls end after 10 minutes. Tap Talk to Medi to keep going."), CALL_LIMIT_MS);
     } catch (err) {
-      endCall(`Sorry, I couldn't start the voice call (${err.message}).`);
+      failCall(callErrorText(err));
     }
   }
 
-  function endCall(note) {
-    if (!call.pc && $("voiceStage").hidden) return;
+  function callErrorText(err) {
+    if (err.name === "NotAllowedError") return "Your browser blocked the microphone. Click the lock icon in the address bar, set Microphone to Allow, then tap Try again.";
+    if (err.name === "NotFoundError") return "No microphone was found. Plug one in or check your sound settings, then tap Try again.";
+    if (/401|api key/i.test(err.message)) return "Medi's voice service is offline because the server's OpenAI API key needs to be replaced. Typed chat won't work until it's fixed either.";
+    return `Something went wrong while connecting (${err.message}).`;
+  }
+
+  function stopCallMedia() {
     clearTimeout(call.timer);
     call.dc?.close();
     call.pc?.close();
@@ -803,6 +811,29 @@
     if (call.audio) call.audio.srcObject = null;
     Object.assign(call, { pc: null, dc: null, mic: null, audio: null, ctx: null, micLevel: null, outLevel: null, state: "idle" });
     call.pending.clear();
+  }
+
+  // Keeps the call screen open and explains what went wrong, instead of silently closing it.
+  function failCall(message) {
+    stopCallMedia();
+    showCallScreen(true);
+    $("csStatus").textContent = $("voiceStatus").textContent = "Couldn't connect to Medi";
+    setCaption(message);
+    $("csYou").textContent = "";
+    setCallButtons(true);
+    addMessage("bot", `Voice call problem: ${message}`);
+  }
+
+  function setCallButtons(failed) {
+    $("csRetry").hidden = !failed;
+    $("csMute").hidden = $("csMap").hidden = failed;
+    $("csEnd").innerHTML = failed ? "✕<span>Close</span>" : "📞<span>End call</span>";
+  }
+
+  function endCall(note) {
+    if (!call.pc && $("voiceStage").hidden) return;
+    stopCallMedia();
+    setCallButtons(false);
     $("voiceStage").hidden = true;
     showCallScreen(false);
     $("callBtn").classList.remove("on");
@@ -937,6 +968,7 @@
   $("callBtn").onclick = () => (call.pc ? endCall() : startCall());
   $("endCallBtn").onclick = $("csEnd").onclick = () => endCall();
   $("csChatBtn").onclick = () => showCallScreen(false);
+  $("csRetry").onclick = () => startCall();
   $("fullBtn").onclick = () => showCallScreen(true);
   $("csMap").onclick = () => openMap(currentLevel);
 
