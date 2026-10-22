@@ -15,6 +15,13 @@
   body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--ink); }
   button { font: inherit; cursor: pointer; }
   [hidden] { display: none !important; }
+  .nav-right { display: flex; align-items: center; gap: 8px; }
+  .lang-select { border: 1px solid var(--line); background: #fff; color: var(--navy); border-radius: 999px; padding: 7px 12px; font: inherit; font-size: .88rem; cursor: pointer; }
+  header .lang-select { border-radius: 10px; padding: 6px 8px; }
+  header, .header-actions { flex-wrap: wrap; }
+  .header-actions { justify-content: flex-end; gap: 6px; }
+  [dir="rtl"] .bubble, [dir="rtl"] .side, [dir="rtl"] .modal { text-align: right; }
+  [dir="rtl"] .list, [dir="rtl"] .bubble ul { padding-left: 0; padding-right: 20px; }
 
   /* ---------- Wellbeing mode: calmer colors, its own panel, health-only tools hidden ---------- */
   body.wellbeing { --bg: #f2f6f3; --brand: #4f8a7b; --brand-2: #8cbfae; --user: #4f8a7b; --line: #dde8e2; }
@@ -239,19 +246,22 @@
 <div id="home">
   <nav class="home-nav">
     <img src="/assets/logo.png" alt="Portal Medic 365" class="nav-logo" />
-    <button class="nav-link" id="homeProfileBtn">🧾 My health profile</button>
+    <div class="nav-right">
+      <select class="lang-select" data-dynamic aria-label="Language"></select>
+      <button class="nav-link" id="homeProfileBtn">🧾 My health profile</button>
+    </div>
   </nav>
 
   <section class="hero">
     <img src="/assets/logo.png" alt="Portal Medic 365 - Your symptoms. Our AI. Healthier you." class="hero-logo" />
-    <h2>Meet <span class="grad">Medi</span>, your AI family health assistant <img src="/assets/medi-avatar.png" alt="" class="inline-avatar" /></h2>
+    <h2 data-i18n-html="hero_title">Meet <span class="grad">Medi</span>, your AI family health assistant <img src="/assets/medi-avatar.png" alt="" class="inline-avatar" /></h2>
     <p class="lead">Describe how you feel in your own words. Medi checks for warning signs first, asks a few focused questions, and helps you understand what might be going on and what level of care makes sense. It supports your family's healthcare; it doesn't replace your doctor.</p>
     <form class="hero-ask" id="homeForm">
       <input id="homeInput" autocomplete="off" placeholder="Type how you feel, or tap 🎤 to just talk..." />
       <button type="button" class="cta secondary" id="homeMicBtn" title="Talk to Medi hands-free">🎤</button>
       <button class="cta">Send →</button>
     </form>
-    <div class="hero-chips" id="homeChips"></div>
+    <div class="hero-chips" id="homeChips" data-dynamic></div>
   </section>
 
   <section class="wb-home">
@@ -280,9 +290,9 @@
   <section class="steps">
     <h2>How it works</h2>
     <div class="step-row">
-      <div class="step"><span>1</span><p><strong>Tell Medi</strong> what's wrong by typing, speaking, or sending a photo.</p></div>
-      <div class="step"><span>2</span><p><strong>Answer a few questions</strong> so Medi can narrow things down.</p></div>
-      <div class="step"><span>3</span><p><strong>Get guidance</strong>: how urgent it is, what could be causing it, and safe next steps.</p></div>
+      <div class="step"><span>1</span><p data-i18n-html="step_1"><strong>Tell Medi</strong> what's wrong by typing, speaking, or sending a photo.</p></div>
+      <div class="step"><span>2</span><p data-i18n-html="step_2"><strong>Answer a few questions</strong> so Medi can narrow things down.</p></div>
+      <div class="step"><span>3</span><p data-i18n-html="step_3"><strong>Get guidance</strong>: how urgent it is, what could be causing it, and safe next steps.</p></div>
     </div>
     <div class="cta-row">
       <button class="cta" id="startBtn">Start a consultation</button>
@@ -291,9 +301,9 @@
   </section>
 
   <footer class="home-foot">
-    <p>⚠️ Medi is an AI for education and triage guidance, not a licensed physician, and does not replace professional care.
-    In an emergency call <strong>911</strong> (US) · <strong>112</strong> (EU) · <strong>999</strong> (UK). Thoughts of self-harm: call or text <strong>988</strong>.</p>
-    <p>Health information from <a href="https://medlineplus.gov" target="_blank" rel="noopener">MedlinePlus.gov</a> (U.S. National Library of Medicine).
+    <p data-i18n-html="footer_disclaimer">⚠️ Medi is an AI for education and triage guidance, not a licensed physician, and does not replace professional care.
+    In an emergency call <strong>911</strong> (US) · <strong>112</strong> (EU) · <strong>999</strong> (UK). Thoughts of self-harm: call or text <strong>9-8-8</strong>.</p>
+    <p data-i18n-html="footer_credits">Health information from <a href="https://medlineplus.gov" target="_blank" rel="noopener">MedlinePlus.gov</a> (U.S. National Library of Medicine).
     Clinical guideline summaries adapted from <a href="https://github.com/bshepp/clinical-decision-support-agent" target="_blank" rel="noopener">bshepp/clinical-decision-support-agent</a> (Apache License 2.0).</p>
   </footer>
 </div>
@@ -305,19 +315,20 @@
     <img class="doc-avatar" src="/assets/medi-avatar.png" alt="Medi" />
     <div>
       <h1>Medi</h1>
-      <p><span class="status-dot"></span><span id="appSubtitle">AI family health assistant · Symptom guidance &amp; triage</span></p>
+      <p><span class="status-dot"></span><span id="appSubtitle" data-dynamic>AI family health assistant · Symptom guidance &amp; triage</span></p>
     </div>
   </div>
   <div class="header-actions">
+    <select class="lang-select" data-dynamic aria-label="Language"></select>
     <button class="ghost" id="homeBtn">🏠 <span>Home</span></button>
-    <button class="ghost mode-btn" id="modeBtn">🌿 <span>Wellbeing</span></button>
+    <button class="ghost mode-btn" id="modeBtn" data-dynamic>🌿 <span>Wellbeing</span></button>
     <button class="ghost" id="profileBtn">🧾 <span>My health profile</span></button>
     <button class="ghost call-btn" id="callBtn" title="Have a spoken conversation with Medi">📞 <span>Talk to Medi</span></button>
     <button class="ghost" id="voiceBtn" title="Read Medi's typed replies aloud">🔈 <span>Read aloud</span></button>
-    <button class="ghost" id="newBtn">↺ <span>New visit</span></button>
+    <button class="ghost" id="newBtn" data-dynamic>↺ <span>New visit</span></button>
   </div>
 </header>
-<div class="disclaimer" id="disclaimer">Medi is an AI assistant for education and triage guidance, not a licensed physician. If you think you're having an emergency, call 911 / 112 / 999 now.</div>
+<div class="disclaimer" id="disclaimer" data-dynamic>Medi is an AI assistant for education and triage guidance, not a licensed physician. If you think you're having an emergency, call 911 / 112 / 999 now.</div>
 
 <main>
   <section class="panel">
@@ -325,28 +336,28 @@
       This visit is for:
       <button type="button" data-patient="self" class="on">🙂 Me</button>
       <button type="button" data-patient="other">👪 Someone else</button>
-      <span class="visit-note" id="visitNote">Your health profile will be used.</span>
+      <span class="visit-note" id="visitNote" data-dynamic>Your health profile will be used.</span>
     </div>
     <div id="voiceStage" hidden>
       <canvas id="avatar" width="32" height="32" aria-label="Medi"></canvas>
       <div class="voice-info">
-        <div class="voice-status" id="voiceStatus">Connecting to Medi...</div>
-        <div class="voice-caption" id="voiceCaption">Allow microphone access when your browser asks.</div>
+        <div class="voice-status" id="voiceStatus" data-dynamic>Connecting to Medi...</div>
+        <div class="voice-caption" id="voiceCaption" data-dynamic>Allow microphone access when your browser asks.</div>
         <div class="voice-controls">
           <button type="button" class="ghost" id="fullBtn">⤢ Full screen</button>
-          <button type="button" class="ghost" id="muteBtn">🎙️ Mute</button>
+          <button type="button" class="ghost" id="muteBtn" data-dynamic>🎙️ Mute</button>
           <button type="button" class="end-btn" id="endCallBtn">End call</button>
         </div>
       </div>
     </div>
     <div id="chat"></div>
-    <div class="chips" id="chips"></div>
+    <div class="chips" id="chips" data-dynamic></div>
     <div id="preview"><img alt="" /><span>Photo attached</span><button type="button" id="removePhoto">✕ remove</button></div>
     <form id="form">
       <input type="file" id="file" accept="image/*" hidden />
       <button type="button" class="icon-btn health-only" id="photoBtn" title="Attach a photo (rash, wound, swelling...)">📷</button>
       <button type="button" class="icon-btn" id="micBtn" title="Talk to Medi hands-free (no typing or Send needed)">🎤</button>
-      <textarea id="input" rows="1" placeholder="Describe how you're feeling..."></textarea>
+      <textarea id="input" rows="1" placeholder="Describe how you're feeling..." data-dynamic></textarea>
       <button id="send">Send</button>
     </form>
   </section>
@@ -359,7 +370,7 @@
         <a class="wb-call" href="tel:988">📞 Call 9-8-8</a>
         <a class="wb-call" href="sms:988">💬 Text 9-8-8</a>
       </div>
-      <p class="fine">Suicide Crisis Helpline, Canada and US. In immediate danger, call <strong>911</strong>.
+      <p class="fine" data-i18n-html="wb_help_fine">Suicide Crisis Helpline, Canada and US. In immediate danger, call <strong>911</strong>.
         Youth in Canada: Kids Help Phone, <a href="tel:18006686868">1-800-668-6868</a> or text CONNECT to 686868.</p>
     </div>
     <div class="wb-status" id="wbStatus" hidden>It sounds like things have been really hard lately. Talking with a doctor,
@@ -382,27 +393,27 @@
     <h2>Urgency</h2>
     <div class="meter" id="meter"><div></div><div></div><div></div><div></div></div>
     <div class="meter-labels"><span>Home care</span><span>Normal clinic</span><span>Urgent care</span><span>Emergency</span></div>
-    <div class="triage-card" id="triage">
+    <div class="triage-card" id="triage" data-dynamic>
       <div class="level">Waiting for symptoms</div>
       <p class="headline">Tell Medi what's going on to get started.</p>
     </div>
 
-    <h2 id="condTitle">What could be causing it</h2>
-    <div id="conditions"><p class="empty">Medi will discuss possible causes as it learns more.</p></div>
+    <h2 id="condTitle" data-dynamic>What could be causing it</h2>
+    <div id="conditions" data-dynamic><p class="empty">Medi will discuss possible causes as it learns more.</p></div>
     <p class="fine">Possibilities only, not a diagnosis. A text conversation can't replace an examination or tests.</p>
 
     <h2>Still unknown</h2>
-    <div id="unknowns"><p class="empty">Nothing yet.</p></div>
+    <div id="unknowns" data-dynamic><p class="empty">Nothing yet.</p></div>
 
     <h2>Recommended next steps</h2>
-    <div id="nextsteps"><p class="empty">Nothing yet.</p></div>
+    <div id="nextsteps" data-dynamic><p class="empty">Nothing yet.</p></div>
 
     <h2>Get help right away if</h2>
-    <div id="redflags"><p class="empty">Nothing yet.</p></div>
+    <div id="redflags" data-dynamic><p class="empty">Nothing yet.</p></div>
 
     <div class="side-actions">
       <button class="btn" id="mapBtn">📍 Find care nearby</button>
-      <button class="btn primary" id="summaryBtn" disabled>📄 Visit summary</button>
+      <button class="btn primary" id="summaryBtn" data-dynamic disabled>📄 Visit summary</button>
     </div>
   </aside>
 </main>
@@ -411,17 +422,17 @@
 <div class="overlay" id="profileModal">
   <div class="modal">
     <h3>🧾 My health profile</h3>
-    <p class="empty" style="font-style:normal">Optional, and only for <strong>you</strong> (the account holder). It's used only when a visit is set to "Me", never for visits about someone else.
+    <p class="empty" style="font-style:normal" data-i18n-html="profile_intro">Optional, and only for <strong>you</strong> (the account holder). It's used only when a visit is set to "Me", never for visits about someone else.
       It's kept in this browser's storage on this device, and is sent to the AI service (OpenAI) along with your messages during a consultation. Please don't enter names, addresses, or ID numbers.</p>
     <div class="row">
       <div><label>Age</label><input id="p_age" type="number" min="0" max="120" placeholder="e.g. 34" /></div>
       <div><label>Sex assigned at birth</label>
-        <select id="p_sex"><option value="">Prefer not to say</option><option>Female</option><option>Male</option><option>Intersex</option></select>
+        <select id="p_sex"><option value="">Prefer not to say</option><option value="Female">Female</option><option value="Male">Male</option><option value="Intersex">Intersex</option></select>
       </div>
     </div>
     <div class="row">
       <div><label>Pregnant or possibly pregnant?</label>
-        <select id="p_pregnant"><option value="">N/A</option><option>No</option><option>Yes</option><option>Possibly</option></select>
+        <select id="p_pregnant"><option value="">N/A</option><option value="No">No</option><option value="Yes">Yes</option><option value="Possibly">Possibly</option></select>
       </div>
       <div><label>Weight (optional)</label><input id="p_weight" placeholder="e.g. 70 kg" /></div>
     </div>
@@ -431,7 +442,7 @@
     <label>Relevant family history</label><input id="p_family" placeholder="e.g. father had heart disease at 50" />
     <div class="row">
       <div><label>Breastfeeding?</label>
-        <select id="p_breastfeeding"><option value="">N/A</option><option>No</option><option>Yes</option></select>
+        <select id="p_breastfeeding"><option value="">N/A</option><option value="No">No</option><option value="Yes">Yes</option></select>
       </div>
       <div><label>Country / region</label><input id="p_country" placeholder="e.g. United States" /></div>
     </div>
@@ -445,12 +456,12 @@
 <div class="overlay crisis" id="crisisModal">
   <div class="modal">
     <h3>💙 You don't have to go through this alone</h3>
-    <p id="crisisText">What you're feeling matters, and there are people who want to help right now.</p>
+    <p id="crisisText" data-dynamic>What you're feeling matters, and there are people who want to help right now.</p>
     <div class="wb-help-actions">
       <a class="big" href="tel:988">📞 Call 9-8-8</a>
       <a class="big" href="sms:988">💬 Text 9-8-8</a>
     </div>
-    <p>If you're in immediate danger or might act on these thoughts, <strong>call 911</strong>.</p>
+    <p data-i18n-html="crisis_danger">If you're in immediate danger or might act on these thoughts, <strong>call 911</strong>.</p>
     <p class="empty" style="font-style:normal">9-8-8 Suicide Crisis Helpline (Canada and US) is free, confidential, and open 24/7.
       Youth in Canada: Kids Help Phone, 1-800-668-6868 or text CONNECT to 686868.</p>
     <div class="side-actions"><button class="btn" data-close="crisisModal">I'm safe right now, keep talking</button></div>
@@ -460,9 +471,10 @@
 <div class="overlay emergency" id="emergencyModal">
   <div class="modal">
     <h3>🚨 This may be an emergency</h3>
-    <p id="emergencyText">Based on what you described, you should get emergency help now.</p>
+    <p id="emergencyText" data-dynamic>Based on what you described, you should get emergency help now.</p>
     <a class="big" href="tel:911">📞 Call 911</a>
-    <p><a href="#" id="emergencyMapLink">📍 Find the nearest emergency room</a> (only if you're stable enough to be driven there by someone else)</p>
+    <p><a href="#" id="emergencyMapLink">📍 Find the nearest emergency room</a></p>
+    <p class="empty" style="font-style:normal">Only if you're stable enough to be driven there by someone else.</p>
     <p class="empty" style="font-style:normal">Outside the US: 112 (EU) · 999 (UK) · 000 (AU). Thoughts of self-harm: call or text 988 (US).</p>
     <div class="side-actions"><button class="btn" data-close="emergencyModal">I understand, continue</button></div>
   </div>
@@ -470,21 +482,21 @@
 
 <div id="callScreen" hidden>
   <div class="cs-top">
-    <div class="cs-title"><strong>Medi</strong> · <span id="csTitle">voice call</span></div>
-    <span class="cs-level health-only" id="csLevel">Still assessing</span>
+    <div class="cs-title"><strong>Medi</strong> · <span id="csTitle" data-dynamic>voice call</span></div>
+    <span class="cs-level health-only" id="csLevel" data-dynamic>Still assessing</span>
     <button type="button" class="cs-chat" id="csChatBtn">💬 Show chat</button>
   </div>
   <div class="cs-center">
     <div id="csAvatarSlot"></div>
-    <div class="cs-status" id="csStatus">Connecting to Medi...</div>
-    <div class="cs-caption" id="csCaption"></div>
-    <div class="cs-you" id="csYou"></div>
+    <div class="cs-status" id="csStatus" data-dynamic>Connecting to Medi...</div>
+    <div class="cs-caption" id="csCaption" data-dynamic></div>
+    <div class="cs-you" id="csYou" data-dynamic></div>
   </div>
   <div class="cs-controls">
-    <button type="button" class="cs-btn" id="csMute">🎙️<span>Mute</span></button>
+    <button type="button" class="cs-btn" id="csMute" data-dynamic>🎙️<span>Mute</span></button>
     <button type="button" class="cs-btn health-only" id="csMap">📍<span>Find care</span></button>
     <button type="button" class="cs-btn" id="csRetry" hidden>🔄<span>Try again</span></button>
-    <button type="button" class="cs-btn end" id="csEnd">📞<span>End call</span></button>
+    <button type="button" class="cs-btn end" id="csEnd" data-dynamic>📞<span>End call</span></button>
   </div>
   <p class="cs-fine">Medi is an AI health assistant, not a doctor. In an emergency, call 911.</p>
 </div>
@@ -506,17 +518,17 @@
       <button class="btn primary">Search here</button>
       <button type="button" class="btn" id="mapUseLocation">📍 Use my location</button>
     </form>
-    <p class="map-note" id="mapNote"></p>
+    <p class="map-note" id="mapNote" data-dynamic></p>
     <iframe id="mapFrame" title="Map of nearby care" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
-    <p class="map-note">If this is an emergency, don't wait to find a place: call <strong>911</strong> (or 112 / 999 / 000).
-      <a href="#" id="mapDirections" target="_blank" rel="noopener">Open in the Google Maps app for directions</a></p>
+    <p class="map-note" data-i18n-html="map_emergency">If this is an emergency, don't wait to find a place: call <strong>911</strong> (or 112 / 999 / 000).</p>
+    <p class="map-note"><a href="#" id="mapDirections" target="_blank" rel="noopener">Open in the Google Maps app for directions</a></p>
   </div>
 </div>
 
 <div class="overlay" id="summaryModal">
   <div class="modal">
     <h3>📄 Visit summary for your doctor</h3>
-    <div id="summaryBody"></div>
+    <div id="summaryBody" data-dynamic></div>
     <div class="side-actions">
       <button class="btn" data-close="summaryModal">Close</button>
       <button class="btn" id="copySummary">Copy</button>
@@ -528,29 +540,100 @@
 <script>
   const $ = (id) => document.getElementById(id);
   const chatEl = $("chat"), input = $("input"), sendBtn = $("send"), chipsEl = $("chips");
+
+  // ---------- Languages ----------
+  // Interface text is translated ahead of time by i18n/build_translations.py into i18n/translations.json.
+  // Medi itself replies in the chosen language, or in whatever language the person writes in.
+
+  const LANGS = [["en", "English"], ["fr", "Français"], ["es", "Español"], ["zh-Hans", "简体中文"], ["zh-Hant", "繁體中文"],
+    ["pa", "ਪੰਜਾਬੀ"], ["hi", "हिन्दी"], ["tl", "Tagalog"], ["ko", "한국어"], ["vi", "Tiếng Việt"], ["fa", "فارسی"], ["ar", "العربية"]];
+  const RTL = new Set(["fa", "ar"]);
+  const savedLang = localStorage.getItem("mediLang");
+  let lang = LANGS.some(([code]) => code === savedLang) ? savedLang : "en";
+  let TRANSLATIONS = null;
+  let I18N = {};
+
+  // N_() marks a string for translation where it's defined; t() translates it where it's shown.
+  const N_ = (s) => s;
+  function t(s, vars = {}) {
+    let out = (lang !== "en" && I18N.text?.[s]) || s;
+    for (const [k, v] of Object.entries(vars)) out = out.replaceAll(`{${k}}`, v);
+    return out;
+  }
+  const norm = (s) => s.replace(/\s+/g, " ").trim();
+
+  // Translates the fixed text in the page. Elements marked data-dynamic are filled in by code using t() instead.
+  function translatePage() {
+    document.documentElement.lang = lang;
+    document.documentElement.dir = RTL.has(lang) ? "rtl" : "ltr";
+    const skipped = (el) => el.closest("script, style, #chat, [data-dynamic], [data-i18n-html]");
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      if (!n.parentElement || skipped(n.parentElement)) continue;
+      n.__en ??= n.nodeValue;
+      const key = norm(n.__en);
+      if (/\p{L}/u.test(key)) n.nodeValue = n.__en.replace(n.__en.trim(), t(key));
+    }
+    for (const el of document.querySelectorAll("[placeholder], [title], [aria-label], [alt]")) {
+      if (skipped(el)) continue;
+      el.__enAttr ??= {};
+      for (const a of ["placeholder", "title", "aria-label", "alt"]) {
+        if (!el.hasAttribute(a)) continue;
+        el.__enAttr[a] ??= el.getAttribute(a);
+        const key = norm(el.__enAttr[a]);
+        if (/\p{L}/u.test(key)) el.setAttribute(a, t(key));
+      }
+    }
+    for (const el of document.querySelectorAll("[data-i18n-html]")) {
+      el.__en ??= el.innerHTML;
+      el.innerHTML = (lang !== "en" && I18N.html?.[el.dataset.i18nHtml]) || el.__en;
+    }
+  }
+
+  async function setLanguage(code) {
+    lang = code;
+    localStorage.setItem("mediLang", code);
+    document.querySelectorAll(".lang-select").forEach((s) => (s.value = code));
+    if (code !== "en" && !TRANSLATIONS) {
+      try { TRANSLATIONS = await (await fetch("/i18n/translations.json")).json(); } catch { TRANSLATIONS = {}; }
+    }
+    I18N = code === "en" ? {} : TRANSLATIONS?.[code] || {};
+    translatePage();
+  }
+
+  for (const select of document.querySelectorAll(".lang-select")) {
+    for (const [code, name] of LANGS) select.add(new Option(name, code));
+    select.value = lang;
+    select.onchange = async () => { await setLanguage(select.value); refreshLanguage(); };
+  }
+
   const LEVELS = {
-    home_care: { idx: 0, label: "Home care", color: "var(--home_care)" },
-    clinic: { idx: 1, label: "Normal clinic visit", color: "var(--clinic)" },
-    urgent_care: { idx: 2, label: "Urgent care today", color: "var(--urgent_care)" },
-    emergency: { idx: 3, label: "Emergency: call 911", color: "var(--emergency)" },
-    unknown: { idx: -1, label: "Still assessing", color: "var(--unknown)" },
+    home_care: { idx: 0, label: N_("Home care"), color: "var(--home_care)" },
+    clinic: { idx: 1, label: N_("Normal clinic visit"), color: "var(--clinic)" },
+    urgent_care: { idx: 2, label: N_("Urgent care today"), color: "var(--urgent_care)" },
+    emergency: { idx: 3, label: N_("Emergency: call 911"), color: "var(--emergency)" },
+    unknown: { idx: -1, label: N_("Still assessing"), color: "var(--unknown)" },
   };
   const MEDI_AVATAR = `<img class="avatar" src="/assets/medi-avatar.png" alt="Medi" />`;
   const STATUS_CLASS = { "probable explanation": "probable", "important to rule out": "warn" };
-  const STARTERS = ["🤕 Headache", "🤒 Fever", "😷 Sore throat", "🤢 Stomach pain", "😮‍💨 Cough", "🔴 Skin rash", "🦴 Back pain", "😰 Anxiety / stress"];
+  const STARTERS = [N_("🤕 Headache"), N_("🤒 Fever"), N_("😷 Sore throat"), N_("🤢 Stomach pain"), N_("😮‍💨 Cough"),
+    N_("🔴 Skin rash"), N_("🦴 Back pain"), N_("😰 Anxiety / stress")];
+  // Medi returns these statuses in English (they're fixed values); listed here so they get translated for display.
+  const CONDITION_STATUS = [N_("probable explanation"), N_("possibility"), N_("important to rule out")];
   const PROFILE_FIELDS = ["age", "sex", "pregnant", "breastfeeding", "weight", "conditions", "medications", "allergies", "family", "country"];
-  const WB_STARTERS = ["😣 I'm stressed", "😴 I can't sleep", "😔 I've been feeling low", "😰 I'm anxious", "🫂 I feel lonely", "💬 I just need to vent"];
+  const WB_STARTERS = [N_("😣 I'm stressed"), N_("😴 I can't sleep"), N_("😔 I've been feeling low"), N_("😰 I'm anxious"),
+    N_("🫂 I feel lonely"), N_("💬 I just need to vent")];
   const MENTAL_ALERTS = new Set(["Thoughts of suicide or self-harm", "Thoughts of harming someone else", "Possible abuse or an unsafe home"]);
   const MODE_TEXT = {
     health: {
-      subtitle: "AI family health assistant · Symptom guidance & triage",
-      disclaimer: "Medi is an AI assistant for education and triage guidance, not a licensed physician. If you think you're having an emergency, call 911 / 112 / 999 now.",
-      placeholder: "Describe how you're feeling...", switchTo: "🌿 <span>Wellbeing</span>", newChat: "↺ <span>New visit</span>", call: "voice call",
+      subtitle: N_("AI family health assistant · Symptom guidance & triage"),
+      disclaimer: N_("Medi is an AI assistant for education and triage guidance, not a licensed physician. If you think you're having an emergency, call 911 / 112 / 999 now."),
+      placeholder: N_("Describe how you're feeling..."), switchIcon: "🌿", switchTo: N_("Wellbeing"), newChat: N_("New visit"), call: N_("voice call"),
     },
     wellbeing: {
-      subtitle: "Wellbeing companion · A space to talk",
-      disclaimer: "Medi is an AI companion, not a therapist. If you're thinking about suicide or self-harm, call or text 9-8-8. In immediate danger, call 911.",
-      placeholder: "Share what's on your mind...", switchTo: "🩺 <span>Health check</span>", newChat: "↺ <span>New chat</span>", call: "wellbeing call",
+      subtitle: N_("Wellbeing companion · A space to talk"),
+      disclaimer: N_("Medi is an AI companion, not a therapist. If you're thinking about suicide or self-harm, call or text 9-8-8. In immediate danger, call 911."),
+      placeholder: N_("Share what's on your mind..."), switchIcon: "🩺", switchTo: N_("Health check"), newChat: N_("New chat"), call: N_("wellbeing call"),
     },
   };
   let mode = "health";
@@ -588,7 +671,7 @@
     if (!sources?.length) return;
     const box = document.createElement("div");
     box.className = "sources";
-    box.innerHTML = "📚 Sources: " + sources.map((s) =>
+    box.innerHTML = `📚 ${esc(t("Sources"))}: ` + sources.map((s) =>
       `<a href="${esc(s.url)}" target="_blank" rel="noopener" title="${esc(s.source)}">${esc(s.title)}</a>`).join(" · ");
     row.querySelector(".bubble").appendChild(box);
     chatEl.scrollTop = chatEl.scrollHeight;
@@ -603,7 +686,7 @@
       bubble.innerHTML = md(text);
       const play = document.createElement("button");
       play.className = "speak-btn";
-      play.textContent = "🔈 Listen";
+      play.textContent = `🔈 ${t("Listen")}`;
       play.onclick = () => speak(text, true);
       bubble.appendChild(play);
     } else {
@@ -624,25 +707,30 @@
     return row;
   }
 
+  // Chips are shown (and sent) in the current language; Medi's own quick replies are already in it.
+  let currentChips = [];
   function setChips(list) {
+    currentChips = list;
     chipsEl.innerHTML = "";
-    for (const text of list) {
+    for (const text of list.map((s) => t(s))) {
       const b = document.createElement("button");
       b.className = "chip";
       b.textContent = text;
-      b.onclick = () => send(text.replace(/^[^\w]+/u, "").trim());
+      b.onclick = () => send(text.replace(/^[^\p{L}\p{N}]+/u, "").trim());
       chipsEl.appendChild(b);
     }
   }
 
   function listHtml(items) {
-    return items && items.length ? `<ul class="list">${items.map((i) => `<li>${esc(i)}</li>`).join("")}</ul>` : `<p class="empty">Nothing yet.</p>`;
+    return items && items.length ? `<ul class="list">${items.map((i) => `<li>${esc(i)}</li>`).join("")}</ul>` : `<p class="empty">${esc(t("Nothing yet."))}</p>`;
   }
 
+  let lastPanel = null;
   function renderPanel(r) {
+    lastPanel = r;
     currentLevel = r.triage.level;
     const lvl = LEVELS[r.triage.level] || LEVELS.unknown;
-    $("csLevel").textContent = lvl.label;
+    $("csLevel").textContent = t(lvl.label);
     $("csLevel").style.background = r.triage.level === "unknown" ? "" : lvl.color;
     [...$("meter").children].forEach((seg, i) => {
       const color = Object.values(LEVELS).find((l) => l.idx === i).color;
@@ -650,28 +738,29 @@
     });
     const card = $("triage");
     card.style.borderLeftColor = lvl.color;
-    card.innerHTML = `<div class="level" style="color:${lvl.color}">${lvl.label}</div>
+    const levelText = r.waiting ? t("Waiting for symptoms") : t(lvl.label);
+    card.innerHTML = `<div class="level" style="color:${lvl.color}">${esc(levelText)}</div>
       <p class="headline">${esc(r.triage.headline)}</p>${r.triage.reasons.length ? listHtml(r.triage.reasons) : ""}`;
 
-    $("condTitle").textContent = r.stage === "assessment" ? "What could be causing it" : "Early possibilities";
+    $("condTitle").textContent = r.stage === "assessment" ? t("What could be causing it") : t("Early possibilities");
     $("conditions").innerHTML = r.conditions.length
       ? r.conditions.map((c) => `<div class="cond">
-            <div class="cond-top"><span class="cond-name">${esc(c.name)}</span><span class="tag ${STATUS_CLASS[c.status] || ""}">${esc(c.status)}</span></div>
+            <div class="cond-top"><span class="cond-name">${esc(c.name)}</span><span class="tag ${STATUS_CLASS[c.status] || ""}">${esc(t(c.status))}</span></div>
             <p class="cond-exp">${esc(c.explanation)}</p>
-            ${c.supporting.length || c.against.length ? `<details><summary>What fits and what doesn't</summary><div class="mini-chips">
+            ${c.supporting.length || c.against.length ? `<details><summary>${esc(t("What fits and what doesn't"))}</summary><div class="mini-chips">
               ${c.supporting.map((s) => `<span>✓ ${esc(s)}</span>`).join("")}
               ${c.against.map((s) => `<span class="against">✗ ${esc(s)}</span>`).join("")}
             </div></details>` : ""}
           </div>`).join("")
-      : `<p class="empty">Medi needs a bit more information first.</p>`;
+      : `<p class="empty">${esc(t("Medi needs a bit more information first."))}</p>`;
     $("unknowns").innerHTML = listHtml(r.important_unknowns);
     $("nextsteps").innerHTML = listHtml(r.next_steps);
     $("redflags").innerHTML = listHtml(r.red_flags_to_watch);
   }
 
   function resetPanel() {
-    renderPanel({ stage: "gathering", triage: { level: "unknown", headline: "Tell Medi what's going on to get started.", reasons: [] }, conditions: [], important_unknowns: [], next_steps: [], red_flags_to_watch: [] });
-    $("triage").querySelector(".level").textContent = "Waiting for symptoms";
+    renderPanel({ waiting: true, stage: "gathering", triage: { level: "unknown", headline: t("Tell Medi what's going on to get started."), reasons: [] },
+      conditions: [], important_unknowns: [], next_steps: [], red_flags_to_watch: [] });
   }
 
   // ---------- Conversation ----------
@@ -704,18 +793,18 @@
     $("summaryBtn").disabled = true;
     $("wbStatus").hidden = true;
     if (mode === "wellbeing") {
-      const hello = "Hi, I'm **Medi** 🌿. This is a space to talk about whatever's on your mind: stress, sleep, worries, or just a rough day. " +
-        "I'm an AI companion, not a therapist, but I'm here to listen.\n\nHow are you doing today, honestly?";
+      const hello = t("Hi, I'm **Medi** 🌿. This is a space to talk about whatever's on your mind: stress, sleep, worries, or just a rough day. I'm an AI companion, not a therapist, but I'm here to listen.\n\nHow are you doing today, honestly?");
       addMessage("bot", hello);
       history.push({ role: "assistant", content: hello });
       return setChips(WB_STARTERS);
     }
-    const intro = `Hi, I'm **Medi**, the AI health assistant from Portal Medic 365. 👋 I can help you understand symptoms and decide on a sensible next step, but I'm not a replacement for a doctor who can examine you.`;
-    const greeting = patient === "other"
-      ? `${intro}\n\n**Who is this visit about, and how old are they?** Then tell me what's going on with them and when it started.`
+    const intro = t("Hi, I'm **Medi**, the AI health assistant from Portal Medic 365. 👋 I can help you understand symptoms and decide on a sensible next step, but I'm not a replacement for a doctor who can examine you.");
+    const next = patient === "other"
+      ? t("**Who is this visit about, and how old are they?** Then tell me what's going on with them and when it started.")
       : profile.age
-        ? `${intro}\n\nI'll use the health profile you saved. **What's been bothering you?** Tell me in your own words, and include when it started if you can.`
-        : `${intro}\n\nTell me what's been bothering you in your own words: what you're feeling, where, and when it started. You can also attach a photo (like a rash) or tap a symptom below.\n\nIf you're asking about someone else, switch **This visit is for** above to *Someone else*.`;
+        ? t("I'll use the health profile you saved. **What's been bothering you?** Tell me in your own words, and include when it started if you can.")
+        : t("Tell me what's been bothering you in your own words: what you're feeling, where, and when it started. You can also attach a photo (like a rash) or tap a symptom below.\n\nIf you're asking about someone else, switch **This visit is for** above to *Someone else*.");
+    const greeting = `${intro}\n\n${next}`;
     addMessage("bot", greeting);
     history.push({ role: "assistant", content: greeting });
     setChips(STARTERS);
@@ -782,20 +871,21 @@
 
   function showWellbeing(turn) {
     $("wbStatus").hidden = turn.risk.level === "none";
-    if (turn.risk.level === "crisis") showCrisis(["What you're going through matters, and you deserve support right now."]);
+    if (turn.risk.level === "crisis") showCrisis([t("What you're going through matters, and you deserve support right now.")]);
   }
 
-  // What every request needs to know about who Medi is talking to. Wellbeing chats are always about the person typing.
+  // What every request needs to know: the mode, the language, and who Medi is talking about.
+  // Wellbeing chats are always about the person typing.
   function requestBase() {
     const self = mode === "wellbeing" || patient === "self";
-    return { mode, patient: self ? "self" : "other", profile: self ? profile : {} };
+    return { mode, lang, patient: self ? "self" : "other", profile: self ? profile : {} };
   }
 
   async function send(text) {
     text = (text || "").trim();
     if (inCall()) return sendToCall(text);
     if ((!text && !photo) || busy) return;
-    if (!text) text = "Here's a photo of what I'm worried about.";
+    if (!text) text = t("Here's a photo of what I'm worried about.");
     busy = true;
     sendBtn.disabled = true;
     input.value = "";
@@ -839,7 +929,7 @@
     } catch (err) {
       typing.remove();
       history.pop();
-      addMessage("bot", `Sorry, I couldn't connect just now (${err.message}). Please try sending that again.`);
+      addMessage("bot", t("Sorry, I couldn't connect just now ({error}). Please try sending that again.", { error: err.message }));
     } finally {
       busy = false;
       sendBtn.disabled = false;
@@ -857,10 +947,10 @@
 
   const CALL_LIMIT_MS = 10 * 60 * 1000;
   const STATUS = {
-    connecting: "Connecting to Medi...",
-    listening: "Listening... just talk",
-    thinking: "Medi is thinking...",
-    speaking: "Medi is speaking (you can interrupt)",
+    connecting: N_("Connecting to Medi..."),
+    listening: N_("Listening... just talk"),
+    thinking: N_("Medi is thinking..."),
+    speaking: N_("Medi is speaking (you can interrupt)"),
   };
   const call = { pc: null, dc: null, mic: null, audio: null, ctx: null, micLevel: null, outLevel: null, state: "idle", caption: "", pending: new Map(), timer: null, replySources: [] };
 
@@ -868,7 +958,7 @@
 
   function setCallState(state, caption) {
     call.state = state;
-    $("voiceStatus").textContent = $("csStatus").textContent = STATUS[state] || "";
+    $("voiceStatus").textContent = $("csStatus").textContent = STATUS[state] ? t(STATUS[state]) : "";
     if (caption !== undefined) setCaption(caption);
   }
 
@@ -908,7 +998,7 @@
     $("csYou").textContent = "";
     $("callBtn").classList.add("on");
     $("micBtn").classList.add("on");
-    setCallState("connecting", "Allow microphone access when your browser asks.");
+    setCallState("connecting", t("Allow microphone access when your browser asks."));
     startAvatar();
     try {
       call.ctx = new AudioContext();
@@ -925,7 +1015,7 @@
       };
       pc.addTrack(call.mic.getAudioTracks()[0], call.mic);
       pc.onconnectionstatechange = () => {
-        if (["failed", "closed"].includes(pc.connectionState) && call.pc === pc) failCall("The voice connection dropped, probably because of the internet connection.");
+        if (["failed", "closed"].includes(pc.connectionState) && call.pc === pc) failCall(t("The voice connection dropped, probably because of the internet connection."));
       };
       call.dc = pc.createDataChannel("oai-events");
       call.dc.onmessage = (e) => onCallEvent(JSON.parse(e.data));
@@ -939,17 +1029,17 @@
       const earlier = history.map((m) => ({ role: m.role, content: callText(m) }));
       const data = await postJson("/voice", { ...requestBase(), sdp: offer.sdp, messages: earlier });
       await pc.setRemoteDescription({ type: "answer", sdp: data.sdp });
-      call.timer = setTimeout(() => endCall("Voice calls end after 10 minutes. Tap Talk to Medi to keep going."), CALL_LIMIT_MS);
+      call.timer = setTimeout(() => endCall(t("Voice calls end after 10 minutes. Tap Talk to Medi to keep going.")), CALL_LIMIT_MS);
     } catch (err) {
       failCall(callErrorText(err));
     }
   }
 
   function callErrorText(err) {
-    if (err.name === "NotAllowedError") return "Your browser blocked the microphone. Click the lock icon in the address bar, set Microphone to Allow, then tap Try again.";
-    if (err.name === "NotFoundError") return "No microphone was found. Plug one in or check your sound settings, then tap Try again.";
-    if (/401|api key/i.test(err.message)) return "Medi's voice service is offline because the server's OpenAI API key needs to be replaced. Typed chat won't work until it's fixed either.";
-    return `Something went wrong while connecting (${err.message}).`;
+    if (err.name === "NotAllowedError") return t("Your browser blocked the microphone. Click the lock icon in the address bar, set Microphone to Allow, then tap Try again.");
+    if (err.name === "NotFoundError") return t("No microphone was found. Plug one in or check your sound settings, then tap Try again.");
+    if (/401|api key/i.test(err.message)) return t("Medi's voice service is offline because the server's OpenAI API key needs to be replaced. Typed chat won't work until it's fixed either.");
+    return t("Something went wrong while connecting ({error}).", { error: err.message });
   }
 
   function stopCallMedia() {
@@ -967,17 +1057,19 @@
   function failCall(message) {
     stopCallMedia();
     showCallScreen(true);
-    $("csStatus").textContent = $("voiceStatus").textContent = "Couldn't connect to Medi";
+    $("csStatus").textContent = $("voiceStatus").textContent = t("Couldn't connect to Medi");
     setCaption(message);
     $("csYou").textContent = "";
     setCallButtons(true);
-    addMessage("bot", `Voice call problem: ${message}`);
+    addMessage("bot", t("Voice call problem: {problem}", { problem: message }));
   }
 
+  let callFailed = false;
   function setCallButtons(failed) {
+    callFailed = failed;
     $("csRetry").hidden = !failed;
     $("csMute").hidden = $("csMap").hidden = failed;
-    $("csEnd").innerHTML = failed ? "✕<span>Close</span>" : "📞<span>End call</span>";
+    $("csEnd").innerHTML = failed ? `✕<span>${esc(t("Close"))}</span>` : `📞<span>${esc(t("End call"))}</span>`;
   }
 
   function endCall(note) {
@@ -1005,7 +1097,7 @@
     autosize();
     if (photo) {
       clearPhoto();
-      addMessage("bot", "Photos only work in text chat. End the voice call, then attach the photo again.");
+      addMessage("bot", t("Photos only work in text chat. End the voice call, then attach the photo again."));
     }
     if (!text) return;
     addMessage("user", text);
@@ -1050,7 +1142,7 @@
 
   async function screenForCall(text) {
     try {
-      const { alerts } = await postJson("/screen", { text });
+      const { alerts } = await postJson("/screen", { text, lang });
       if (!alerts.length) return;
       showAlerts(alerts);
       callSend({
@@ -1139,7 +1231,7 @@
         }
         p.row.querySelector(".bubble").textContent = text;
         p.entry.content = text;
-        $("csYou").textContent = `You: ${text}`;
+        $("csYou").textContent = t("You: {text}", { text });
         screenForCall(text);
         assessFromCall();
         groundAndRespond();
@@ -1179,10 +1271,12 @@
   $("csMap").onclick = () => openMap(currentLevel);
 
   function setMuteLook(muted) {
+    const label = muted ? t("Unmute") : t("Mute");
+    const icon = muted ? "🔇" : "🎙️";
     $("muteBtn").classList.toggle("on", muted);
-    $("muteBtn").textContent = muted ? "🔇 Unmute" : "🎙️ Mute";
+    $("muteBtn").textContent = `${icon} ${label}`;
     $("csMute").classList.toggle("on", muted);
-    $("csMute").innerHTML = muted ? "🔇<span>Unmute</span>" : "🎙️<span>Mute</span>";
+    $("csMute").innerHTML = `${icon}<span>${esc(label)}</span>`;
   }
   $("muteBtn").onclick = $("csMute").onclick = () => {
     const track = call.mic?.getAudioTracks()[0];
@@ -1372,14 +1466,17 @@
   document.querySelectorAll("#visitFor [data-patient]").forEach((b) => (b.onclick = () => {
     if (b.dataset.patient === patient) return;
     const started = history.some((m) => m.role === "user");
-    if (started && !confirm("Switching who this visit is for starts a new visit, so details about one person aren't mixed into another person's assessment. Continue?")) return;
+    if (started && !confirm(t("Switching who this visit is for starts a new visit, so details about one person aren't mixed into another person's assessment. Continue?"))) return;
     patient = b.dataset.patient;
     document.querySelectorAll("#visitFor [data-patient]").forEach((x) => x.classList.toggle("on", x === b));
-    $("visitNote").textContent = patient === "self" ? "Your health profile will be used." : "Your saved profile will NOT be used for this person.";
+    showVisitNote();
     endCall();
     stopSpeaking();
     startVisit();
   }));
+  function showVisitNote() {
+    $("visitNote").textContent = patient === "self" ? t("Your health profile will be used.") : t("Your saved profile will NOT be used for this person.");
+  }
   document.querySelectorAll("[data-close]").forEach((b) => (b.onclick = () => $(b.dataset.close).classList.remove("show")));
 
   // ---------- Map of nearby care (Google Maps embedded in the page) ----------
@@ -1417,12 +1514,12 @@
     document.querySelectorAll("#mapKinds [data-kind]").forEach((b) => b.classList.toggle("on", b.dataset.kind === mapKind));
     $("mapModal").classList.add("show");
     if (useLocation) {
-      $("mapNote").textContent = "Finding places near you... (your location is only shared with Google Maps, not with Medi)";
+      $("mapNote").textContent = t("Finding places near you... (your location is only shared with Google Maps, not with Medi)");
       const pos = await locate();
-      if (pos) return showMap(`${pos.lat},${pos.lng}`, "Showing places near your current location. Call ahead to check hours and wait times.");
+      if (pos) return showMap(`${pos.lat},${pos.lng}`, t("Showing places near your current location. Call ahead to check hours and wait times."));
     }
-    if (mapPlace) return showMap(mapPlace, `Showing places near ${mapPlace}. Type another city above, or use your location.`);
-    showMap(DEFAULT_MAP_PLACE, `Couldn't get your location, so this shows ${DEFAULT_MAP_PLACE}. Type your city above, or allow location access for this site.`);
+    if (mapPlace) return showMap(mapPlace, t("Showing places near {place}. Type another city above, or use your location.", { place: mapPlace }));
+    showMap(DEFAULT_MAP_PLACE, t("Couldn't get your location, so this shows {place}. Type your city above, or allow location access for this site.", { place: DEFAULT_MAP_PLACE }));
   }
 
   $("mapWhere").addEventListener("submit", (e) => {
@@ -1452,23 +1549,27 @@
   $("summaryBtn").onclick = async () => {
     const btn = $("summaryBtn");
     btn.disabled = true;
-    btn.textContent = "Writing summary...";
+    btn.textContent = t("Writing summary...");
     try {
       const messages = history.map((m) => {
         if (m.role === "user") return { role: "user", content: typeof m.content === "string" ? m.content : m.content[0].text + " [shared a photo]" };
         try { return { role: "assistant", content: JSON.parse(m.content).reply }; } catch { return m; }
       });
-      const data = await postJson("/summary", { messages, patient, profile: patient === "self" ? profile : {} });
+      const data = await postJson("/summary", { ...requestBase(), messages });
       summaryText = data.summary;
-      $("summaryBody").innerHTML = `<p class="empty" style="font-style:normal">Generated ${new Date().toLocaleString()} · AI-assisted, not a medical diagnosis</p>` + md(summaryText);
+      const generated = t("Generated {date} · AI-assisted, not a medical diagnosis", { date: new Date().toLocaleString(lang) });
+      $("summaryBody").innerHTML = `<p class="empty" style="font-style:normal">${esc(generated)}</p>` + md(summaryText);
       $("summaryModal").classList.add("show");
     } catch (err) {
-      alert("Couldn't create the summary: " + err.message);
+      alert(t("Couldn't create the summary: {error}", { error: err.message }));
     } finally {
       btn.disabled = false;
-      btn.textContent = "📄 Visit summary";
+      showSummaryLabel();
     }
   };
+  function showSummaryLabel() {
+    $("summaryBtn").textContent = `📄 ${t("Visit summary")}`;
+  }
   $("copySummary").onclick = () => navigator.clipboard.writeText(summaryText);
 
   // ---------- Home screen ----------
@@ -1479,15 +1580,38 @@
     endCall();
     stopSpeaking();
     mode = next;
-    const t = MODE_TEXT[mode];
     document.body.classList.toggle("wellbeing", mode === "wellbeing");
-    $("appSubtitle").textContent = t.subtitle;
-    $("disclaimer").textContent = t.disclaimer;
-    input.placeholder = t.placeholder;
-    $("modeBtn").innerHTML = t.switchTo;
-    $("newBtn").innerHTML = t.newChat;
-    $("csTitle").textContent = t.call;
+    showModeText();
     startVisit();
+  }
+
+  function showModeText() {
+    const m = MODE_TEXT[mode];
+    $("appSubtitle").textContent = t(m.subtitle);
+    $("disclaimer").textContent = t(m.disclaimer);
+    input.placeholder = t(m.placeholder);
+    $("modeBtn").innerHTML = `${m.switchIcon} <span>${esc(t(m.switchTo))}</span>`;
+    $("newBtn").innerHTML = `↺ <span>${esc(t(m.newChat))}</span>`;
+    $("csTitle").textContent = t(m.call);
+  }
+
+  // After a language switch: re-show everything filled in by code. A conversation that hasn't started yet is
+  // restarted so Medi's greeting is in the new language; an ongoing one is kept.
+  function refreshLanguage() {
+    showModeText();
+    showVisitNote();
+    showSummaryLabel();
+    setMuteLook($("muteBtn").classList.contains("on"));
+    setCallButtons(callFailed);
+    if (call.pc) setCallState(call.state);
+    renderHomeChips();
+    if (history.some((m) => m.role === "user")) {
+      setChips(currentChips);
+      if (lastPanel?.waiting) resetPanel();
+      else if (lastPanel) renderPanel(lastPanel);
+    } else {
+      startVisit();
+    }
   }
 
   function showView() {
@@ -1509,7 +1633,7 @@
   $("homeBtn").onclick = $("logoHome").onclick = () => (location.hash = "");
   $("modeBtn").onclick = () => {
     const started = history.some((m) => m.role === "user");
-    if (started && !confirm("Switching starts a new conversation. Continue?")) return;
+    if (started && !confirm(t("Switching starts a new conversation. Continue?"))) return;
     openChat(null, mode === "wellbeing" ? "chat" : "wellbeing");
   };
   $("startBtn").onclick = () => openChat();
@@ -1522,16 +1646,28 @@
     $("homeInput").value = "";
     openChat(text);
   });
-  for (const text of STARTERS) {
-    const b = document.createElement("button");
-    b.className = "chip";
-    b.textContent = text;
-    b.onclick = () => openChat(text.replace(/^[^\w]+/u, "").trim());
-    $("homeChips").appendChild(b);
+  function renderHomeChips() {
+    $("homeChips").innerHTML = "";
+    for (const text of STARTERS.map((s) => t(s))) {
+      const b = document.createElement("button");
+      b.className = "chip";
+      b.textContent = text;
+      b.onclick = () => openChat(text.replace(/^[^\p{L}\p{N}]+/u, "").trim());
+      $("homeChips").appendChild(b);
+    }
   }
 
-  startVisit();
-  showView();
+  (async () => {
+    await setLanguage(lang);
+    showModeText();
+    showVisitNote();
+    showSummaryLabel();
+    setMuteLook(false);
+    setCallButtons(false);
+    renderHomeChips();
+    startVisit();
+    showView();
+  })();
 </script>
 </body>
 </html>

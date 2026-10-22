@@ -225,7 +225,8 @@ RED_FLAGS = [
     (r"\b(hits|beats|abuses|chokes|hurts|touches) me\b|\bbeing (abused|hit|beaten)\b|\b(scared|afraid) (to go|of going) home\b",
      "Possible abuse or an unsafe home",
      "If you're in danger right now, call 911. You deserve to be safe, and a crisis line like 9-8-8 can help you make a plan."),
-    (r"\bchest (pain|pressure|tightness|tight|hurts|is hurting|feels heavy)\b|\bcrushing\b.*\bchest\b|\bheart attack\b",
+    (r"\bchest\b[^.,;!?]{0,20}\b(pain\w*|hurt\w*|pressure|tight\w*|heavy|aches?|aching)\b"
+     r"|\b(pain|pressure|tightness)\b[^.,;!?]{0,15}\b(in|on) my chest\b|\bcrushing\b.*\bchest\b|\bheart attack\b",
      "Chest pain or pressure",
      "Chest pain can be a heart attack. Call emergency services (911 / 112 / 999) now."),
     (r"\b(can'?t|cannot|unable to|hard to|trouble|difficulty|struggling to) breath\w*|\bshort(ness)? of breath\b|\bgasping\b|\b(lips?|face)\b[^.,;!?]{0,20}\b(blue|bluish)\b",
@@ -271,6 +272,64 @@ def screen_red_flags(text):
             flags.append({"label": label, "advice": advice})
             break
     return flags
+
+
+LANG_NAMES = {
+    "en": "English", "fr": "French", "es": "Spanish", "zh-Hans": "Simplified Chinese", "zh-Hant": "Traditional Chinese",
+    "pa": "Punjabi", "hi": "Hindi", "tl": "Tagalog", "ko": "Korean", "vi": "Vietnamese", "fa": "Persian (Farsi)", "ar": "Arabic",
+}
+RAG_REWRITE_MODEL = os.environ.get("RAG_REWRITE_MODEL", "gpt-4o-mini")
+TRANSLATIONS_FILE = APP_DIR / "i18n" / "translations.json"
+_translations = None
+
+
+def ui_text(english, lang):
+    """The app's own translation of a fixed English string (built by i18n/build_translations.py)."""
+    global _translations
+    if lang == "en":
+        return english
+    if _translations is None:
+        try:
+            _translations = json.loads(TRANSLATIONS_FILE.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            _translations = {}
+    return _translations.get(lang, {}).get("text", {}).get(english, english)
+
+
+def language_note(lang):
+    name = LANG_NAMES.get(lang, "English")
+    return (f"LANGUAGE: The person chose {name} as the app language, so write in {name} by default. If they write or "
+            "speak in a different language, reply in the language they're using instead. Use that same language for every "
+            "text field you return (reply, headlines, lists, condition names, quick replies). Keep JSON keys and enum values "
+            "exactly as specified, in English.")
+
+
+def needs_english(text, lang):
+    """Non-English messages are translated before the English-only keyword check and source search."""
+    return lang != "en" or bool(re.search(r"[^\x00-\x7F\u00C0-\u024F\u2018-\u201D]", text))
+
+
+def to_english(text):
+    data = post_json({
+        "model": RAG_REWRITE_MODEL,
+        "temperature": 0,
+        "max_tokens": 300,
+        "messages": [{"role": "system", "content": "Translate the user's message into English. Output only the translation."},
+                     {"role": "user", "content": text}],
+    }, timeout=20)
+    return data["choices"][0]["message"]["content"].strip()
+
+
+def screen_message(text, lang="en"):
+    """Keyword safety check that also works for other languages, by checking an English translation too.
+    Labels stay in English (the app uses them as keys); the advice is shown in the app language."""
+    flags = screen_red_flags(text)
+    if not flags and text.strip() and needs_english(text, lang):
+        try:
+            flags = screen_red_flags(to_english(text))
+        except Exception as e:
+            print("Translation for safety check failed:", e)
+    return [{**f, "advice": ui_text(f["advice"], lang)} for f in flags]
 
 
 def message_text(message):
@@ -348,21 +407,19 @@ def retrieve(query, k=RAG_TOP_K):
     return picked
 
 
-RAG_REWRITE_MODEL = os.environ.get("RAG_REWRITE_MODEL", "gpt-4o-mini")
-
-
-def retrieval_query(messages, mode="health", hint=None):
-    """Search text: what the person said recently plus medical terms. Everyday words ("burning when I pee") often
-    don't match medical reference text, so the terms come from the conditions Medi is already considering (or a hint
-    from the app), or, on the first health message, from a quick rewrite by a small model. Wellbeing topics match
-    everyday words well, so wellbeing searches skip the rewrite."""
+def retrieval_query(messages, mode="health", hint=None, lang="en"):
+    """Search text: what the person said recently plus English medical terms. Everyday words ("burning when I pee")
+    and other languages often don't match the English reference text, so the terms come from the conditions Medi is
+    already considering (or a hint from the app), or from a quick rewrite by a small model. English wellbeing messages
+    match the reference text well, so they skip the rewrite."""
     said = "\n".join(reversed([message_text(m) for m in messages if m.get("role") == "user"][-3:]))
-    if hint:
+    foreign = needs_english(said, lang)
+    if hint and not foreign:
         return f"{said}\nPossible conditions: {hint}"
-    if mode == "wellbeing":
+    if mode == "wellbeing" and not foreign:
         return said
     for m in reversed(messages):
-        if m.get("role") != "assistant":
+        if foreign or m.get("role") != "assistant":
             continue
         try:
             names = [c["name"] for c in json.loads(m["content"]).get("conditions", [])]
@@ -375,19 +432,19 @@ def retrieval_query(messages, mode="health", hint=None):
         "temperature": 0,
         "max_tokens": 80,
         "messages": [
-            {"role": "system", "content": "Rewrite the patient's words as a short medical search query: the clinical "
-                                          "terms for their symptoms and the 2-4 most relevant conditions to look up. "
-                                          "One line, no advice."},
+            {"role": "system", "content": "Rewrite the person's words, in any language, as a short English medical search "
+                                          "query: the clinical terms for their symptoms or concerns and the 2-4 most "
+                                          "relevant topics to look up. One line, in English, no advice."},
             {"role": "user", "content": said},
         ],
     }, timeout=20)
     return f"{said}\n{rewrite['choices'][0]['message']['content'].strip()}"
 
 
-def find_references(messages, mode="health", hint=None):
+def find_references(messages, mode="health", hint=None, lang="en"):
     """Retrieval never blocks a reply: if it fails, Medi answers without reference material."""
     try:
-        return retrieve(retrieval_query(messages, mode, hint))
+        return retrieve(retrieval_query(messages, mode, hint, lang))
     except Exception as e:
         print("Retrieval failed:", e)
         return []
@@ -410,14 +467,15 @@ def cited_sources(result, passages):
     return sources
 
 
-def consult_request(messages, profile, patient, rag=None, mode="health"):
-    """Builds the chat request for a turn: keyword safety check, retrieval (health mode), and the full prompt."""
+def consult_request(messages, profile, patient, rag=None, mode="health", lang="en"):
+    """Builds the chat request for a turn: keyword safety check, retrieval, language, and the full prompt."""
     last_user = next((m for m in reversed(messages) if m.get("role") == "user"), {})
-    flags = screen_red_flags(message_text(last_user))
+    flags = screen_message(message_text(last_user), lang) if last_user else []
     wellbeing = mode == "wellbeing"
     use_rag = RAG_ENABLED if rag is None else rag
-    passages = find_references(messages, mode) if use_rag and last_user else []
-    system = (WELLBEING_PROMPT if wellbeing else SYSTEM_PROMPT) + "\n\n" + profile_note(profile, patient)
+    passages = find_references(messages, mode, lang=lang) if use_rag and last_user else []
+    system = ((WELLBEING_PROMPT if wellbeing else SYSTEM_PROMPT) + "\n\n" + profile_note(profile, patient)
+              + "\n\n" + language_note(lang))
     if passages:
         system += "\n\n" + reference_note(passages)
     if flags:
@@ -439,17 +497,17 @@ CRISIS_LINE = ("\n\nIf you're not safe or you're thinking about hurting yourself
                "**9-8-8** any time (Canada and US). If you're in immediate danger, call **911**.")
 
 
-def ensure_crisis_line(result, flags):
+def ensure_crisis_line(result, flags, lang="en"):
     """Guarantees every mental-health crisis reply contains 9-8-8 and 911, whatever the model wrote."""
     crisis = result.get("risk", {}).get("level") == "crisis" or any(f["label"] in MENTAL_HEALTH_FLAGS for f in flags)
-    if crisis and not re.search(r"9-?8-?8", result["reply"]):
-        result["reply"] += CRISIS_LINE
+    if crisis and not re.search(r"[9۹٩]\s*-?\s*[8۸٨]\s*-?\s*[8۸٨]", result["reply"]):
+        result["reply"] += "\n\n" + ui_text(CRISIS_LINE.strip(), lang)
     return result
 
 
-def consult(messages, profile, patient, rag=None, mode="health"):
-    payload, flags, passages = consult_request(messages, profile, patient, rag, mode)
-    result = ensure_crisis_line(json.loads(post_json(payload)["choices"][0]["message"]["content"]), flags)
+def consult(messages, profile, patient, rag=None, mode="health", lang="en"):
+    payload, flags, passages = consult_request(messages, profile, patient, rag, mode, lang)
+    result = ensure_crisis_line(json.loads(post_json(payload)["choices"][0]["message"]["content"]), flags, lang)
     result["safety_alerts"] = flags
     result["sources"] = cited_sources(result, passages)
     result["retrieved"] = passages
@@ -460,10 +518,10 @@ def sse(event):
     return f"data: {json.dumps(event)}\n\n".encode()
 
 
-def consult_stream(messages, profile, patient, mode="health"):
+def consult_stream(messages, profile, patient, mode="health", lang="en"):
     """Same as consult, but yields server-sent events: safety alerts first, then the raw JSON as the model writes it
     (the reply field comes first, so the browser can show it word by word), then the finished result."""
-    payload, flags, passages = consult_request(messages, profile, patient, mode=mode)
+    payload, flags, passages = consult_request(messages, profile, patient, mode=mode, lang=lang)
     yield sse({"type": "alerts", "alerts": flags})
     req = urllib.request.Request(
         "https://api.openai.com/v1/chat/completions",
@@ -482,7 +540,7 @@ def consult_stream(messages, profile, patient, mode="health"):
                 if delta:
                     text += delta
                     yield sse({"type": "delta", "text": delta})
-        result = ensure_crisis_line(json.loads(text), flags)
+        result = ensure_crisis_line(json.loads(text), flags, lang)
         result["safety_alerts"] = flags
         result["sources"] = cited_sources(result, passages)
         yield sse({"type": "done", "result": result})
@@ -505,7 +563,7 @@ Based only on the consultation transcript and profile, write it in Markdown with
 Never invent findings, history, test results, or sources. Write "Not discussed" when something is unknown. Keep it under 350 words."""
 
 
-def summarize(messages, profile, patient):
+def summarize(messages, profile, patient, lang="en"):
     transcript = "\n".join(
         f"{'Patient' if m.get('role') == 'user' else 'Medi (AI)'}: {message_text(m)}" for m in messages
     )
@@ -513,7 +571,7 @@ def summarize(messages, profile, patient):
         "model": MODEL,
         "temperature": 0.2,
         "messages": [
-            {"role": "system", "content": SUMMARY_PROMPT},
+            {"role": "system", "content": SUMMARY_PROMPT + f"\nWrite the summary, including section headings, in {LANG_NAMES.get(lang, 'English')}."},
             {"role": "user", "content": profile_note(profile, patient) + "\n\nTranscript:\n" + transcript},
         ],
     })
@@ -548,7 +606,7 @@ VOICE MODE (this conversation is spoken out loud, overriding the OUTPUT format a
 - You are talking with the person over a live voice call. Sound like a real, kind family doctor on the phone, not a narrator or a customer-service script.
 - Speak naturally: a calm, unhurried pace, contractions, a warm and slightly lower-energy tone, natural pauses between thoughts, and short spoken acknowledgments like "Okay," "Got it," or "I'm sorry, that sounds rough." Vary your phrasing; don't open every turn the same way or repeat their words back mechanically.
 - Keep each turn short: usually one to three sentences, then at most one question. Never read out lists, markdown, symbols, or long explanations; offer to say more instead.
-- Speak English unless the person speaks another language; then match their language.
+- Speak the app language (see LANGUAGE) unless the person speaks another language; then match theirs.
 - When the call starts, greet them briefly and naturally, in one or two sentences: you're Medi from Portal Medic 365, an AI health assistant rather than a doctor, and ask what's going on today.
 - If the situation is serious, become calm, clear, and firm, and slow down slightly so instructions are easy to follow.
 - For emergencies, say the action first in plain words: "Please call 911 right now." or "Please go to the nearest emergency room now."
@@ -564,17 +622,17 @@ VOICE MODE (this conversation is spoken out loud, overriding the OUTPUT format a
 - Speak softly and unhurriedly, with natural pauses. Use short spoken acknowledgments ("Mm, that's a lot," "Yeah," "I hear you") and leave room for them to talk.
 - Keep each turn short: one to three sentences, then at most one gentle question. Never read out lists or symbols.
 - When guiding breathing or grounding, go one slow step at a time and wait for them.
-- Speak English unless the person speaks another language; then match their language.
+- Speak the app language (see LANGUAGE) unless the person speaks another language; then match theirs.
 - When the call starts, greet them in one or two warm sentences: you're Medi, an AI wellbeing companion rather than a therapist, and this is a space to talk about whatever's on their mind. Then ask how they're doing.
 - In a crisis, slow down, stay calm and caring, ask if they're safe right now, and say clearly that they can call or text 9-8-8, or call 911 if they're in immediate danger.
 - If a SAFETY SCREENER ALERT or WELLBEING CHECK system message appears, follow it immediately.
 - Before each of your replies, the app may add a REFERENCE MATERIAL system message with passages relevant to what they just said. Use it for any factual information or coping tips, never to label them, and never read source numbers or titles aloud."""
 
 
-def voice_session(sdp, profile, patient, history, mode="health"):
+def voice_session(sdp, profile, patient, history, mode="health", lang="en"):
     """Starts a Realtime voice call through OpenAI's unified WebRTC interface and returns the SDP answer."""
     base = WELLBEING_PROMPT + WELLBEING_VOICE_PROMPT if mode == "wellbeing" else SYSTEM_PROMPT + VOICE_PROMPT
-    instructions = base + "\n\n" + profile_note(profile, patient)
+    instructions = base + "\n\n" + profile_note(profile, patient) + "\n\n" + language_note(lang)
     earlier = [f"{'Patient' if m.get('role') == 'user' else 'Medi'}: {message_text(m)}" for m in history[-20:]]
     if any(m.get("role") == "user" for m in history):
         instructions += ("\n\nEarlier in this same visit, by text chat (continue from here instead of greeting from scratch):\n"
@@ -652,23 +710,25 @@ def handle_post(kind, raw):
         messages, profile = payload.get("messages", []), payload.get("profile", {})
         patient = "self" if payload.get("patient") == "self" else "other"
         mode = "wellbeing" if payload.get("mode") == "wellbeing" else "health"
+        lang = payload.get("lang") if payload.get("lang") in LANG_NAMES else "en"
         if kind == "summary":
-            return 200, summarize(messages, profile, patient)
+            return 200, summarize(messages, profile, patient, lang)
         if kind == "stream":
-            return 200, consult_stream(messages, profile, patient, mode)
+            return 200, consult_stream(messages, profile, patient, mode, lang)
         if kind == "speak":
             text = str(payload.get("text", "")).strip()
             return (200, speak(text)) if text else (400, {"error": "Nothing to read aloud."})
         if kind == "retrieve":
-            passages = find_references(messages, mode, str(payload.get("hint") or "")) if RAG_ENABLED else []
+            hint = str(payload.get("hint") or "")
+            passages = find_references(messages, mode, hint, lang) if RAG_ENABLED else []
             return 200, {"passages": [{"t": p["t"], "s": p["s"], "u": p["u"], "x": p["x"][:900]} for p in passages]}
         if kind == "screen":
-            return 200, {"alerts": screen_red_flags(str(payload.get("text", "")))}
+            return 200, {"alerts": screen_message(str(payload.get("text", "")), lang)}
         if kind == "voice":
             if not str(payload.get("sdp", "")).strip():
                 return 400, {"error": "Missing voice connection offer."}
-            return 200, voice_session(payload["sdp"], profile, patient, messages, mode)
-        result = consult(messages, profile, patient, mode=mode)
+            return 200, voice_session(payload["sdp"], profile, patient, messages, mode, lang)
+        result = consult(messages, profile, patient, mode=mode, lang=lang)
         result.pop("retrieved", None)
         return 200, result
     except urllib.error.HTTPError as e:

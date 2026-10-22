@@ -10,6 +10,6 @@
     { "source": "/retrieve", "destination": "/api/retrieve" }
   ],
   "functions": {
-    "api/*.py": { "maxDuration": 60, "includeFiles": "rag/medi_index.json" }
+    "api/*.py": { "maxDuration": 60, "includeFiles": "{rag/medi_index.json,i18n/translations.json}" }
   }
 }

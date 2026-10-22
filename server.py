@@ -12,6 +12,7 @@ STATIC = {
     "/index.html": ("index.html", "text/html; charset=utf-8"),
     "/assets/logo.png": ("assets/logo.png", "image/png"),
     "/assets/medi-avatar.png": ("assets/medi-avatar.png", "image/png"),
+    "/i18n/translations.json": ("i18n/translations.json", "application/json; charset=utf-8"),
 }
 
 
