@@ -1,8 +1,10 @@
+import base64
 import json
 import os
 import re
 import urllib.error
 import urllib.request
+from array import array
 from pathlib import Path
 
 APP_DIR = Path(__file__).resolve().parent.parent
@@ -62,8 +64,9 @@ DIFFERENTIAL ASSESSMENT AND DIAGNOSTIC LIMITATIONS
 - If a photo is shared, describe only what is objectively visible, note the limits of photos, and factor it in cautiously.
 
 MEDICAL EVIDENCE
-- You do not have live web search or a medical database in this app. Do not claim you checked a source, and never fabricate citations, links, statistics, or guideline quotes.
-- You may name the type of authority whose guidance is relevant (e.g. the CDC, NHS, WHO, or the user's national health service) as a place to learn more, without inventing specific URLs or quotes.
+- The app may give you REFERENCE MATERIAL: numbered passages retrieved for this conversation from MedlinePlus (U.S. National Library of Medicine) and summaries of major clinical guidelines. When it covers the topic, base specific medical facts on it (what a condition is, typical symptoms, warning signs, home care, when to seek care, thresholds), and list the numbers of the passages you actually relied on in "citations".
+- When the reference material doesn't cover something, rely only on well-established mainstream guidance and keep it general. Never invent statistics, doses, test cut-offs, guideline details, citations, or links, and never cite a passage you didn't use. You have no live web search.
+- Don't put source numbers or links in the reply text; the app shows the cited sources under your reply.
 - Distinguish established guidance from emerging or uncertain evidence. If reliable evidence is insufficient, say so and recommend professional evaluation.
 
 MEDICATION AND TREATMENT SAFETY
@@ -103,6 +106,7 @@ OUTPUT (always respond in the required JSON format)
 - "next_steps": practical, safe actions, including home care when appropriate (no home care for emergencies).
 - "red_flags_to_watch": specific changes that should prompt urgent or emergency care.
 - "quick_replies": 2-4 short answers the person might tap in reply to your questions (e.g. "Started 2 days ago", "No fever"). Empty if none fit.
+- "citations": the numbers of the REFERENCE MATERIAL passages your reply and lists actually rely on (empty if none were used or none were provided).
 """
 
 LIST = {"type": "array", "items": {"type": "string"}}
@@ -113,7 +117,8 @@ RESPONSE_SCHEMA = {
     "schema": {
         "type": "object",
         "additionalProperties": False,
-        "required": ["reply", "stage", "triage", "conditions", "important_unknowns", "next_steps", "red_flags_to_watch", "quick_replies"],
+        "required": ["reply", "stage", "triage", "conditions", "important_unknowns", "next_steps", "red_flags_to_watch",
+                     "quick_replies", "citations"],
         "properties": {
             "reply": {"type": "string"},
             "stage": {"type": "string", "enum": ["gathering", "assessment"]},
@@ -146,6 +151,7 @@ RESPONSE_SCHEMA = {
             "next_steps": LIST,
             "red_flags_to_watch": LIST,
             "quick_replies": LIST,
+            "citations": {"type": "array", "items": {"type": "integer"}},
         },
     },
 }
@@ -232,11 +238,118 @@ def post_json(payload, timeout=90):
         return json.load(resp)
 
 
-def consult_request(messages, profile, patient):
-    """Builds the chat request for a consultation turn and runs the keyword safety check on the latest message."""
+RAG_ENABLED = os.environ.get("MEDI_RAG", "1") != "0"
+RAG_INDEX = APP_DIR / "rag" / "medi_index.json"
+RAG_TOP_K = 5
+RAG_MIN_SCORE = 0.3
+_rag_cache = None
+
+
+def rag_index():
+    """Loads the prebuilt index once per server instance: passages plus unit-length embedding vectors."""
+    global _rag_cache
+    if _rag_cache is None:
+        data = json.loads(RAG_INDEX.read_text(encoding="utf-8"))
+        vectors = array("f")
+        vectors.frombytes(base64.b64decode(data["vectors"]))
+        _rag_cache = (data, vectors)
+    return _rag_cache
+
+
+def retrieve(query, k=RAG_TOP_K):
+    """Returns the passages most similar to the query (cosine similarity), at most two per topic."""
+    data, vectors = rag_index()
+    dims = data["dims"]
+    req = urllib.request.Request(
+        "https://api.openai.com/v1/embeddings",
+        data=json.dumps({"model": data["model"], "input": query[:6000], "dimensions": dims}).encode(),
+        headers={"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"},
+    )
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        q = json.load(resp)["data"][0]["embedding"]
+    norm = sum(x * x for x in q) ** 0.5 or 1.0
+    q = [x / norm for x in q]
+    scored = sorted(
+        ((sum(a * b for a, b in zip(q, vectors[i * dims:(i + 1) * dims])), i) for i in range(len(data["chunks"]))),
+        reverse=True,
+    )
+    picked, per_topic = [], {}
+    for score, i in scored:
+        if score < RAG_MIN_SCORE or len(picked) == k:
+            break
+        chunk = data["chunks"][i]
+        if per_topic.get(chunk["t"], 0) < 2:
+            per_topic[chunk["t"]] = per_topic.get(chunk["t"], 0) + 1
+            picked.append({**chunk, "score": round(score, 3)})
+    return picked
+
+
+RAG_REWRITE_MODEL = os.environ.get("RAG_REWRITE_MODEL", "gpt-4o-mini")
+
+
+def retrieval_query(messages):
+    """Search text: what the person said recently plus medical terms. Everyday words ("burning when I pee") often
+    don't match medical reference text, so the terms come from the conditions Medi is already considering, or, on the
+    first message, from a quick rewrite by a small model."""
+    said = "\n".join(reversed([message_text(m) for m in messages if m.get("role") == "user"][-3:]))
+    for m in reversed(messages):
+        if m.get("role") != "assistant":
+            continue
+        try:
+            names = [c["name"] for c in json.loads(m["content"]).get("conditions", [])]
+        except (ValueError, TypeError, KeyError):
+            continue
+        if names:
+            return f"{said}\nPossible conditions: {', '.join(names)}"
+    rewrite = post_json({
+        "model": RAG_REWRITE_MODEL,
+        "temperature": 0,
+        "max_tokens": 80,
+        "messages": [
+            {"role": "system", "content": "Rewrite the patient's words as a short medical search query: the clinical "
+                                          "terms for their symptoms and the 2-4 most relevant conditions to look up. "
+                                          "One line, no advice."},
+            {"role": "user", "content": said},
+        ],
+    }, timeout=20)
+    return f"{said}\n{rewrite['choices'][0]['message']['content'].strip()}"
+
+
+def find_references(messages):
+    """Retrieval never blocks a reply: if it fails, Medi answers without reference material."""
+    try:
+        return retrieve(retrieval_query(messages))
+    except Exception as e:
+        print("Retrieval failed:", e)
+        return []
+
+
+def reference_note(passages):
+    lines = [f"[{n}] {p['t']} (source: {p['s']})\n{p['x']}" for n, p in enumerate(passages, 1)]
+    return "REFERENCE MATERIAL (retrieved for this conversation):\n\n" + "\n\n".join(lines)
+
+
+def cited_sources(result, passages):
+    """Turns the model's citation numbers into a deduplicated list of real sources the app can show."""
+    sources, seen = [], set()
+    for n in result.get("citations", []):
+        if 1 <= n <= len(passages):
+            p = passages[n - 1]
+            if p["u"] not in seen:
+                seen.add(p["u"])
+                sources.append({"title": p["t"], "source": p["s"], "url": p["u"]})
+    return sources
+
+
+def consult_request(messages, profile, patient, rag=None):
+    """Builds the chat request for a consultation turn: keyword safety check, retrieval, and the full prompt."""
     last_user = next((m for m in reversed(messages) if m.get("role") == "user"), {})
     flags = screen_red_flags(message_text(last_user))
+    use_rag = RAG_ENABLED if rag is None else rag
+    passages = find_references(messages) if use_rag and last_user else []
     system = SYSTEM_PROMPT + "\n\n" + profile_note(profile, patient)
+    if passages:
+        system += "\n\n" + reference_note(passages)
     if flags:
         system += ("\n\nSAFETY SCREENER ALERT for the latest message: " + "; ".join(f["label"] for f in flags) +
                    ". Treat this as an emergency unless the patient clearly says it is not happening now, "
@@ -247,13 +360,15 @@ def consult_request(messages, profile, patient):
         "messages": [{"role": "system", "content": system}] + messages[-30:],
         "response_format": {"type": "json_schema", "json_schema": RESPONSE_SCHEMA},
     }
-    return payload, flags
+    return payload, flags, passages
 
 
-def consult(messages, profile, patient):
-    payload, flags = consult_request(messages, profile, patient)
+def consult(messages, profile, patient, rag=None):
+    payload, flags, passages = consult_request(messages, profile, patient, rag)
     result = json.loads(post_json(payload)["choices"][0]["message"]["content"])
     result["safety_alerts"] = flags
+    result["sources"] = cited_sources(result, passages)
+    result["retrieved"] = passages
     return result
 
 
@@ -264,7 +379,7 @@ def sse(event):
 def consult_stream(messages, profile, patient):
     """Same as consult, but yields server-sent events: safety alerts first, then the raw JSON as the model writes it
     (the reply field comes first, so the browser can show it word by word), then the finished result."""
-    payload, flags = consult_request(messages, profile, patient)
+    payload, flags, passages = consult_request(messages, profile, patient)
     yield sse({"type": "alerts", "alerts": flags})
     req = urllib.request.Request(
         "https://api.openai.com/v1/chat/completions",
@@ -285,6 +400,7 @@ def consult_stream(messages, profile, patient):
                     yield sse({"type": "delta", "text": delta})
         result = json.loads(text)
         result["safety_alerts"] = flags
+        result["sources"] = cited_sources(result, passages)
         yield sse({"type": "done", "result": result})
     except urllib.error.HTTPError as e:
         detail = "the OpenAI API key is invalid or expired" if e.code == 401 else e.read().decode(errors="replace")[:300]
@@ -447,7 +563,9 @@ def handle_post(kind, raw):
             if not str(payload.get("sdp", "")).strip():
                 return 400, {"error": "Missing voice connection offer."}
             return 200, voice_session(payload["sdp"], profile, patient, messages)
-        return 200, consult(messages, profile, patient)
+        result = consult(messages, profile, patient)
+        result.pop("retrieved", None)
+        return 200, result
     except urllib.error.HTTPError as e:
         detail = e.read().decode(errors="replace")
         if e.code == 401:

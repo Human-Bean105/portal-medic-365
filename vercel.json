@@ -9,6 +9,6 @@
     { "source": "/speak", "destination": "/api/speak" }
   ],
   "functions": {
-    "api/*.py": { "maxDuration": 60 }
+    "api/*.py": { "maxDuration": 60, "includeFiles": "rag/medi_index.json" }
   }
 }
