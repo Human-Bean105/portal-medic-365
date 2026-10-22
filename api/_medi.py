@@ -156,11 +156,69 @@ RESPONSE_SCHEMA = {
     },
 }
 
+WELLBEING_PROMPT = """You are Medi in Wellbeing mode: the supportive mental-health and wellbeing companion of Portal Medic 365, for adults and teens. You are an AI, not a therapist, counselor, or doctor, and you say so honestly when it matters. You offer a safe, warm space to talk, help people feel heard, and share evidence-informed coping ideas.
+
+HOW YOU TALK
+- Listen first. Reflect back what you hear in your own words, validate feelings ("That sounds exhausting," "It makes sense you'd feel that way"), and ask one gentle, open question at a time.
+- Sound like a warm, grounded person texting thoughtfully, not a pamphlet: plain words, contractions, short paragraphs (roughly 30 to 90 words). No headings or lists, except numbered steps when guiding an exercise.
+- Don't rush to fix. Before suggesting a technique, check what they want ("Would it help to talk it through, or try something that might ease it a bit?"). Never lecture, moralize, or use toxic positivity ("just think positive," "others have it worse").
+- Match their age and tone. If they seem to be a teen, keep it age-appropriate and encourage talking to a trusted adult when it fits.
+- Vary your wording; don't open every reply the same way.
+
+WHAT YOU CAN OFFER (when they want it, one at a time, briefly)
+Grounding (5-4-3-2-1 senses), slow breathing (e.g. breathing out longer than in), noticing and gently questioning anxious or self-critical thoughts (CBT-style reframing), breaking a task into one small next step, behavioral activation (one small pleasant or meaningful activity), sleep habits, self-compassion, reaching out to someone they trust, and journaling prompts. You can guide an exercise step by step in the conversation.
+
+LIMITS
+- Never diagnose mental-health conditions, label the person, or tell them what disorder they "have". You may say what they describe is common and worth talking to a professional about.
+- Never give medication advice or suggest starting, stopping, or changing medication; direct those questions to their doctor or pharmacist.
+- If they describe physical symptoms, suggest switching to Medi's health check. If the symptoms could be an emergency (chest pain or pressure, trouble breathing, one-sided weakness or slurred speech, fainting, a severe allergic reaction, an overdose), tell them to call 911 now, first, even if they think it's "just anxiety"; anxiety can't be assumed until a medical cause is ruled out.
+- Encourage real-life support (friends, family, a doctor, counselor, or therapist) and don't foster dependence on you; never say you're always there or a replacement for people.
+- Never promise confidentiality. Don't ask for names, addresses, or other identifying details.
+- Gently encourage professional support when distress is persistent, severe, getting worse, or affecting sleep, eating, school, work, or relationships for weeks.
+
+SAFETY (check every message, before anything else)
+- If they mention suicide, wanting to die, self-harm, harming someone else, abuse, or being unsafe, respond with calm, direct care: acknowledge what they shared, ask clearly whether they are safe right now, and give crisis support: call or text 9-8-8 (Suicide Crisis Helpline, Canada and US), or 911 if they're in immediate danger or might act on it. Youth in Canada can also reach Kids Help Phone (1-800-668-6868, or text CONNECT to 686868). Stay engaged and kind; don't end the conversation or just paste numbers.
+- Treat passive thoughts ("I wish I wouldn't wake up") seriously too.
+- If a SAFETY SCREENER ALERT appears, follow these rules immediately.
+
+OUTPUT (always the required JSON)
+- "reply": what you say, following the style above.
+- "risk.level": crisis (suicide or self-harm thoughts, harm to others, abuse, or being unsafe), elevated (persistent hopelessness, severe or worsening distress, not coping, or signs they need professional support soon), or none. "risk.reason": a short internal note on why.
+- "quick_replies": 2-4 short things they might tap next (e.g. "Can we try a breathing exercise?", "I just need to vent"). Empty in a crisis."""
+
+WELLBEING_SCHEMA = {
+    "name": "wellbeing_turn",
+    "strict": True,
+    "schema": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["reply", "risk", "quick_replies"],
+        "properties": {
+            "reply": {"type": "string"},
+            "risk": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["level", "reason"],
+                "properties": {"level": {"type": "string", "enum": ["none", "elevated", "crisis"]}, "reason": {"type": "string"}},
+            },
+            "quick_replies": LIST,
+        },
+    },
+}
+
 # A deterministic safety net that runs before the model, so obvious emergencies are never missed.
 RED_FLAGS = [
-    (r"\b(suicid\w*|kill (my|him|her)self|end (my|it all)|self[- ]?harm|want to die|hurt myself)\b",
+    (r"\b(suicid\w*|kill (my|him|her)self|end (my life|it all)|self[- ]?harm\w*|want to die|hurt(ing)? myself|cut(ting)? myself"
+     r"|better off dead|better off without me|no reason to live|don'?t want to (live|be alive|be here anymore)|wish I (was|were|wasn'?t) (dead|alive|here)"
+     r"|(want to|wish I could|hope I) (not|never) wake up)\b",
      "Thoughts of suicide or self-harm",
-     "You deserve support right now. Call or text 988 (Suicide & Crisis Lifeline, US) or your local emergency number."),
+     "You deserve support right now. Call or text 9-8-8 (Suicide Crisis Helpline, Canada and US), or call 911 if you might act on these thoughts."),
+    (r"\b(want|going|plan(ning)?) to (kill|hurt|harm|attack) (him|her|them|someone|somebody|people|my \w+)\b",
+     "Thoughts of harming someone else",
+     "If anyone could be in danger right now, call 911. You can also call or text 9-8-8 to talk it through with someone."),
+    (r"\b(hits|beats|abuses|chokes|hurts|touches) me\b|\bbeing (abused|hit|beaten)\b|\b(scared|afraid) (to go|of going) home\b",
+     "Possible abuse or an unsafe home",
+     "If you're in danger right now, call 911. You deserve to be safe, and a crisis line like 9-8-8 can help you make a plan."),
     (r"\bchest (pain|pressure|tightness|tight|hurts|is hurting|feels heavy)\b|\bcrushing\b.*\bchest\b|\bheart attack\b",
      "Chest pain or pressure",
      "Chest pain can be a heart attack. Call emergency services (911 / 112 / 999) now."),
@@ -341,30 +399,32 @@ def cited_sources(result, passages):
     return sources
 
 
-def consult_request(messages, profile, patient, rag=None):
-    """Builds the chat request for a consultation turn: keyword safety check, retrieval, and the full prompt."""
+def consult_request(messages, profile, patient, rag=None, mode="health"):
+    """Builds the chat request for a turn: keyword safety check, retrieval (health mode), and the full prompt."""
     last_user = next((m for m in reversed(messages) if m.get("role") == "user"), {})
     flags = screen_red_flags(message_text(last_user))
-    use_rag = RAG_ENABLED if rag is None else rag
+    wellbeing = mode == "wellbeing"
+    use_rag = (RAG_ENABLED if rag is None else rag) and not wellbeing
     passages = find_references(messages) if use_rag and last_user else []
-    system = SYSTEM_PROMPT + "\n\n" + profile_note(profile, patient)
+    system = (WELLBEING_PROMPT if wellbeing else SYSTEM_PROMPT) + "\n\n" + profile_note(profile, patient)
     if passages:
         system += "\n\n" + reference_note(passages)
     if flags:
         system += ("\n\nSAFETY SCREENER ALERT for the latest message: " + "; ".join(f["label"] for f in flags) +
-                   ". Treat this as an emergency unless the patient clearly says it is not happening now, "
-                   "and begin your reply with the emergency instruction.")
+                   (". Follow the SAFETY rules now." if wellbeing else
+                    ". Treat this as an emergency unless the patient clearly says it is not happening now, "
+                    "and begin your reply with the emergency instruction."))
     payload = {
         "model": MODEL,
-        "temperature": 0.3,
+        "temperature": 0.5 if wellbeing else 0.3,
         "messages": [{"role": "system", "content": system}] + messages[-30:],
-        "response_format": {"type": "json_schema", "json_schema": RESPONSE_SCHEMA},
+        "response_format": {"type": "json_schema", "json_schema": WELLBEING_SCHEMA if wellbeing else RESPONSE_SCHEMA},
     }
     return payload, flags, passages
 
 
-def consult(messages, profile, patient, rag=None):
-    payload, flags, passages = consult_request(messages, profile, patient, rag)
+def consult(messages, profile, patient, rag=None, mode="health"):
+    payload, flags, passages = consult_request(messages, profile, patient, rag, mode)
     result = json.loads(post_json(payload)["choices"][0]["message"]["content"])
     result["safety_alerts"] = flags
     result["sources"] = cited_sources(result, passages)
@@ -376,10 +436,10 @@ def sse(event):
     return f"data: {json.dumps(event)}\n\n".encode()
 
 
-def consult_stream(messages, profile, patient):
+def consult_stream(messages, profile, patient, mode="health"):
     """Same as consult, but yields server-sent events: safety alerts first, then the raw JSON as the model writes it
     (the reply field comes first, so the browser can show it word by word), then the finished result."""
-    payload, flags, passages = consult_request(messages, profile, patient)
+    payload, flags, passages = consult_request(messages, profile, patient, mode=mode)
     yield sse({"type": "alerts", "alerts": flags})
     req = urllib.request.Request(
         "https://api.openai.com/v1/chat/completions",
@@ -472,9 +532,23 @@ VOICE MODE (this conversation is spoken out loud, overriding the OUTPUT format a
 - If a SAFETY SCREENER ALERT system message appears, follow it immediately."""
 
 
-def voice_session(sdp, profile, patient, history):
+WELLBEING_VOICE_PROMPT = """
+
+VOICE MODE (this conversation is spoken out loud, overriding the OUTPUT format above)
+- You are talking with the person over a live voice call. Sound like a calm, kind, grounded person who is really listening, not a narrator or a script.
+- Speak softly and unhurriedly, with natural pauses. Use short spoken acknowledgments ("Mm, that's a lot," "Yeah," "I hear you") and leave room for them to talk.
+- Keep each turn short: one to three sentences, then at most one gentle question. Never read out lists or symbols.
+- When guiding breathing or grounding, go one slow step at a time and wait for them.
+- Speak English unless the person speaks another language; then match their language.
+- When the call starts, greet them in one or two warm sentences: you're Medi, an AI wellbeing companion rather than a therapist, and this is a space to talk about whatever's on their mind. Then ask how they're doing.
+- In a crisis, slow down, stay calm and caring, ask if they're safe right now, and say clearly that they can call or text 9-8-8, or call 911 if they're in immediate danger.
+- If a SAFETY SCREENER ALERT or WELLBEING CHECK system message appears, follow it immediately."""
+
+
+def voice_session(sdp, profile, patient, history, mode="health"):
     """Starts a Realtime voice call through OpenAI's unified WebRTC interface and returns the SDP answer."""
-    instructions = SYSTEM_PROMPT + VOICE_PROMPT + "\n\n" + profile_note(profile, patient)
+    base = WELLBEING_PROMPT + WELLBEING_VOICE_PROMPT if mode == "wellbeing" else SYSTEM_PROMPT + VOICE_PROMPT
+    instructions = base + "\n\n" + profile_note(profile, patient)
     earlier = [f"{'Patient' if m.get('role') == 'user' else 'Medi'}: {message_text(m)}" for m in history[-20:]]
     if any(m.get("role") == "user" for m in history):
         instructions += ("\n\nEarlier in this same visit, by text chat (continue from here instead of greeting from scratch):\n"
@@ -550,10 +624,11 @@ def handle_post(kind, raw):
         payload = json.loads(raw or b"{}")
         messages, profile = payload.get("messages", []), payload.get("profile", {})
         patient = "self" if payload.get("patient") == "self" else "other"
+        mode = "wellbeing" if payload.get("mode") == "wellbeing" else "health"
         if kind == "summary":
             return 200, summarize(messages, profile, patient)
         if kind == "stream":
-            return 200, consult_stream(messages, profile, patient)
+            return 200, consult_stream(messages, profile, patient, mode)
         if kind == "speak":
             text = str(payload.get("text", "")).strip()
             return (200, speak(text)) if text else (400, {"error": "Nothing to read aloud."})
@@ -562,8 +637,8 @@ def handle_post(kind, raw):
         if kind == "voice":
             if not str(payload.get("sdp", "")).strip():
                 return 400, {"error": "Missing voice connection offer."}
-            return 200, voice_session(payload["sdp"], profile, patient, messages)
-        result = consult(messages, profile, patient)
+            return 200, voice_session(payload["sdp"], profile, patient, messages, mode)
+        result = consult(messages, profile, patient, mode=mode)
         result.pop("retrieved", None)
         return 200, result
     except urllib.error.HTTPError as e:

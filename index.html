@@ -16,6 +16,30 @@
   button { font: inherit; cursor: pointer; }
   [hidden] { display: none !important; }
 
+  /* ---------- Wellbeing mode: calmer colors, its own panel, health-only tools hidden ---------- */
+  body.wellbeing { --bg: #f2f6f3; --brand: #4f8a7b; --brand-2: #8cbfae; --user: #4f8a7b; --line: #dde8e2; }
+  body.wellbeing .health-only, body:not(.wellbeing) .wb-only { display: none !important; }
+  body.wellbeing .bot .bubble { background: #eef5f1; }
+  body.wellbeing .disclaimer { background: #eef5f1; color: #3d6b5f; border-bottom-color: #d4e6dc; }
+  body.wellbeing #callScreen, body.wellbeing #voiceStage { background: #2f4a44; }
+  body.wellbeing #avatar { background: #3e5f57; }
+  .wb-help { background: #eef5f1; border-radius: 12px; padding: 12px; font-size: .88rem; line-height: 1.5; }
+  .wb-help p { margin: 0 0 8px; }
+  .wb-help-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin: 6px 0 10px; }
+  .wb-call { flex: 1; text-align: center; padding: 9px 10px; border-radius: 10px; background: #4f8a7b; color: #fff; font-weight: 700; text-decoration: none; }
+  .wb-status { margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: #fff7e6; color: #8a5a00; font-size: .85rem; line-height: 1.45; }
+  .wb-note { font-size: .86rem; color: #3c4b5c; line-height: 1.5; margin: 0; }
+  .wb-home { max-width: 1100px; margin: 10px auto 26px; padding: 0 24px; }
+  .wb-home-card { display: flex; gap: 20px; align-items: center; justify-content: space-between; flex-wrap: wrap; background: #eef5f1; border: 1px solid #d4e6dc; border-radius: 18px; padding: 20px 24px; }
+  .wb-home-text { flex: 1; min-width: 260px; }
+  .wb-home-text h3 { margin: 0 0 6px; color: #2f5f53; }
+  .wb-home-text p { margin: 0; color: #3d5a53; line-height: 1.55; font-size: .95rem; }
+  .cta.wb { background: #4f8a7b; box-shadow: none; }
+  .ghost.mode-btn { border-color: #8cbfae; color: #2f5f53; font-weight: 600; }
+  .crisis .modal { border-top: 8px solid #4f8a7b; text-align: center; }
+  .crisis h3 { color: #2f5f53; font-size: 1.3rem; }
+  .crisis .big { display: inline-block; padding: 12px 22px; border-radius: 12px; background: #4f8a7b; color: #fff; font-size: 1.15rem; font-weight: 700; text-decoration: none; }
+
   /* ---------- Home screen ---------- */
   #home { min-height: 100vh; background: radial-gradient(ellipse at top, #e3efff 0%, #f2f7fd 55%) no-repeat; }
   .home-nav { display: flex; align-items: center; justify-content: space-between; max-width: 1100px; margin: 0 auto; padding: 14px 24px; }
@@ -230,6 +254,20 @@
     <div class="hero-chips" id="homeChips"></div>
   </section>
 
+  <section class="wb-home">
+    <div class="wb-home-card">
+      <div class="wb-home-text">
+        <h3>🌿 Need to talk? Try Medi Wellbeing</h3>
+        <p>A calm space to talk about stress, sleep, worry, loneliness, or just a rough day. Medi listens without judging,
+          and can guide a breathing or grounding exercise if you'd like. It's an AI companion, not a therapist.</p>
+      </div>
+      <div class="cta-row">
+        <button class="cta wb" id="wbStartBtn">🌿 Start talking</button>
+        <button class="cta secondary" id="wbCallBtn">📞 Talk by voice</button>
+      </div>
+    </div>
+  </section>
+
   <section class="features">
     <div class="feature"><div class="f-icon">🩺</div><h3>Focused questions</h3><p>Medi asks only what matters: when it started, how it's changing, how severe it is, and what else you've noticed.</p></div>
     <div class="feature"><div class="f-icon">🚦</div><h3>Right level of care</h3><p>One of four clear answers: emergency (call 911), urgent care today, a normal clinic visit, or home care.</p></div>
@@ -267,22 +305,23 @@
     <img class="doc-avatar" src="/assets/medi-avatar.png" alt="Medi" />
     <div>
       <h1>Medi</h1>
-      <p><span class="status-dot"></span>AI family health assistant · Symptom guidance &amp; triage</p>
+      <p><span class="status-dot"></span><span id="appSubtitle">AI family health assistant · Symptom guidance &amp; triage</span></p>
     </div>
   </div>
   <div class="header-actions">
     <button class="ghost" id="homeBtn">🏠 <span>Home</span></button>
+    <button class="ghost mode-btn" id="modeBtn">🌿 <span>Wellbeing</span></button>
     <button class="ghost" id="profileBtn">🧾 <span>My health profile</span></button>
     <button class="ghost call-btn" id="callBtn" title="Have a spoken conversation with Medi">📞 <span>Talk to Medi</span></button>
     <button class="ghost" id="voiceBtn" title="Read Medi's typed replies aloud">🔈 <span>Read aloud</span></button>
     <button class="ghost" id="newBtn">↺ <span>New visit</span></button>
   </div>
 </header>
-<div class="disclaimer">Medi is an AI assistant for education and triage guidance, not a licensed physician. If you think you're having an emergency, call 911 / 112 / 999 now.</div>
+<div class="disclaimer" id="disclaimer">Medi is an AI assistant for education and triage guidance, not a licensed physician. If you think you're having an emergency, call 911 / 112 / 999 now.</div>
 
 <main>
   <section class="panel">
-    <div class="visit-for" id="visitFor">
+    <div class="visit-for health-only" id="visitFor">
       This visit is for:
       <button type="button" data-patient="self" class="on">🙂 Me</button>
       <button type="button" data-patient="other">👪 Someone else</button>
@@ -305,14 +344,41 @@
     <div id="preview"><img alt="" /><span>Photo attached</span><button type="button" id="removePhoto">✕ remove</button></div>
     <form id="form">
       <input type="file" id="file" accept="image/*" hidden />
-      <button type="button" class="icon-btn" id="photoBtn" title="Attach a photo (rash, wound, swelling...)">📷</button>
+      <button type="button" class="icon-btn health-only" id="photoBtn" title="Attach a photo (rash, wound, swelling...)">📷</button>
       <button type="button" class="icon-btn" id="micBtn" title="Talk to Medi hands-free (no typing or Send needed)">🎤</button>
       <textarea id="input" rows="1" placeholder="Describe how you're feeling..."></textarea>
       <button id="send">Send</button>
     </form>
   </section>
 
-  <aside class="panel side">
+  <aside class="panel side wb-only">
+    <h2>You're not alone</h2>
+    <div class="wb-help">
+      <p>If you're thinking about suicide or hurting yourself, or you don't feel safe, reach out now. It's free, confidential, and available 24/7.</p>
+      <div class="wb-help-actions">
+        <a class="wb-call" href="tel:988">📞 Call 9-8-8</a>
+        <a class="wb-call" href="sms:988">💬 Text 9-8-8</a>
+      </div>
+      <p class="fine">Suicide Crisis Helpline, Canada and US. In immediate danger, call <strong>911</strong>.
+        Youth in Canada: Kids Help Phone, <a href="tel:18006686868">1-800-668-6868</a> or text CONNECT to 686868.</p>
+    </div>
+    <div class="wb-status" id="wbStatus" hidden>It sounds like things have been really hard lately. Talking with a doctor,
+      counselor, or therapist could really help, and you deserve that support.</div>
+
+    <h2>How Medi can help</h2>
+    <ul class="list">
+      <li>Listen without judging, at your pace</li>
+      <li>Help you sort through what you're feeling</li>
+      <li>Guide breathing or grounding when you want it</li>
+      <li>Help you think about next steps and who to reach out to</li>
+    </ul>
+
+    <h2>What Medi isn't</h2>
+    <p class="wb-note">Medi is an AI, not a therapist or doctor. It can't diagnose or give medication advice. If you've been
+      struggling for a while, a doctor, counselor, or therapist can help.</p>
+  </aside>
+
+  <aside class="panel side health-only">
     <h2>Urgency</h2>
     <div class="meter" id="meter"><div></div><div></div><div></div><div></div></div>
     <div class="meter-labels"><span>Home care</span><span>Normal clinic</span><span>Urgent care</span><span>Emergency</span></div>
@@ -376,6 +442,21 @@
   </div>
 </div>
 
+<div class="overlay crisis" id="crisisModal">
+  <div class="modal">
+    <h3>💙 You don't have to go through this alone</h3>
+    <p id="crisisText">What you're feeling matters, and there are people who want to help right now.</p>
+    <div class="wb-help-actions">
+      <a class="big" href="tel:988">📞 Call 9-8-8</a>
+      <a class="big" href="sms:988">💬 Text 9-8-8</a>
+    </div>
+    <p>If you're in immediate danger or might act on these thoughts, <strong>call 911</strong>.</p>
+    <p class="empty" style="font-style:normal">9-8-8 Suicide Crisis Helpline (Canada and US) is free, confidential, and open 24/7.
+      Youth in Canada: Kids Help Phone, 1-800-668-6868 or text CONNECT to 686868.</p>
+    <div class="side-actions"><button class="btn" data-close="crisisModal">I'm safe right now, keep talking</button></div>
+  </div>
+</div>
+
 <div class="overlay emergency" id="emergencyModal">
   <div class="modal">
     <h3>🚨 This may be an emergency</h3>
@@ -389,8 +470,8 @@
 
 <div id="callScreen" hidden>
   <div class="cs-top">
-    <div class="cs-title"><strong>Medi</strong> · voice call</div>
-    <span class="cs-level" id="csLevel">Still assessing</span>
+    <div class="cs-title"><strong>Medi</strong> · <span id="csTitle">voice call</span></div>
+    <span class="cs-level health-only" id="csLevel">Still assessing</span>
     <button type="button" class="cs-chat" id="csChatBtn">💬 Show chat</button>
   </div>
   <div class="cs-center">
@@ -401,7 +482,7 @@
   </div>
   <div class="cs-controls">
     <button type="button" class="cs-btn" id="csMute">🎙️<span>Mute</span></button>
-    <button type="button" class="cs-btn" id="csMap">📍<span>Find care</span></button>
+    <button type="button" class="cs-btn health-only" id="csMap">📍<span>Find care</span></button>
     <button type="button" class="cs-btn" id="csRetry" hidden>🔄<span>Try again</span></button>
     <button type="button" class="cs-btn end" id="csEnd">📞<span>End call</span></button>
   </div>
@@ -458,6 +539,22 @@
   const STATUS_CLASS = { "probable explanation": "probable", "important to rule out": "warn" };
   const STARTERS = ["🤕 Headache", "🤒 Fever", "😷 Sore throat", "🤢 Stomach pain", "😮‍💨 Cough", "🔴 Skin rash", "🦴 Back pain", "😰 Anxiety / stress"];
   const PROFILE_FIELDS = ["age", "sex", "pregnant", "breastfeeding", "weight", "conditions", "medications", "allergies", "family", "country"];
+  const WB_STARTERS = ["😣 I'm stressed", "😴 I can't sleep", "😔 I've been feeling low", "😰 I'm anxious", "🫂 I feel lonely", "💬 I just need to vent"];
+  const MENTAL_ALERTS = new Set(["Thoughts of suicide or self-harm", "Thoughts of harming someone else", "Possible abuse or an unsafe home"]);
+  const MODE_TEXT = {
+    health: {
+      subtitle: "AI family health assistant · Symptom guidance & triage",
+      disclaimer: "Medi is an AI assistant for education and triage guidance, not a licensed physician. If you think you're having an emergency, call 911 / 112 / 999 now.",
+      placeholder: "Describe how you're feeling...", switchTo: "🌿 <span>Wellbeing</span>", newChat: "↺ <span>New visit</span>", call: "voice call",
+    },
+    wellbeing: {
+      subtitle: "Wellbeing companion · A space to talk",
+      disclaimer: "Medi is an AI companion, not a therapist. If you're thinking about suicide or self-harm, call or text 9-8-8. In immediate danger, call 911.",
+      placeholder: "Share what's on your mind...", switchTo: "🩺 <span>Health check</span>", newChat: "↺ <span>New chat</span>", call: "wellbeing call",
+    },
+  };
+  let mode = "health";
+  let shownCrisis = false;
   let patient = "self";
 
   let history = [];
@@ -600,9 +697,18 @@
   function startVisit() {
     history = [];
     shownEmergency = false;
+    shownCrisis = false;
     chatEl.innerHTML = "";
     resetPanel();
     $("summaryBtn").disabled = true;
+    $("wbStatus").hidden = true;
+    if (mode === "wellbeing") {
+      const hello = "Hi, I'm **Medi** 🌿. This is a space to talk about whatever's on your mind: stress, sleep, worries, or just a rough day. " +
+        "I'm an AI companion, not a therapist, but I'm here to listen.\n\nHow are you doing today, honestly?";
+      addMessage("bot", hello);
+      history.push({ role: "assistant", content: hello });
+      return setChips(WB_STARTERS);
+    }
     const intro = `Hi, I'm **Medi**, the AI health assistant from Portal Medic 365. 👋 I can help you understand symptoms and decide on a sensible next step, but I'm not a replacement for a doctor who can examine you.`;
     const greeting = patient === "other"
       ? `${intro}\n\n**Who is this visit about, and how old are they?** Then tell me what's going on with them and when it started.`
@@ -658,6 +764,32 @@
     $("emergencyModal").classList.add("show");
   }
 
+  function showCrisis(reasons) {
+    if (shownCrisis) return;
+    shownCrisis = true;
+    $("crisisText").innerHTML = reasons.map(esc).join("<br><br>");
+    $("crisisModal").classList.add("show");
+  }
+
+  // Mental-health alerts open the 9-8-8 crisis screen; physical emergencies open the 911 screen.
+  function showAlerts(alerts) {
+    const mental = alerts.filter((a) => MENTAL_ALERTS.has(a.label));
+    const physical = alerts.filter((a) => !MENTAL_ALERTS.has(a.label));
+    if (physical.length) showEmergency(physical.map((a) => a.advice));
+    if (mental.length) showCrisis(mental.map((a) => a.advice));
+  }
+
+  function showWellbeing(turn) {
+    $("wbStatus").hidden = turn.risk.level === "none";
+    if (turn.risk.level === "crisis") showCrisis(["What you're going through matters, and you deserve support right now."]);
+  }
+
+  // What every request needs to know about who Medi is talking to. Wellbeing chats are always about the person typing.
+  function requestBase() {
+    const self = mode === "wellbeing" || patient === "self";
+    return { mode, patient: self ? "self" : "other", profile: self ? profile : {} };
+  }
+
   async function send(text) {
     text = (text || "").trim();
     if (inCall()) return sendToCall(text);
@@ -678,7 +810,7 @@
     let shown = "";
     try {
       const data = await streamConsult(
-        { messages: withRecentPhotos(history), patient, profile: patient === "self" ? profile : {} },
+        { ...requestBase(), messages: withRecentPhotos(history) },
         (text) => {
           if (!text || text === shown) return;
           shown = text;
@@ -686,20 +818,22 @@
           bubble.innerHTML = md(text);
           chatEl.scrollTop = chatEl.scrollHeight;
         },
-        (alerts) => showEmergency(alerts.map((a) => a.advice)),
+        showAlerts,
       );
       typing.remove();
 
       const { safety_alerts, sources, ...turn } = data;
       history.push({ role: "assistant", content: JSON.stringify(turn) });
       addSources(addMessage("bot", turn.reply), sources);
-      renderPanel(turn);
       setChips(turn.quick_replies || []);
-      $("summaryBtn").disabled = false;
       speak(turn.reply);
-
-      if (turn.triage.level === "emergency" || safety_alerts.length) {
-        showEmergency(safety_alerts.length ? safety_alerts.map((a) => a.advice) : [turn.triage.headline]);
+      showAlerts(safety_alerts);
+      if (mode === "wellbeing") {
+        showWellbeing(turn);
+      } else {
+        renderPanel(turn);
+        $("summaryBtn").disabled = false;
+        if (turn.triage.level === "emergency") showEmergency([turn.triage.headline]);
       }
     } catch (err) {
       typing.remove();
@@ -802,7 +936,7 @@
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
       const earlier = history.map((m) => ({ role: m.role, content: callText(m) }));
-      const data = await postJson("/voice", { sdp: offer.sdp, patient, profile: patient === "self" ? profile : {}, messages: earlier });
+      const data = await postJson("/voice", { ...requestBase(), sdp: offer.sdp, messages: earlier });
       await pc.setRemoteDescription({ type: "answer", sdp: data.sdp });
       call.timer = setTimeout(() => endCall("Voice calls end after 10 minutes. Tap Talk to Medi to keep going."), CALL_LIMIT_MS);
     } catch (err) {
@@ -885,12 +1019,13 @@
     try {
       const { alerts } = await postJson("/screen", { text });
       if (!alerts.length) return;
-      showEmergency(alerts.map((a) => a.advice));
+      showAlerts(alerts);
       callSend({
         type: "conversation.item.create",
         item: { type: "message", role: "system", content: [{ type: "input_text", text:
-          `SAFETY SCREENER ALERT for what the patient just said: ${alerts.map((a) => a.label).join("; ")}. ` +
-          "Treat this as an emergency unless they clearly say it is not happening now, and say the emergency instruction first." }] },
+          `SAFETY SCREENER ALERT for what the person just said: ${alerts.map((a) => a.label).join("; ")}. ` +
+          (mode === "wellbeing" ? "Follow your SAFETY rules now." :
+            "Treat this as an emergency unless they clearly say it is not happening now, and say the emergency instruction first.") }] },
       });
     } catch (err) {
       console.warn("Safety screen failed:", err);
@@ -903,13 +1038,25 @@
     const seq = ++assessSeq;
     try {
       const messages = withRecentPhotos(history.filter((m) => m.content));
-      const { safety_alerts, ...turn } = await postJson("/consult", { messages, patient, profile: patient === "self" ? profile : {} });
+      const { safety_alerts, ...turn } = await postJson("/consult", { ...requestBase(), messages });
       if (seq !== assessSeq) return;
+      showAlerts(safety_alerts);
+      if (mode === "wellbeing") {
+        showWellbeing(turn);
+        if (turn.risk.level !== "none") {
+          callSend({
+            type: "conversation.item.create",
+            item: { type: "message", role: "system", content: [{ type: "input_text", text:
+              `WELLBEING CHECK: risk level = ${turn.risk.level} (${turn.risk.reason}). ` +
+              (turn.risk.level === "crisis" ? "Follow your SAFETY rules now: check they're safe and mention 9-8-8, or 911 if in danger."
+                : "Gently encourage professional support when it fits.") }] },
+          });
+        }
+        return;
+      }
       renderPanel(turn);
       $("summaryBtn").disabled = false;
-      if (turn.triage.level === "emergency" || safety_alerts.length) {
-        showEmergency(safety_alerts.length ? safety_alerts.map((a) => a.advice) : [turn.triage.headline]);
-      }
+      if (turn.triage.level === "emergency") showEmergency([turn.triage.headline]);
       if (turn.triage.level === "unknown") return;
       const possibilities = turn.conditions.map((c) => `${c.name} (${c.status})`).join("; ") || "none listed";
       callSend({
@@ -1282,21 +1429,48 @@
 
   // ---------- Home screen ----------
 
+  // Switching modes starts a fresh conversation so health details and wellbeing chats don't mix.
+  function applyMode(next) {
+    if (next === mode) return;
+    endCall();
+    stopSpeaking();
+    mode = next;
+    const t = MODE_TEXT[mode];
+    document.body.classList.toggle("wellbeing", mode === "wellbeing");
+    $("appSubtitle").textContent = t.subtitle;
+    $("disclaimer").textContent = t.disclaimer;
+    input.placeholder = t.placeholder;
+    $("modeBtn").innerHTML = t.switchTo;
+    $("newBtn").innerHTML = t.newChat;
+    $("csTitle").textContent = t.call;
+    startVisit();
+  }
+
   function showView() {
-    const inChat = location.hash === "#chat";
+    const route = location.hash;
+    const inChat = route === "#chat" || route === "#wellbeing";
     $("home").hidden = inChat;
     $("app").hidden = !inChat;
-    if (inChat) input.focus();
-    else { endCall(); stopSpeaking(); window.scrollTo(0, 0); }
+    if (inChat) {
+      applyMode(route === "#wellbeing" ? "wellbeing" : "health");
+      input.focus();
+    } else { endCall(); stopSpeaking(); window.scrollTo(0, 0); }
   }
-  function openChat(firstMessage) {
-    location.hash = "chat";
+  function openChat(firstMessage, target = "chat") {
+    location.hash = target;
     showView();
     if (firstMessage) send(firstMessage);
   }
   window.addEventListener("hashchange", showView);
   $("homeBtn").onclick = $("logoHome").onclick = () => (location.hash = "");
+  $("modeBtn").onclick = () => {
+    const started = history.some((m) => m.role === "user");
+    if (started && !confirm("Switching starts a new conversation. Continue?")) return;
+    openChat(null, mode === "wellbeing" ? "chat" : "wellbeing");
+  };
   $("startBtn").onclick = () => openChat();
+  $("wbStartBtn").onclick = () => openChat(null, "wellbeing");
+  $("wbCallBtn").onclick = () => { openChat(null, "wellbeing"); startCall(); };
   $("homeCallBtn").onclick = $("homeMicBtn").onclick = () => { openChat(); startCall(); };
   $("homeForm").addEventListener("submit", (e) => {
     e.preventDefault();
