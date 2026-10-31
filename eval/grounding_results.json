@@ -1,0 +1,5398 @@
+{
+ "summary": {
+  "with_rag": {
+   "claims": 228,
+   "supported_by_sources_%": 53.5,
+   "standard_knowledge_%": 46.5,
+   "inaccurate_%": 0.0,
+   "fabricated_%": 0.0,
+   "hallucination_rate_%": 0.0,
+   "answers_with_a_hallucination": 0,
+   "level_of_care_acceptable": "49/50",
+   "answers_showing_sources": 49,
+   "citations_that_support_the_answer_%": 86.5
+  },
+  "without_rag": {
+   "claims": 224,
+   "supported_by_sources_%": 44.6,
+   "standard_knowledge_%": 53.1,
+   "inaccurate_%": 0.0,
+   "fabricated_%": 2.2,
+   "hallucination_rate_%": 2.2,
+   "answers_with_a_hallucination": 5,
+   "level_of_care_acceptable": "49/50",
+   "answers_with_invented_citation_numbers": 36
+  }
+ },
+ "results": [
+  {
+   "id": 1,
+   "title": "Concussion with red flags",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 3,
+    "standard_knowledge": 0,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "The symptoms you're describing, like losing consciousness, vomiting, and a worsening headache, could indicate a serious head injury, such as a concussion or more severe brain injury.",
+     "label": "supported",
+     "note": "These symptoms are listed as warning signs for serious head injuries in the reference passages."
+    },
+    {
+     "claim": "A concussion can cause symptoms like headache, vomiting, and loss of consciousness.",
+     "label": "supported",
+     "note": "These symptoms are mentioned in the reference passages as associated with concussions."
+    },
+    {
+     "claim": "A more serious brain injury could cause symptoms like repeated vomiting, worsening headache, and loss of consciousness.",
+     "label": "supported",
+     "note": "These symptoms are listed as warning signs for moderate or severe traumatic brain injury in the reference passages."
+    }
+   ],
+   "cited": [
+    1,
+    2,
+    5
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": true
+    },
+    {
+     "source_number": 5,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Concussion",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/concussion.html"
+    },
+    {
+     "title": "Head Injuries",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/headinjuries.html"
+    },
+    {
+     "title": "Traumatic Brain Injury",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/traumaticbraininjury.html"
+    }
+   ]
+  },
+  {
+   "id": 1,
+   "title": "Concussion with red flags",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "A concussion is a brain injury caused by a blow to the head, often resulting in symptoms like headache, vomiting, and loss of consciousness.",
+     "label": "standard_knowledge",
+     "note": "This is a correct and mainstream understanding of what a concussion is and its symptoms."
+    },
+    {
+     "claim": "A head injury with loss of consciousness, vomiting, and a worsening headache can be serious and needs immediate evaluation.",
+     "label": "supported",
+     "note": "This is supported by the reference passages, which list these symptoms as warning signs of a serious head injury."
+    }
+   ],
+   "cited": [],
+   "citation_checks": [],
+   "sources": []
+  },
+  {
+   "id": 2,
+   "title": "Heart attack",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 0,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "The symptoms of crushing chest pressure, pain spreading to the arm and jaw, sweating, and nausea are classic signs of a heart attack.",
+     "label": "supported",
+     "note": "These symptoms are supported by the reference passages, which describe similar symptoms for heart attacks."
+    }
+   ],
+   "cited": [
+    1,
+    2
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Heart Attack",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/heartattack.html"
+    },
+    {
+     "title": "Heart Disease in Women",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/heartdiseaseinwomen.html"
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "title": "Heart attack",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 0,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Chest pressure spreading to the arm and jaw, along with sweating and nausea, are classic signs of a heart attack.",
+     "label": "supported",
+     "note": "This is supported by source [1], which lists chest discomfort, discomfort in the upper body (including arms and jaw), nausea, and sweating as symptoms of a heart attack."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 3,
+   "title": "Stroke",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 3,
+    "standard_knowledge": 0,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "A stroke occurs when blood flow to a part of the brain is interrupted, causing sudden symptoms like weakness and speech difficulties.",
+     "label": "supported",
+     "note": "This is supported by sources [1], [3], and [4], which describe ischemic stroke symptoms and causes."
+    },
+    {
+     "claim": "Sudden inability to lift right arm",
+     "label": "supported",
+     "note": "This is supported by sources [3] and [4], which mention sudden arm weakness as a symptom of stroke."
+    },
+    {
+     "claim": "Slurred speech",
+     "label": "supported",
+     "note": "This is supported by sources [1] and [4], which mention slurred speech as a symptom of stroke."
+    }
+   ],
+   "cited": [
+    1,
+    3,
+    4
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 3,
+     "supports_answer": true
+    },
+    {
+     "source_number": 4,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Ischemic Stroke",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/ischemicstroke.html"
+    },
+    {
+     "title": "Stroke",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/stroke.html"
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "title": "Stroke",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 0,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "A stroke can cause sudden weakness or numbness, especially on one side of the body, and slurred speech.",
+     "label": "supported",
+     "note": "This is supported by passages [3] and [4], which list these symptoms as indicative of a stroke."
+    },
+    {
+     "claim": "Immediate medical evaluation is critical for a stroke.",
+     "label": "supported",
+     "note": "Passages [1] and [4] emphasize the importance of immediate medical attention for strokes."
+    }
+   ],
+   "cited": [],
+   "citation_checks": [],
+   "sources": []
+  },
+  {
+   "id": 4,
+   "title": "Anaphylaxis",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 7,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Anaphylaxis is a severe allergic reaction that can cause swelling, difficulty breathing, and hives.",
+     "label": "supported",
+     "note": "This is supported by sources [1] and [3], which describe anaphylaxis as a severe allergic reaction that can cause swelling, difficulty breathing, and hives."
+    },
+    {
+     "claim": "Anaphylaxis requires immediate medical attention.",
+     "label": "supported",
+     "note": "This is supported by sources [1], [3], and [5], which all emphasize the need for immediate medical attention in cases of anaphylaxis."
+    },
+    {
+     "claim": "Use an epinephrine auto-injector if available.",
+     "label": "supported",
+     "note": "This is supported by sources [1] and [5], which recommend using an epinephrine auto-injector in cases of anaphylaxis."
+    },
+    {
+     "claim": "Call 911 for emergency medical help.",
+     "label": "supported",
+     "note": "This is supported by sources [1] and [3], which advise calling 911 in cases of anaphylaxis."
+    },
+    {
+     "claim": "Avoid eating or drinking anything else.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice to prevent further exposure to potential allergens during an allergic reaction."
+    },
+    {
+     "claim": "Increased difficulty breathing is a red flag to watch for in anaphylaxis.",
+     "label": "supported",
+     "note": "This is supported by sources [1] and [3], which list difficulty breathing as a symptom of anaphylaxis."
+    },
+    {
+     "claim": "Loss of consciousness is a red flag to watch for in anaphylaxis.",
+     "label": "supported",
+     "note": "This is supported by source [3], which lists loss of consciousness as a potential outcome of anaphylaxis."
+    },
+    {
+     "claim": "Severe drop in blood pressure is a red flag to watch for in anaphylaxis.",
+     "label": "supported",
+     "note": "This is supported by sources [1] and [3], which mention a severe drop in blood pressure as a symptom of anaphylaxis."
+    }
+   ],
+   "cited": [
+    1,
+    3,
+    5
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 3,
+     "supports_answer": true
+    },
+    {
+     "source_number": 5,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Anaphylaxis",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/anaphylaxis.html"
+    },
+    {
+     "title": "Food Allergy",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/foodallergy.html"
+    },
+    {
+     "title": "Anaphylaxis Emergency Management (WAO/EAACI 2021)",
+     "source": "World Allergy Organization / European Academy of Allergy and Clinical Immunology (summary)",
+     "url": "https://doi.org/10.1016/j.waojou.2021.100525"
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "title": "Anaphylaxis",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 0,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Anaphylaxis is a severe allergic reaction that can occur rapidly and may be life-threatening.",
+     "label": "supported",
+     "note": "This is supported by source [1], which states that anaphylaxis is a serious allergic reaction that can begin quickly and may be life-threatening."
+    },
+    {
+     "claim": "Anaphylaxis often involves symptoms like swelling, difficulty breathing, and hives.",
+     "label": "supported",
+     "note": "Source [1] supports this claim by listing symptoms such as swelling, trouble breathing, and hives as part of anaphylaxis."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 5,
+   "title": "Appendicitis",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 0,
+    "standard_knowledge": 5,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Appendicitis often starts with pain around the belly button that moves to the lower right side, accompanied by fever and nausea or vomiting.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known description of appendicitis symptoms."
+    },
+    {
+     "claim": "Pain started around belly button and moved to lower right side",
+     "label": "standard_knowledge",
+     "note": "This is a typical symptom of appendicitis."
+    },
+    {
+     "claim": "Fever of 100.8F",
+     "label": "standard_knowledge",
+     "note": "Fever is a common symptom associated with appendicitis."
+    },
+    {
+     "claim": "Vomiting",
+     "label": "standard_knowledge",
+     "note": "Vomiting is a common symptom associated with appendicitis."
+    },
+    {
+     "claim": "Pain worsens with movement",
+     "label": "standard_knowledge",
+     "note": "Pain worsening with movement is a common symptom of appendicitis."
+    }
+   ],
+   "cited": [
+    4
+   ],
+   "citation_checks": [
+    {
+     "source_number": 4,
+     "supports_answer": false
+    }
+   ],
+   "sources": [
+    {
+     "title": "Abdominal Pain",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/abdominalpain.html"
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "title": "Appendicitis",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 0,
+    "standard_knowledge": 2,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Appendicitis is an inflammation of the appendix, often causing pain that starts near the belly button and moves to the lower right abdomen.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known description of appendicitis symptoms."
+    },
+    {
+     "claim": "Appendicitis can cause fever and vomiting.",
+     "label": "standard_knowledge",
+     "note": "These are common symptoms associated with appendicitis."
+    }
+   ],
+   "cited": [],
+   "citation_checks": [],
+   "sources": []
+  },
+  {
+   "id": 6,
+   "title": "Bacterial meningitis",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 2,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Meningitis is an infection of the protective membranes covering the brain and spinal cord.",
+     "label": "standard_knowledge",
+     "note": "This is a correct and widely accepted definition of meningitis."
+    },
+    {
+     "claim": "Symptoms like high fever, headache, stiff neck, and light sensitivity are classic signs of meningitis.",
+     "label": "standard_knowledge",
+     "note": "These are commonly recognized symptoms of meningitis."
+    },
+    {
+     "claim": "Meningococcal septicemia is a severe bloodstream infection that can cause a rash and other systemic symptoms.",
+     "label": "supported",
+     "note": "This is supported by source [3], which describes meningococcal septicemia as a bloodstream infection causing systemic symptoms."
+    },
+    {
+     "claim": "Meningococcal septicemia requires immediate treatment.",
+     "label": "supported",
+     "note": "Source [3] indicates that meningococcal disease requires immediate medical attention."
+    }
+   ],
+   "cited": [
+    2,
+    3
+   ],
+   "citation_checks": [
+    {
+     "source_number": 2,
+     "supports_answer": false
+    },
+    {
+     "source_number": 3,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Meningitis Diagnosis and Management Guidelines (IDSA 2004/2017 Update)",
+     "source": "Infectious Diseases Society of America (summary)",
+     "url": "https://academic.oup.com/cid/article/39/9/1267/402182"
+    },
+    {
+     "title": "Meningococcal Disease",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/meningococcaldisease.html"
+    }
+   ]
+  },
+  {
+   "id": 6,
+   "title": "Bacterial meningitis",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Meningitis is an infection of the protective membranes covering the brain and spinal cord.",
+     "label": "standard_knowledge",
+     "note": "This is a correct and widely accepted definition of meningitis."
+    },
+    {
+     "claim": "Symptoms like fever, headache, stiff neck, light sensitivity, and a non-fading rash are concerning for meningitis.",
+     "label": "supported",
+     "note": "The symptoms listed are consistent with those described for meningitis in the reference passages."
+    }
+   ],
+   "cited": [
+    1,
+    2
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": false
+    },
+    {
+     "source_number": 2,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 7,
+   "title": "Pulmonary embolism",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 0,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "A pulmonary embolism occurs when a blood clot travels to the lungs, causing chest pain and shortness of breath.",
+     "label": "supported",
+     "note": "This is supported by reference [1], which describes pulmonary embolism as a condition where a blood clot travels to the lungs and lists chest pain and shortness of breath as symptoms."
+    },
+    {
+     "claim": "Risk factors for pulmonary embolism include long flights and birth control pills.",
+     "label": "supported",
+     "note": "This is supported by references [1] and [2]. Reference [1] mentions long periods of immobility, such as long flights, and hormone-based medicines like birth control pills as risk factors for pulmonary embolism."
+    }
+   ],
+   "cited": [
+    1,
+    2,
+    5
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": true
+    },
+    {
+     "source_number": 5,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Pulmonary Embolism",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/pulmonaryembolism.html"
+    },
+    {
+     "title": "Blood Clots",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/bloodclots.html"
+    },
+    {
+     "title": "Deep Vein Thrombosis",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/deepveinthrombosis.html"
+    }
+   ]
+  },
+  {
+   "id": 7,
+   "title": "Pulmonary embolism",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "A pulmonary embolism is a blockage in one of the pulmonary arteries in the lungs, often caused by blood clots that travel from the legs.",
+     "label": "supported",
+     "note": "This is supported by the reference passages, particularly [2] which states that a DVT can break loose and cause a pulmonary embolism."
+    },
+    {
+     "claim": "Pulmonary embolism is a medical emergency.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical knowledge as pulmonary embolism can be life-threatening and requires immediate medical attention."
+    },
+    {
+     "claim": "Recent long flight and use of birth control pills can increase the risk of blood clots.",
+     "label": "supported",
+     "note": "This is supported by [1] which mentions that not moving for long periods and hormone-based medicines like birth control pills can increase the risk of blood clots."
+    }
+   ],
+   "cited": [],
+   "citation_checks": [],
+   "sources": []
+  },
+  {
+   "id": 8,
+   "title": "Diabetic ketoacidosis",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Diabetic ketoacidosis (DKA) occurs when the body doesn't have enough insulin, leading to high blood sugar and ketone buildup.",
+     "label": "supported",
+     "note": "This is supported by sources [1] and [4]."
+    },
+    {
+     "claim": "DKA is life-threatening and needs urgent treatment.",
+     "label": "supported",
+     "note": "This is supported by sources [1] and [4]."
+    },
+    {
+     "claim": "Symptoms supporting DKA include vomiting, extreme thirst, frequent urination, fruity breath, fast breathing, and a glucose meter reading 'HI'.",
+     "label": "standard_knowledge",
+     "note": "These symptoms are consistent with standard medical knowledge about DKA, although not all are explicitly listed in the provided sources."
+    }
+   ],
+   "cited": [
+    1,
+    2,
+    4
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": false
+    },
+    {
+     "source_number": 4,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Hyperglycemia",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/hyperglycemia.html"
+    },
+    {
+     "title": "Diabetes Type 1",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/diabetestype1.html"
+    }
+   ]
+  },
+  {
+   "id": 8,
+   "title": "Diabetic ketoacidosis",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Diabetic ketoacidosis (DKA) is a serious complication of diabetes characterized by high blood sugar, ketone production, and metabolic acidosis.",
+     "label": "supported",
+     "note": "This is supported by passages [1] and [5], which describe DKA as a serious complication of diabetes involving high blood glucose and ketone production."
+    },
+    {
+     "claim": "DKA can cause vomiting, fruity breath, rapid breathing, and altered consciousness.",
+     "label": "supported",
+     "note": "Passage [1] lists vomiting, fruity breath, and rapid breathing as symptoms of DKA. Altered consciousness is a known symptom of severe DKA, aligning with standard medical knowledge."
+    },
+    {
+     "claim": "A glucose meter reading 'HI' suggests very high blood sugar levels.",
+     "label": "standard_knowledge",
+     "note": "While not explicitly stated in the passages, 'HI' on a glucose meter typically indicates a blood glucose level above the meter's measurable range, which is standard knowledge."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 9,
+   "title": "Fever in a newborn",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "In infants under 2 months old, a fever of 100.4\u00b0F (38\u00b0C) or higher is considered an emergency, as it can be a sign of a serious infection.",
+     "label": "supported",
+     "note": "This is supported by source [2], which states that neonates 0-28 days with fever \u226538.0\u00b0C (100.4\u00b0F) require a full sepsis workup and hospitalization."
+    },
+    {
+     "claim": "A fever in an infant under 2 months old can indicate a serious infection, requiring prompt medical evaluation.",
+     "label": "supported",
+     "note": "This is supported by source [2], which indicates that fever in neonates can be a sign of serious infection and requires a full sepsis workup."
+    },
+    {
+     "claim": "Keep the baby comfortable and not overdressed.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice for managing fever in infants to prevent overheating."
+    },
+    {
+     "claim": "Ensure the baby is hydrated if possible.",
+     "label": "standard_knowledge",
+     "note": "Maintaining hydration is a general recommendation for managing fever and illness in infants."
+    },
+    {
+     "claim": "Increased lethargy, difficulty breathing, rash, and persistent vomiting are red flags to watch for in infants with fever.",
+     "label": "standard_knowledge",
+     "note": "These are common warning signs of serious illness in infants, though not specifically detailed in the provided sources."
+    }
+   ],
+   "cited": [
+    2
+   ],
+   "citation_checks": [
+    {
+     "source_number": 2,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "AAP Fever Without Source in Infants Guidelines (2021)",
+     "source": "American Academy of Pediatrics (summary)",
+     "url": "https://pediatrics.aappublications.org/content/148/2/e2021052228"
+    }
+   ]
+  },
+  {
+   "id": 9,
+   "title": "Fever in a newborn",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 0,
+    "standard_knowledge": 4,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "A fever in an infant under 3 months old can be a sign of a serious infection, and it's important to have her evaluated by a healthcare professional as soon as possible.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical advice for infants under 3 months with fever."
+    },
+    {
+     "claim": "Fever in infants under 3 months can indicate a serious bacterial infection, which requires prompt evaluation.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical advice for infants under 3 months with fever."
+    },
+    {
+     "claim": "Viral infections can also cause fever in infants, but it's important to rule out more serious causes first.",
+     "label": "standard_knowledge",
+     "note": "This is a common medical understanding that viral infections can cause fever, but serious bacterial infections must be ruled out in young infants."
+    },
+    {
+     "claim": "Increased fussiness or lethargy, difficulty breathing, rash, vomiting or diarrhea are red flags to watch for in infants with fever.",
+     "label": "standard_knowledge",
+     "note": "These are common red flags for serious illness in infants."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": false
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 10,
+   "title": "Ectopic pregnancy",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 3,
+    "standard_knowledge": 0,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "An ectopic pregnancy occurs when a fertilized egg implants outside the uterus, often in a fallopian tube.",
+     "label": "supported",
+     "note": "This is supported by standard medical knowledge and aligns with the information in the reference passages."
+    },
+    {
+     "claim": "It can cause sharp pain, spotting, dizziness, and shoulder pain, and requires immediate medical attention.",
+     "label": "supported",
+     "note": "This is supported by the reference passage [1], which lists these symptoms as signs of an ectopic pregnancy."
+    },
+    {
+     "claim": "Seek immediate medical evaluation at an emergency room.",
+     "label": "supported",
+     "note": "This is supported by the reference passage [1], which states that ectopic pregnancy can be a medical emergency requiring immediate care."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Ectopic Pregnancy",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/ectopicpregnancy.html"
+    }
+   ]
+  },
+  {
+   "id": 10,
+   "title": "Ectopic pregnancy",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 0,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "An ectopic pregnancy occurs when a fertilized egg implants outside the uterus, often in a fallopian tube.",
+     "label": "supported",
+     "note": "This is supported by the reference passage [1]."
+    },
+    {
+     "claim": "An ectopic pregnancy can cause sharp pain, spotting, dizziness, and shoulder pain if it leads to internal bleeding.",
+     "label": "supported",
+     "note": "This is supported by the reference passage [1], which lists these symptoms as warning signs of an ectopic pregnancy."
+    }
+   ],
+   "cited": [],
+   "citation_checks": [],
+   "sources": []
+  },
+  {
+   "id": 11,
+   "title": "Suicidal crisis",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 3,
+    "standard_knowledge": 0,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Expressing thoughts of ending one's life and having a plan are serious signs that require immediate attention.",
+     "label": "supported",
+     "note": "This is supported by the reference passages, which list talking about wanting to die or making a plan as warning signs for suicide."
+    },
+    {
+     "claim": "Thinking about ending life",
+     "label": "supported",
+     "note": "This is supported by the reference passages, which list talking about wanting to die as a warning sign for suicide."
+    },
+    {
+     "claim": "Saving up pills",
+     "label": "supported",
+     "note": "This is supported by the reference passages, which list stockpiling pills as a warning sign for suicide."
+    }
+   ],
+   "cited": [
+    1,
+    3
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 3,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Suicide",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/suicide.html"
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "title": "Suicidal crisis",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 4,
+    "standard_knowledge": 0,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Expressing thoughts of ending one's life and having a plan indicates a serious risk that needs immediate attention.",
+     "label": "supported",
+     "note": "This is supported by the warning signs for suicide listed in source [1], which include talking about wanting to die or making a plan to kill oneself."
+    },
+    {
+     "claim": "Expressed intent to end life",
+     "label": "supported",
+     "note": "This is supported by source [1], which lists talking about wanting to die as a warning sign for suicide."
+    },
+    {
+     "claim": "Plan involving pills",
+     "label": "supported",
+     "note": "This is supported by source [1], which mentions stockpiling pills as a warning sign for suicide."
+    },
+    {
+     "claim": "Feeling of hopelessness",
+     "label": "supported",
+     "note": "This is supported by source [1], which lists feeling hopeless as a warning sign for suicide."
+    }
+   ],
+   "cited": [],
+   "citation_checks": [],
+   "sources": []
+  },
+  {
+   "id": 12,
+   "title": "Severe asthma attack",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 0,
+    "standard_knowledge": 2,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "A severe asthma attack can cause difficulty speaking, blue lips, and lack of response to inhalers.",
+     "label": "standard_knowledge",
+     "note": "These are recognized symptoms of a severe asthma attack in medical literature, though not explicitly detailed in the provided sources."
+    },
+    {
+     "claim": "Using your rescue inhaler that often without relief and experiencing blue lips are serious signs that you need urgent care.",
+     "label": "standard_knowledge",
+     "note": "Frequent use of a rescue inhaler without relief and cyanosis (blue lips) are standard indicators of a severe asthma attack requiring emergency care."
+    }
+   ],
+   "cited": [
+    1,
+    5
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": false
+    },
+    {
+     "source_number": 5,
+     "supports_answer": false
+    }
+   ],
+   "sources": [
+    {
+     "title": "Asthma",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/asthma.html"
+    },
+    {
+     "title": "Asthma in Children",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/asthmainchildren.html"
+    }
+   ]
+  },
+  {
+   "id": 12,
+   "title": "Severe asthma attack",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 2,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "A severe asthma attack can cause difficulty breathing, inability to speak full sentences, and cyanosis (blue lips).",
+     "label": "standard_knowledge",
+     "note": "These are well-known symptoms of a severe asthma attack."
+    },
+    {
+     "claim": "Immediate medical attention is needed for a severe asthma attack.",
+     "label": "supported",
+     "note": "This is supported by the reference passages, which state that emergency care is needed if short-term relief medicines do not work during a severe attack."
+    },
+    {
+     "claim": "Using your inhaler that often without relief, along with difficulty speaking and blue lips, are serious signs.",
+     "label": "standard_knowledge",
+     "note": "These are recognized as serious signs of a severe asthma attack in medical practice."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 13,
+   "title": "Testicular torsion",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 0,
+    "standard_knowledge": 2,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Testicular torsion occurs when the testicle twists and cuts off its blood supply.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known medical fact about testicular torsion."
+    },
+    {
+     "claim": "Testicular torsion causes sudden severe pain and swelling and is a surgical emergency.",
+     "label": "standard_knowledge",
+     "note": "This is a well-established fact in medical literature about testicular torsion."
+    }
+   ],
+   "cited": [],
+   "citation_checks": [],
+   "sources": []
+  },
+  {
+   "id": 13,
+   "title": "Testicular torsion",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 0,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Testicular torsion occurs when the spermatic cord twists, cutting off blood supply to the testicle.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known medical fact about testicular torsion."
+    },
+    {
+     "claim": "Testicular torsion is a surgical emergency and needs immediate treatment.",
+     "label": "standard_knowledge",
+     "note": "This is a well-established fact in emergency medicine."
+    },
+    {
+     "claim": "Sudden severe testicular pain and swelling, especially with vomiting, could indicate testicular torsion.",
+     "label": "standard_knowledge",
+     "note": "These are classic symptoms of testicular torsion."
+    }
+   ],
+   "cited": [],
+   "citation_checks": [],
+   "sources": []
+  },
+  {
+   "id": 14,
+   "title": "Upper GI bleed",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Vomiting material that looks like coffee grounds and having black, tarry stools can indicate bleeding in your gastrointestinal tract, possibly from your stomach or upper intestines.",
+     "label": "supported",
+     "note": "This is supported by source [1], which lists these symptoms as signs of bleeding in the upper digestive tract."
+    },
+    {
+     "claim": "Dizziness when standing might suggest significant blood loss.",
+     "label": "standard_knowledge",
+     "note": "Dizziness upon standing can be a sign of orthostatic hypotension, which can occur with significant blood loss."
+    },
+    {
+     "claim": "The symptoms of vomiting coffee ground-like material and black, tarry stools suggest bleeding in the upper part of the digestive tract, possibly due to an ulcer or another source.",
+     "label": "supported",
+     "note": "Source [1] supports this, as it lists these symptoms as indicative of upper GI bleeding, which can be caused by ulcers."
+    }
+   ],
+   "cited": [
+    1,
+    2
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": false
+    }
+   ],
+   "sources": [
+    {
+     "title": "Gastrointestinal Bleeding",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/gastrointestinalbleeding.html"
+    },
+    {
+     "title": "Blood Thinners",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/bloodthinners.html"
+    }
+   ]
+  },
+  {
+   "id": 14,
+   "title": "Upper GI bleed",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Vomiting material that looks like coffee grounds and having black, tarry stools can indicate bleeding in the stomach or intestines.",
+     "label": "supported",
+     "note": "This is supported by Reference [1], which states that signs of bleeding in the upper digestive tract include vomit that looks like coffee grounds and black or tarry stool."
+    },
+    {
+     "claim": "The dizziness when standing could be a sign of low blood pressure due to blood loss.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical knowledge. Dizziness upon standing can be a sign of orthostatic hypotension, which can occur due to blood loss."
+    }
+   ],
+   "cited": [],
+   "citation_checks": [],
+   "sources": []
+  },
+  {
+   "id": 15,
+   "title": "Heat stroke",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Heat stroke is a severe heat-related illness where the body temperature rises above 104\u00b0F, often with confusion and hot, dry skin.",
+     "label": "supported",
+     "note": "The reference states that heat stroke is a life-threatening illness with symptoms including dry skin, confusion, and a body temperature that may rise above 106\u00b0F."
+    },
+    {
+     "claim": "Avoid giving him anything to drink if he's confused.",
+     "label": "standard_knowledge",
+     "note": "This is a standard medical practice to prevent choking in someone who is confused or has an altered mental state."
+    },
+    {
+     "claim": "Heat stroke can cause serious complications, so it's crucial he gets medical attention immediately.",
+     "label": "supported",
+     "note": "The reference indicates that heat stroke is life-threatening and requires immediate medical help."
+    }
+   ],
+   "cited": [
+    1,
+    2
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Heat Illness",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/heatillness.html"
+    }
+   ]
+  },
+  {
+   "id": 15,
+   "title": "Heat stroke",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 1
+   },
+   "claims": [
+    {
+     "claim": "Heatstroke occurs when the body overheats and can't cool down, leading to a high body temperature, confusion, and dry skin.",
+     "label": "supported",
+     "note": "This is supported by source [1], which describes heat stroke as a life-threatening illness with symptoms including dry skin, confusion, and a high body temperature."
+    },
+    {
+     "claim": "High body temperature (104F)",
+     "label": "fabricated",
+     "note": "The specific temperature of 104F is not mentioned in the sources. Source [1] mentions body temperature may rise above 106F in heat stroke."
+    },
+    {
+     "claim": "Hot, dry skin",
+     "label": "supported",
+     "note": "Source [1] supports this as a symptom of heat stroke."
+    },
+    {
+     "claim": "Stopped sweating",
+     "label": "standard_knowledge",
+     "note": "It is standard knowledge that lack of sweating can be a symptom of heat stroke, although not explicitly mentioned in the sources."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 16,
+   "title": "Sepsis",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Sepsis is a severe response to infection that can lead to organ failure and requires urgent treatment.",
+     "label": "supported",
+     "note": "This is supported by the reference passage [1], which states that severe cases of sepsis can lead to septic shock and organ failure."
+    },
+    {
+     "claim": "Sepsis can occur when an infection, like a urinary tract infection, spreads and affects the whole body.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical knowledge. Sepsis can result from any infection spreading throughout the body."
+    },
+    {
+     "claim": "High fever, shaking, rapid breathing, racing heart, and confusion are symptoms supporting sepsis.",
+     "label": "supported",
+     "note": "These symptoms are listed in the reference passage [1] as symptoms of sepsis."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Sepsis",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/sepsis.html"
+    }
+   ]
+  },
+  {
+   "id": 16,
+   "title": "Sepsis",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Sepsis is a severe response to infection that can lead to tissue damage, organ failure, and death if not treated promptly.",
+     "label": "standard_knowledge",
+     "note": "This is a correct, mainstream medical understanding of sepsis."
+    },
+    {
+     "claim": "High fever, confusion, rapid breathing, and fast heart rate are symptoms of sepsis.",
+     "label": "supported",
+     "note": "These symptoms are listed in the reference passage as symptoms of sepsis."
+    },
+    {
+     "claim": "It's important to get medical attention immediately for sepsis.",
+     "label": "supported",
+     "note": "The reference passage emphasizes the importance of immediate medical care for sepsis."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 17,
+   "title": "Carbon monoxide poisoning",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 3,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Carbon monoxide is a colorless, odorless gas that can cause symptoms like headaches, dizziness, and nausea.",
+     "label": "supported",
+     "note": "This is supported by source [2], which states that carbon monoxide is a gas with no odor or color and lists headache, dizziness, and nausea as common symptoms of CO poisoning."
+    },
+    {
+     "claim": "Carbon monoxide is often linked to gas appliances and can be life-threatening.",
+     "label": "supported",
+     "note": "Source [2] mentions that carbon monoxide is found in combustion fumes from gas ranges and heating systems and can cause sudden illness and death."
+    },
+    {
+     "claim": "Symptoms worsen with gas heater on and improve when leaving the house.",
+     "label": "standard_knowledge",
+     "note": "This is standard knowledge as carbon monoxide exposure is linked to enclosed spaces with poor ventilation, and symptoms typically improve when the source is removed or when the person is in fresh air."
+    },
+    {
+     "claim": "Ventilate your home immediately.",
+     "label": "standard_knowledge",
+     "note": "Ventilating the home is a standard immediate response to suspected carbon monoxide exposure to reduce gas concentration."
+    },
+    {
+     "claim": "Do not use the gas heater until it's inspected.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice to prevent further exposure to carbon monoxide from a potentially faulty appliance."
+    },
+    {
+     "claim": "Ensure carbon monoxide detectors are working.",
+     "label": "supported",
+     "note": "Source [2] advises using a CO detector to warn of high levels of CO in the home."
+    }
+   ],
+   "cited": [
+    2
+   ],
+   "citation_checks": [
+    {
+     "source_number": 2,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Carbon Monoxide Poisoning",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/carbonmonoxidepoisoning.html"
+    }
+   ]
+  },
+  {
+   "id": 17,
+   "title": "Carbon monoxide poisoning",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Carbon monoxide poisoning can cause headaches, nausea, and dizziness, especially when using gas appliances.",
+     "label": "supported",
+     "note": "This is supported by Reference [4], which lists headache, nausea, and dizziness as symptoms of carbon monoxide poisoning."
+    },
+    {
+     "claim": "Carbon monoxide poisoning improves when leaving the exposure area.",
+     "label": "standard_knowledge",
+     "note": "This is standard knowledge as removing oneself from the source of carbon monoxide exposure typically leads to symptom improvement."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": false
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 18,
+   "title": "Strep throat",
+   "rag": true,
+   "level": "urgent_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Tonsillitis is an inflammation of the tonsils, often causing a sore throat, fever, and swollen glands. It can be caused by viral or bacterial infections.",
+     "label": "supported",
+     "note": "This is supported by source [1], which describes tonsillitis symptoms and causes."
+    },
+    {
+     "claim": "Strep throat is a bacterial infection that causes a sore throat, fever, and swollen glands, often without a cough.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical knowledge about strep throat."
+    },
+    {
+     "claim": "Since you have a high fever and significant throat pain, it's important to see a healthcare provider today to get checked out, especially to see if you need antibiotics.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice for symptoms that could indicate a bacterial infection like strep throat."
+    },
+    {
+     "claim": "Stay hydrated and rest as much as possible.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice for managing symptoms of infections."
+    }
+   ],
+   "cited": [
+    1,
+    4
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 4,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Tonsillitis",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/tonsillitis.html"
+    },
+    {
+     "title": "Sore Throat",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/sorethroat.html"
+    }
+   ]
+  },
+  {
+   "id": 18,
+   "title": "Strep throat",
+   "rag": false,
+   "level": "urgent_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 0,
+    "standard_knowledge": 5,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Strep throat is a bacterial infection that causes a sore throat, fever, and white patches on the tonsils.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known description of strep throat."
+    },
+    {
+     "claim": "Viral infections can also cause sore throat and fever, but usually with a cough or runny nose.",
+     "label": "standard_knowledge",
+     "note": "This is a general description of viral pharyngitis."
+    },
+    {
+     "claim": "To get the right treatment, you should see a healthcare provider today for a throat swab and evaluation.",
+     "label": "standard_knowledge",
+     "note": "This is a standard recommendation for diagnosing throat infections."
+    },
+    {
+     "claim": "In the meantime, rest, stay hydrated, and you can take over-the-counter pain relievers like acetaminophen or ibuprofen as directed on the package to help with the fever and throat pain.",
+     "label": "standard_knowledge",
+     "note": "This is a common recommendation for managing symptoms of throat infections."
+    },
+    {
+     "claim": "It's good that you don't have a cough, as that can help differentiate between different types of infections.",
+     "label": "standard_knowledge",
+     "note": "The absence of a cough can help differentiate between viral and bacterial infections."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": false
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 19,
+   "title": "Bladder infection (UTI)",
+   "rag": true,
+   "level": "urgent_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 7,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "A UTI can cause burning during urination, frequent urges, and urgency.",
+     "label": "supported",
+     "note": "This is supported by source [1], which lists these as symptoms of a UTI."
+    },
+    {
+     "claim": "UTIs are common in women and often treated with antibiotics.",
+     "label": "supported",
+     "note": "Source [1] states that UTIs are more common in women and are treated with antibiotics."
+    },
+    {
+     "claim": "It's good that you don't have a fever or back pain, as those could suggest a more serious infection.",
+     "label": "supported",
+     "note": "Source [1] lists fever and back pain as symptoms of a UTI, implying that their absence might indicate a less severe infection."
+    },
+    {
+     "claim": "To confirm a UTI, a urine test is usually needed.",
+     "label": "supported",
+     "note": "Source [1] states that a urine test is used to diagnose a UTI."
+    },
+    {
+     "claim": "If it is a UTI, antibiotics can help clear it up.",
+     "label": "supported",
+     "note": "Source [1] confirms that antibiotics are used to treat UTIs."
+    },
+    {
+     "claim": "If you notice any new symptoms like fever or back pain, seek care right away.",
+     "label": "supported",
+     "note": "Source [1] lists fever and back pain as symptoms of a UTI, suggesting they are warning signs."
+    },
+    {
+     "claim": "Interstitial Cystitis can cause bladder pain and frequent urination, but usually without an infection.",
+     "label": "supported",
+     "note": "Source [3] describes IC as causing bladder pain and frequent urination, and notes it is not caused by an infection."
+    },
+    {
+     "claim": "Interstitial Cystitis is less common than UTIs.",
+     "label": "standard_knowledge",
+     "note": "This is standard knowledge, as UTIs are one of the most common infections, while IC is a less common condition."
+    }
+   ],
+   "cited": [
+    1,
+    3
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 3,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Urinary Tract Infections",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/urinarytractinfections.html"
+    },
+    {
+     "title": "Interstitial Cystitis",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/interstitialcystitis.html"
+    }
+   ]
+  },
+  {
+   "id": 19,
+   "title": "Bladder infection (UTI)",
+   "rag": false,
+   "level": "urgent_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 4,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "A UTI can cause burning during urination, frequent urges to go, and urgency.",
+     "label": "supported",
+     "note": "These symptoms are listed in source [1] as indicative of a UTI."
+    },
+    {
+     "claim": "It's good that you don't have a fever or back pain, as those could indicate a more serious infection.",
+     "label": "supported",
+     "note": "Source [1] mentions fever and back pain as symptoms of a UTI, which could indicate a more serious infection if present."
+    },
+    {
+     "claim": "To confirm a UTI and get appropriate treatment, you should see a healthcare provider today.",
+     "label": "supported",
+     "note": "Source [1] advises seeing a doctor for a UTI diagnosis and treatment."
+    },
+    {
+     "claim": "They can perform a simple urine test and prescribe antibiotics if needed.",
+     "label": "supported",
+     "note": "Source [1] states that a urine test can confirm a UTI and antibiotics are the treatment."
+    },
+    {
+     "claim": "Drink plenty of water to help flush out bacteria.",
+     "label": "standard_knowledge",
+     "note": "Drinking water is a common recommendation to help manage UTIs, though not explicitly mentioned in the sources."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 20,
+   "title": "Kidney infection",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 0,
+    "standard_knowledge": 4,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "A serious urinary tract infection that might have spread to your kidneys is known as pyelonephritis.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known medical fact."
+    },
+    {
+     "claim": "The combination of burning during urination, fever, pain in your side and back, and vomiting suggests this could be more than a simple bladder infection.",
+     "label": "standard_knowledge",
+     "note": "These symptoms are indicative of a more severe infection like pyelonephritis."
+    },
+    {
+     "claim": "A kidney infection can cause burning during urination, fever, back pain, and vomiting.",
+     "label": "standard_knowledge",
+     "note": "These are common symptoms of pyelonephritis."
+    },
+    {
+     "claim": "It requires prompt medical treatment.",
+     "label": "standard_knowledge",
+     "note": "Pyelonephritis is a serious condition that requires immediate medical attention."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": false
+    }
+   ],
+   "sources": [
+    {
+     "title": "Urinary Tract Infections",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/urinarytractinfections.html"
+    }
+   ]
+  },
+  {
+   "id": 20,
+   "title": "Kidney infection",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 0,
+    "standard_knowledge": 2,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "A kidney infection can cause fever, back pain, nausea, and urinary symptoms.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known symptomatology for kidney infections, although not explicitly detailed in the provided passages."
+    },
+    {
+     "claim": "The combination of fever, side and back pain, nausea, and burning during urination suggests a possible serious urinary tract infection that may have spread to your kidneys.",
+     "label": "standard_knowledge",
+     "note": "This is a reasonable clinical inference based on common medical knowledge about UTIs and kidney infections."
+    }
+   ],
+   "cited": [
+    1,
+    2
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": false
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 21,
+   "title": "Kidney stone",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 0,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Kidney stones can cause severe cramping pain that radiates to the groin and may cause blood in the urine.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known symptom of kidney stones, although not mentioned in the provided reference passages."
+    },
+    {
+     "claim": "An infection in the urinary tract can cause pain and blood in the urine, though usually with other symptoms like fever.",
+     "label": "standard_knowledge",
+     "note": "This is a common understanding of urinary tract infections, although not detailed in the provided reference passages."
+    },
+    {
+     "claim": "Seek emergency medical evaluation immediately for sudden, severe cramping pain in your left side, radiating to the groin, along with pink urine.",
+     "label": "standard_knowledge",
+     "note": "This is a reasonable medical recommendation based on the symptoms described, although not directly supported by the provided reference passages."
+    }
+   ],
+   "cited": [
+    2
+   ],
+   "citation_checks": [
+    {
+     "source_number": 2,
+     "supports_answer": false
+    }
+   ],
+   "sources": [
+    {
+     "title": "Abdominal Pain",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/abdominalpain.html"
+    }
+   ]
+  },
+  {
+   "id": 21,
+   "title": "Kidney stone",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 5,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Kidney stones can cause severe pain in the side and groin, often with blood in the urine.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known symptom of kidney stones, although not covered in the provided sources."
+    },
+    {
+     "claim": "An infection in the urinary tract can cause pain and blood in the urine, though the sudden severe pain is more typical of a stone.",
+     "label": "standard_knowledge",
+     "note": "This is a common understanding of urinary tract infections and kidney stones, though not detailed in the provided sources."
+    },
+    {
+     "claim": "Seek immediate medical evaluation at the emergency room.",
+     "label": "standard_knowledge",
+     "note": "This is a standard recommendation for severe pain and potential kidney stones or urinary tract issues."
+    },
+    {
+     "claim": "Avoid eating or drinking until evaluated, in case imaging or procedures are needed.",
+     "label": "standard_knowledge",
+     "note": "This is a common precaution before medical evaluation for abdominal issues."
+    },
+    {
+     "claim": "Increase in pain or inability to move",
+     "label": "standard_knowledge",
+     "note": "These are general red flags for worsening conditions, though not specifically covered in the sources."
+    },
+    {
+     "claim": "Fever or chills",
+     "label": "supported",
+     "note": "Fever or chills are mentioned as symptoms in the context of diverticulitis in source [5]."
+    },
+    {
+     "claim": "Nausea or vomiting",
+     "label": "supported",
+     "note": "Nausea or vomiting are mentioned as symptoms in the context of appendicitis and diverticulitis in sources [4] and [5]."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": false
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 22,
+   "title": "Cellulitis",
+   "rag": true,
+   "level": "urgent_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 4,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Cellulitis is a skin infection that can occur after an injury like a scrape, leading to redness, warmth, swelling, and fever.",
+     "label": "supported",
+     "note": "This is supported by source [1], which describes cellulitis as an infection of the skin and underlying tissues caused by bacteria entering through an injury, with symptoms including fever and red, tender skin."
+    },
+    {
+     "claim": "Cellulitis can spread and may require antibiotics to treat effectively.",
+     "label": "supported",
+     "note": "Source [1] supports this claim, stating that cellulitis is treated with antibiotics and can be serious, requiring medical attention."
+    },
+    {
+     "claim": "Keep the affected area clean and avoid putting any pressure on it.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice for managing skin infections to prevent further irritation or injury."
+    },
+    {
+     "claim": "Visit an urgent care clinic or your doctor today for evaluation.",
+     "label": "standard_knowledge",
+     "note": "Seeking prompt medical evaluation for suspected cellulitis is standard medical advice due to the potential for rapid progression."
+    },
+    {
+     "claim": "Keep the affected area clean and elevated if possible.",
+     "label": "standard_knowledge",
+     "note": "Elevating the affected area is a common recommendation to reduce swelling in infections like cellulitis."
+    },
+    {
+     "claim": "Red flags to watch for include increased redness or swelling, higher fever, red streaks spreading from the area, and increased pain.",
+     "label": "standard_knowledge",
+     "note": "These are standard warning signs of worsening infection that require medical attention."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Cellulitis",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/cellulitis.html"
+    }
+   ]
+  },
+  {
+   "id": 22,
+   "title": "Cellulitis",
+   "rag": false,
+   "level": "urgent_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 2,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Cellulitis is an infection of the skin and tissues beneath it, often causing redness, warmth, swelling, and fever.",
+     "label": "supported",
+     "note": "This is supported by source [1], which describes cellulitis as an infection of the skin and deep underlying tissues with symptoms including fever, red, tender skin."
+    },
+    {
+     "claim": "The redness, warmth, swelling, and fever are concerning signs that should be checked by a healthcare provider today.",
+     "label": "standard_knowledge",
+     "note": "While not explicitly stated in the sources, it is standard medical advice to seek prompt evaluation for signs of infection like cellulitis."
+    },
+    {
+     "claim": "It's important to get this treated to prevent it from spreading further.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical knowledge, as untreated cellulitis can spread and lead to more serious complications."
+    },
+    {
+     "claim": "They can assess the area and decide if antibiotics are needed.",
+     "label": "supported",
+     "note": "Source [1] supports this, stating that treatment for cellulitis is with antibiotics."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 23,
+   "title": "Possible ankle fracture",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": false,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "A fracture is a break in a bone, and the symptoms you describe could indicate a fracture of the ankle bone.",
+     "label": "supported",
+     "note": "This is supported by source [1], which states that a fracture is a break in a bone and mentions symptoms like swelling and inability to bear weight."
+    },
+    {
+     "claim": "A severe sprain involves significant injury to the ligaments, causing swelling and pain.",
+     "label": "supported",
+     "note": "This is supported by source [1], which describes a sprain as an injury to the ligaments and mentions swelling and pain as symptoms."
+    },
+    {
+     "claim": "Get an X-ray to assess for fractures.",
+     "label": "standard_knowledge",
+     "note": "It is standard medical practice to use X-rays to assess for fractures."
+    },
+    {
+     "claim": "Follow medical advice for treatment, which may include immobilization or surgery.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical knowledge for treating fractures or severe sprains."
+    },
+    {
+     "claim": "Red flags to watch for include increased pain or swelling, numbness or tingling in the foot, and changes in skin color or temperature.",
+     "label": "standard_knowledge",
+     "note": "These are standard warning signs for complications in injuries like fractures or severe sprains."
+    }
+   ],
+   "cited": [
+    1,
+    3
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 3,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Ankle Injuries and Disorders",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/ankleinjuriesanddisorders.html"
+    },
+    {
+     "title": "Sports Injuries",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/sportsinjuries.html"
+    }
+   ]
+  },
+  {
+   "id": 23,
+   "title": "Possible ankle fracture",
+   "rag": false,
+   "level": "urgent_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 3,
+    "standard_knowledge": 4,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "A fracture could cause swelling, inability to bear weight, and tenderness over the bone.",
+     "label": "standard_knowledge",
+     "note": "These are common symptoms of a fracture, although not explicitly mentioned in the reference passages."
+    },
+    {
+     "claim": "A severe sprain can also cause similar symptoms, but it's important to rule out a fracture first.",
+     "label": "standard_knowledge",
+     "note": "Severe sprains can cause swelling and inability to bear weight, similar to fractures."
+    },
+    {
+     "claim": "Go to an urgent care clinic for an X-ray and evaluation.",
+     "label": "standard_knowledge",
+     "note": "X-rays are commonly used to diagnose fractures, although not explicitly mentioned in the reference passages."
+    },
+    {
+     "claim": "Keep the ankle elevated.",
+     "label": "supported",
+     "note": "Elevation is part of the RICE method mentioned in source [3]."
+    },
+    {
+     "claim": "Apply ice to reduce swelling.",
+     "label": "supported",
+     "note": "Ice is part of the RICE method mentioned in source [3]."
+    },
+    {
+     "claim": "Avoid putting weight on the ankle.",
+     "label": "supported",
+     "note": "Avoiding weight on an injured joint is advised in source [5]."
+    },
+    {
+     "claim": "Increased pain or swelling, numbness or tingling in the foot, change in color or temperature of the foot are red flags to watch for.",
+     "label": "standard_knowledge",
+     "note": "These are common red flags for serious injuries, although not explicitly mentioned in the reference passages."
+    }
+   ],
+   "cited": [],
+   "citation_checks": [],
+   "sources": []
+  },
+  {
+   "id": 24,
+   "title": "Pneumonia",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 0,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Pneumonia is a lung infection that can cause fever, cough with phlegm, shortness of breath, and chest pain.",
+     "label": "supported",
+     "note": "This is supported by the reference passage [3]."
+    },
+    {
+     "claim": "Your symptoms, including a fever, cough with green phlegm, shortness of breath, and chest pain, could indicate a serious lung infection like pneumonia.",
+     "label": "supported",
+     "note": "This is supported by the reference passage [3], which lists these symptoms as indicative of pneumonia."
+    }
+   ],
+   "cited": [
+    3
+   ],
+   "citation_checks": [
+    {
+     "source_number": 3,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Pneumonia",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/pneumonia.html"
+    }
+   ]
+  },
+  {
+   "id": 24,
+   "title": "Pneumonia",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 5,
+    "standard_knowledge": 0,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Pneumonia is a lung infection that can cause cough, fever, shortness of breath, and chest pain, especially when breathing deeply.",
+     "label": "supported",
+     "note": "This is supported by Reference [3], which lists these symptoms for pneumonia."
+    },
+    {
+     "claim": "Cough with green phlegm is a symptom of pneumonia.",
+     "label": "supported",
+     "note": "Reference [3] mentions cough with phlegm as a symptom of pneumonia."
+    },
+    {
+     "claim": "Fever is a symptom of pneumonia.",
+     "label": "supported",
+     "note": "Reference [3] lists fever as a symptom of pneumonia."
+    },
+    {
+     "claim": "Shortness of breath is a symptom of pneumonia.",
+     "label": "supported",
+     "note": "Reference [3] lists shortness of breath as a symptom of pneumonia."
+    },
+    {
+     "claim": "Chest pain with deep breath is a symptom of pneumonia.",
+     "label": "supported",
+     "note": "Reference [3] lists chest pain when you breathe or cough as a symptom of pneumonia."
+    }
+   ],
+   "cited": [
+    1,
+    2
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": false
+    },
+    {
+     "source_number": 2,
+     "supports_answer": false
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 25,
+   "title": "Ear infection in a child",
+   "rag": true,
+   "level": "urgent_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 3,
+    "standard_knowledge": 5,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Ear infections often follow colds in children and can cause ear pulling, fussiness, and fever.",
+     "label": "supported",
+     "note": "This is supported by source [1], which mentions ear infections are common in children and lists symptoms like ear pulling and fussiness."
+    },
+    {
+     "claim": "It's a good idea to have him seen by a healthcare provider today to confirm the diagnosis and discuss treatment options.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical advice for suspected ear infections in children."
+    },
+    {
+     "claim": "They might recommend pain relief and, if necessary, antibiotics.",
+     "label": "supported",
+     "note": "Source [1] supports this, stating that pain relievers are often recommended and antibiotics may be necessary for severe infections."
+    },
+    {
+     "claim": "In the meantime, you can give him acetaminophen or ibuprofen to help with the fever and discomfort, but be sure to follow the dosing instructions on the package.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice for managing fever and discomfort in children."
+    },
+    {
+     "claim": "If his symptoms worsen or you notice any new concerning signs, seek care promptly.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice for monitoring symptoms in children."
+    },
+    {
+     "claim": "Fluid draining from the ear is a red flag to watch for.",
+     "label": "supported",
+     "note": "Source [1] lists fluid draining from the ear as a symptom of ear infections."
+    },
+    {
+     "claim": "Worsening symptoms are a red flag to watch for.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice for monitoring any illness."
+    },
+    {
+     "claim": "High fever persisting more than 48 hours is a red flag to watch for.",
+     "label": "standard_knowledge",
+     "note": "Persistent high fever is generally considered a reason to seek medical attention."
+    }
+   ],
+   "cited": [
+    1,
+    2
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": false
+    }
+   ],
+   "sources": [
+    {
+     "title": "Ear Infections",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/earinfections.html"
+    },
+    {
+     "title": "AAP Fever Without Source in Infants Guidelines (2021)",
+     "source": "American Academy of Pediatrics (summary)",
+     "url": "https://pediatrics.aappublications.org/content/148/2/e2021052228"
+    }
+   ]
+  },
+  {
+   "id": 25,
+   "title": "Ear infection in a child",
+   "rag": false,
+   "level": "urgent_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 0,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Ear infections often follow a cold in children and can cause ear pain, fussiness, and fever.",
+     "label": "standard_knowledge",
+     "note": "This is a common understanding of ear infections in children."
+    },
+    {
+     "claim": "Use children's fever-reducing medicine as directed on the label.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice for managing fever in children."
+    },
+    {
+     "claim": "If his symptoms worsen or he becomes very lethargic, seek care right away.",
+     "label": "standard_knowledge",
+     "note": "This is a general guideline for when to seek medical care for worsening symptoms."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": false
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 26,
+   "title": "Shingles",
+   "rag": true,
+   "level": "urgent_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 3,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Shingles is caused by the reactivation of the chickenpox virus.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known fact about shingles."
+    },
+    {
+     "claim": "Shingles typically presents with burning and tingling followed by a blistering rash on one side of the body.",
+     "label": "supported",
+     "note": "This is supported by source [1]."
+    },
+    {
+     "claim": "Antiviral medications can help reduce the severity and duration of shingles if started early.",
+     "label": "supported",
+     "note": "This is supported by source [3]."
+    },
+    {
+     "claim": "Keep the rash clean and avoid scratching it to prevent infection.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice for managing rashes to prevent secondary infection."
+    },
+    {
+     "claim": "Contact your healthcare provider today for evaluation and possible antiviral treatment.",
+     "label": "supported",
+     "note": "Source [3] supports the urgency of contacting a provider for antiviral treatment."
+    },
+    {
+     "claim": "Increase in pain or spread of rash, fever or chills, and rash spreading to the eye area are red flags to watch for in shingles.",
+     "label": "standard_knowledge",
+     "note": "These are standard red flags for complications in shingles."
+    }
+   ],
+   "cited": [
+    1,
+    3
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 3,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Shingles",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/shingles.html"
+    }
+   ]
+  },
+  {
+   "id": 26,
+   "title": "Shingles",
+   "rag": false,
+   "level": "urgent_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Shingles is caused by the reactivation of the chickenpox virus, leading to a painful, blistering rash typically in a band on one side of the body.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known fact about shingles, though not explicitly mentioned in the provided sources."
+    },
+    {
+     "claim": "Shingles can be quite painful.",
+     "label": "supported",
+     "note": "Source [1] mentions that shingles can cause burning or shooting pain, which can be mild to severe."
+    },
+    {
+     "claim": "Antiviral medication for shingles works best if started early.",
+     "label": "standard_knowledge",
+     "note": "This is a standard medical recommendation for treating shingles, though not explicitly mentioned in the provided sources."
+    },
+    {
+     "claim": "You can take over-the-counter pain relief for shingles, but follow the package instructions.",
+     "label": "standard_knowledge",
+     "note": "This is a common recommendation for managing pain, though not explicitly mentioned in the provided sources."
+    },
+    {
+     "claim": "If you notice the rash spreading, develop a fever, or if the pain becomes severe, seek care right away.",
+     "label": "supported",
+     "note": "Source [1] mentions that shingles can cause fever and severe pain, and that the rash can be more widespread in people with weakened immune systems."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 27,
+   "title": "Gout",
+   "rag": true,
+   "level": "urgent_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 2,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Gout is a common type of arthritis that can cause sudden, severe pain and swelling, often in the big toe, especially after consuming foods and drinks high in purines like beer and steak.",
+     "label": "supported",
+     "note": "This is supported by sources [1] and [2], which describe gout as a common inflammatory arthritis causing pain and swelling, often in the big toe, and linked to purine-rich foods."
+    },
+    {
+     "claim": "Rest your foot, apply ice, and consider taking an over-the-counter pain reliever like ibuprofen if it's safe for you.",
+     "label": "standard_knowledge",
+     "note": "Rest, ice, and over-the-counter pain relievers are standard home care recommendations for gout flares."
+    },
+    {
+     "claim": "If the pain worsens or you develop a fever, seek care immediately.",
+     "label": "standard_knowledge",
+     "note": "Worsening pain or fever can indicate complications, which is standard advice to seek medical care."
+    }
+   ],
+   "cited": [
+    1,
+    2
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Gout",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/gout.html"
+    }
+   ]
+  },
+  {
+   "id": 27,
+   "title": "Gout",
+   "rag": false,
+   "level": "urgent_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 3,
+    "standard_knowledge": 6,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Gout often affects the big toe and can cause sudden, severe pain, redness, and swelling.",
+     "label": "supported",
+     "note": "This is supported by source [1], which states that gout usually affects one joint at a time, often the big toe, and causes intense pain, swelling, redness, and warmth."
+    },
+    {
+     "claim": "The recent consumption of beer and steak, which are high in purines, might have triggered this episode.",
+     "label": "supported",
+     "note": "This is supported by source [1], which mentions that an unhealthy diet rich in purines, such as red meat, can contribute to gout."
+    },
+    {
+     "claim": "Gout is a form of arthritis caused by uric acid crystal deposits in the joint, often triggered by high-purine foods and alcohol.",
+     "label": "supported",
+     "note": "This is supported by source [2], which describes gout as a type of inflammatory arthritis caused by uric acid buildup, often related to purine-rich foods."
+    },
+    {
+     "claim": "Avoid alcohol and high-purine foods for now.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice for managing gout, as alcohol and high-purine foods can exacerbate the condition."
+    },
+    {
+     "claim": "Keep the affected foot elevated and avoid putting weight on it.",
+     "label": "standard_knowledge",
+     "note": "Elevating the affected area and avoiding weight can help reduce swelling and pain, which is standard advice for joint inflammation."
+    },
+    {
+     "claim": "Apply ice packs to reduce swelling and pain.",
+     "label": "standard_knowledge",
+     "note": "Applying ice is a common method to reduce swelling and pain in inflammatory conditions."
+    },
+    {
+     "claim": "Fever or chills",
+     "label": "standard_knowledge",
+     "note": "Fever or chills can be a sign of infection or severe inflammation, which is a standard red flag in medical conditions."
+    },
+    {
+     "claim": "Spreading redness or swelling",
+     "label": "standard_knowledge",
+     "note": "Spreading redness or swelling can indicate worsening inflammation or infection, which is a standard red flag."
+    },
+    {
+     "claim": "Inability to move the toe or foot",
+     "label": "standard_knowledge",
+     "note": "Inability to move the affected area can indicate severe inflammation or joint damage, which is a standard red flag."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 28,
+   "title": "Preeclampsia",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 6,
+    "standard_knowledge": 0,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Preeclampsia is a condition in pregnancy characterized by high blood pressure and signs of damage to other organ systems, often including the liver and kidneys.",
+     "label": "supported",
+     "note": "This is supported by source [2], which describes preeclampsia as a sudden increase in blood pressure after the 20th week of pregnancy, often including signs of damage to organs such as the liver or kidneys."
+    },
+    {
+     "claim": "Preeclampsia can be life-threatening if not managed.",
+     "label": "supported",
+     "note": "Source [2] states that preeclampsia can be serious or even life-threatening for both the mother and baby."
+    },
+    {
+     "claim": "Severe headache is a symptom of preeclampsia.",
+     "label": "supported",
+     "note": "Source [1] lists a headache that does not go away as a symptom of preeclampsia."
+    },
+    {
+     "claim": "Facial and hand swelling is a symptom of preeclampsia.",
+     "label": "supported",
+     "note": "Source [1] mentions swelling (edema) in the face and hands as a symptom of preeclampsia."
+    },
+    {
+     "claim": "Seeing spots is a symptom of preeclampsia.",
+     "label": "supported",
+     "note": "Source [1] includes vision problems, such as seeing spots, as a symptom of preeclampsia."
+    },
+    {
+     "claim": "Blood pressure 160/105 is a concerning level in the context of preeclampsia.",
+     "label": "supported",
+     "note": "Source [3] states that preeclampsia with severe features includes a systolic blood pressure \u2265160 or diastolic blood pressure \u2265110."
+    }
+   ],
+   "cited": [
+    1,
+    2,
+    3
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": true
+    },
+    {
+     "source_number": 3,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "High Blood Pressure in Pregnancy",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/highbloodpressureinpregnancy.html"
+    },
+    {
+     "title": "ACOG Hypertensive Disorders of Pregnancy Guidelines (2020)",
+     "source": "American College of Obstetricians and Gynecologists (summary)",
+     "url": "https://www.acog.org/clinical/clinical-guidance/practice-bulletin/articles/2020/06/gestational-hypertension-and-preeclampsia"
+    }
+   ]
+  },
+  {
+   "id": 28,
+   "title": "Preeclampsia",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 7,
+    "standard_knowledge": 0,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Preeclampsia is a pregnancy complication characterized by high blood pressure and signs of damage to another organ system, often the kidneys.",
+     "label": "supported",
+     "note": "This is supported by source [3], which states that preeclampsia includes high blood pressure and signs of organ damage, such as protein in the urine."
+    },
+    {
+     "claim": "Preeclampsia can be dangerous for both mother and baby.",
+     "label": "supported",
+     "note": "This is supported by source [3], which mentions that preeclampsia can be serious or even life-threatening for both the mother and baby."
+    },
+    {
+     "claim": "Severe headache is a symptom of preeclampsia.",
+     "label": "supported",
+     "note": "This is supported by source [1], which lists a headache that does not go away as a symptom of preeclampsia."
+    },
+    {
+     "claim": "Sudden swelling of face and hands is a symptom of preeclampsia.",
+     "label": "supported",
+     "note": "This is supported by source [1], which lists swelling in the face and hands as a symptom of preeclampsia."
+    },
+    {
+     "claim": "Seeing spots is a symptom of preeclampsia.",
+     "label": "supported",
+     "note": "This is supported by source [1], which lists vision problems, including seeing spots, as a symptom of preeclampsia."
+    },
+    {
+     "claim": "High blood pressure (160/105) is a symptom of preeclampsia.",
+     "label": "supported",
+     "note": "This is supported by source [2], which states that preeclampsia with severe features includes a systolic blood pressure of \u2265160 or diastolic blood pressure of \u2265110."
+    },
+    {
+     "claim": "34 weeks pregnant is a relevant factor for preeclampsia.",
+     "label": "supported",
+     "note": "This is supported by source [3], which states that preeclampsia usually happens in the last trimester, and source [2] mentions delivery at 34+ weeks for preeclampsia with severe features."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 29,
+   "title": "Dehydration in a toddler",
+   "rag": true,
+   "level": "urgent_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 6,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Gastroenteritis is a common cause of vomiting and diarrhea in children, often due to a viral infection.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known fact about gastroenteritis."
+    },
+    {
+     "claim": "Dehydration can occur with prolonged vomiting and diarrhea, especially in young children.",
+     "label": "supported",
+     "note": "This is supported by sources [1] and [3], which mention dehydration as a risk with diarrhea and vomiting."
+    },
+    {
+     "claim": "Dry lips and fewer wet diapers suggest dehydration.",
+     "label": "supported",
+     "note": "Source [3] lists dry mouth and reduced urination as signs of dehydration."
+    },
+    {
+     "claim": "Oral rehydration solutions are specially formulated to help replace lost fluids and electrolytes.",
+     "label": "supported",
+     "note": "Source [4] supports the use of oral rehydration solutions for dehydration."
+    },
+    {
+     "claim": "Offer oral rehydration solutions frequently.",
+     "label": "supported",
+     "note": "Source [4] recommends oral rehydration therapy for mild to moderate dehydration."
+    },
+    {
+     "claim": "Seek urgent care if dehydration signs persist or worsen.",
+     "label": "supported",
+     "note": "Sources [1] and [3] advise seeking medical help if dehydration symptoms persist."
+    },
+    {
+     "claim": "Increased lethargy, no wet diapers for 6 hours or more, sunken eyes, persistent vomiting, and blood in stools are red flags to watch for.",
+     "label": "supported",
+     "note": "Sources [1] and [3] list these as warning signs for dehydration and gastroenteritis."
+    }
+   ],
+   "cited": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": true
+    },
+    {
+     "source_number": 3,
+     "supports_answer": true
+    },
+    {
+     "source_number": 4,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Gastroenteritis",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/gastroenteritis.html"
+    },
+    {
+     "title": "Diarrhea",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/diarrhea.html"
+    },
+    {
+     "title": "Dehydration",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/dehydration.html"
+    },
+    {
+     "title": "AAP/WHO Pediatric Dehydration Management (2023)",
+     "source": "American Academy of Pediatrics / World Health Organization (summary)",
+     "url": "https://www.who.int/publications/i/item/9789241548373"
+    }
+   ]
+  },
+  {
+   "id": 29,
+   "title": "Dehydration in a toddler",
+   "rag": false,
+   "level": "urgent_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 7,
+    "standard_knowledge": 2,
+    "inaccurate": 0,
+    "fabricated": 1
+   },
+   "claims": [
+    {
+     "claim": "Given the vomiting and diarrhea for 2 days and signs of dehydration like dry lips and fewer wet diapers, it's important to have her checked by a healthcare professional today.",
+     "label": "supported",
+     "note": "Passage [1] mentions diarrhea lasting more than a day and signs of dehydration as warning signs for infants and children."
+    },
+    {
+     "claim": "Dehydration in young children can escalate quickly, so getting her evaluated will help ensure she receives the right care.",
+     "label": "standard_knowledge",
+     "note": "It is well-known that dehydration can escalate quickly in young children."
+    },
+    {
+     "claim": "Meanwhile, keep offering small sips of an oral rehydration solution to help maintain her hydration.",
+     "label": "supported",
+     "note": "Passage [4] mentions giving oral rehydration solutions to children with diarrhea."
+    },
+    {
+     "claim": "If she becomes less alert or stops urinating, seek care immediately.",
+     "label": "supported",
+     "note": "Passage [1] lists change in mental state and urinating less than usual as warning signs."
+    },
+    {
+     "claim": "Gastroenteritis is a common cause of vomiting and diarrhea in young children, often due to a viral infection.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known fact about gastroenteritis."
+    },
+    {
+     "claim": "Offer small sips of oral rehydration solution frequently.",
+     "label": "supported",
+     "note": "Passage [4] supports giving oral rehydration solutions to children with diarrhea."
+    },
+    {
+     "claim": "Seek urgent care for evaluation and treatment.",
+     "label": "supported",
+     "note": "Passage [1] advises contacting a provider for symptoms like diarrhea lasting more than a day and signs of dehydration."
+    },
+    {
+     "claim": "Becomes lethargic or less responsive.",
+     "label": "supported",
+     "note": "Passage [1] mentions change in mental state as a warning sign."
+    },
+    {
+     "claim": "Develops a high fever.",
+     "label": "supported",
+     "note": "Passage [1] lists high fever as a warning sign for older children."
+    },
+    {
+     "claim": "Has no wet diapers for 6 hours or more.",
+     "label": "fabricated",
+     "note": "Passage [1] mentions no wet diapers for 3 hours or more as a warning sign, not 6 hours."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 30,
+   "title": "Eye injury from metal",
+   "rag": true,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Metal fragments can cause serious damage to the eye.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known fact in ophthalmology and emergency medicine."
+    },
+    {
+     "claim": "Symptoms like pain, watering, and light sensitivity suggest that your eye might be injured.",
+     "label": "standard_knowledge",
+     "note": "These are common symptoms of eye injuries, such as corneal abrasions or foreign bodies."
+    },
+    {
+     "claim": "Avoid rubbing your eye and try to keep it closed while you get to the ER.",
+     "label": "supported",
+     "note": "Source [2] advises against rubbing the eyes to prevent further irritation or infection."
+    },
+    {
+     "claim": "A metal fragment may have scratched the surface of your eye or become lodged in it, causing pain and sensitivity to light.",
+     "label": "standard_knowledge",
+     "note": "This is a common scenario in eye injuries involving foreign bodies."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": false
+    }
+   ],
+   "sources": [
+    {
+     "title": "Eye Injuries",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/eyeinjuries.html"
+    }
+   ]
+  },
+  {
+   "id": 30,
+   "title": "Eye injury from metal",
+   "rag": false,
+   "level": "emergency",
+   "level_ok": true,
+   "counts": {
+    "supported": 0,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Metal particles can cause serious damage to the eye.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known fact in ophthalmology, though not explicitly mentioned in the provided sources."
+    },
+    {
+     "claim": "Symptoms of a corneal abrasion include pain, watering, and light sensitivity.",
+     "label": "standard_knowledge",
+     "note": "These are common symptoms of a corneal abrasion, though not explicitly mentioned in the provided sources."
+    },
+    {
+     "claim": "A foreign body in the eye can cause irritation and potential damage.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known fact in ophthalmology, though not explicitly mentioned in the provided sources."
+    }
+   ],
+   "cited": [],
+   "citation_checks": [],
+   "sources": []
+  },
+  {
+   "id": 31,
+   "title": "Mononucleosis",
+   "rag": true,
+   "level": "clinic",
+   "level_ok": true,
+   "counts": {
+    "supported": 5,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Mono can cause fatigue, sore throat, fever, swollen glands, and sometimes discomfort under the ribs due to an enlarged spleen.",
+     "label": "supported",
+     "note": "Passages [1] and [2] confirm these symptoms of mono, including spleen involvement."
+    },
+    {
+     "claim": "It's important to see a healthcare provider for a proper evaluation, as they might need to do a physical exam and possibly some tests to confirm the diagnosis.",
+     "label": "supported",
+     "note": "Passage [1] supports the need for a physical exam and possible tests for diagnosis."
+    },
+    {
+     "claim": "Make sure to rest, drink plenty of fluids, and avoid any strenuous activities, especially contact sports, to protect your spleen.",
+     "label": "supported",
+     "note": "Passage [1] supports rest and hydration as treatments, and avoiding strenuous activities is standard advice to protect an enlarged spleen."
+    },
+    {
+     "claim": "If you notice any severe abdominal pain or difficulty breathing, seek medical attention right away.",
+     "label": "standard_knowledge",
+     "note": "These are standard red flags for seeking medical attention, especially with potential spleen involvement."
+    },
+    {
+     "claim": "Mono is common in teenagers and can cause fatigue, sore throat, fever, swollen glands, and discomfort under the ribs due to spleen involvement.",
+     "label": "supported",
+     "note": "Passages [1] and [2] confirm these symptoms and the commonality of mono in teenagers."
+    },
+    {
+     "claim": "Tonsillitis can cause a sore throat, fever, and swollen glands, but usually doesn't cause rib discomfort.",
+     "label": "supported",
+     "note": "Passage [3] confirms these symptoms for tonsillitis, and rib discomfort is not mentioned."
+    }
+   ],
+   "cited": [
+    1,
+    2
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Infectious Mononucleosis",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/infectiousmononucleosis.html"
+    }
+   ]
+  },
+  {
+   "id": 31,
+   "title": "Mononucleosis",
+   "rag": false,
+   "level": "urgent_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 3,
+    "standard_knowledge": 2,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Mononucleosis can cause fatigue, sore throat, fever, swollen glands, and spleen enlargement.",
+     "label": "supported",
+     "note": "This is supported by reference [3], which lists these symptoms for infectious mononucleosis."
+    },
+    {
+     "claim": "It's important to get checked out by a healthcare provider if you have symptoms of exhaustion, sore throat, fever, swollen glands, and discomfort under your ribs.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical advice for symptoms that could indicate a serious condition like mononucleosis."
+    },
+    {
+     "claim": "Mononucleosis can cause an enlarged spleen.",
+     "label": "supported",
+     "note": "Reference [3] mentions that mononucleosis can cause a swollen spleen."
+    },
+    {
+     "claim": "Rest, staying hydrated, and avoiding strenuous activities are recommended for mononucleosis.",
+     "label": "supported",
+     "note": "Reference [1] supports these as treatments for infectious mononucleosis."
+    },
+    {
+     "claim": "Seek medical attention immediately if you notice new symptoms like difficulty breathing or severe pain.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical advice for potentially serious symptoms."
+    }
+   ],
+   "cited": [],
+   "citation_checks": [],
+   "sources": []
+  },
+  {
+   "id": 32,
+   "title": "Minor head bump",
+   "rag": true,
+   "level": "home_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 4,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "A minor bump to the head can cause a small bump and mild headache without serious issues.",
+     "label": "standard_knowledge",
+     "note": "This is a reasonable statement about minor head injuries."
+    },
+    {
+     "claim": "If you start experiencing symptoms like worsening headache, nausea, vomiting, confusion, or difficulty waking up, you should seek medical attention right away.",
+     "label": "supported",
+     "note": "These symptoms are listed as warning signs for more serious head injuries in the reference passages."
+    },
+    {
+     "claim": "Rest and avoid strenuous activities.",
+     "label": "standard_knowledge",
+     "note": "Rest is a common recommendation for minor head injuries."
+    },
+    {
+     "claim": "Apply a cold pack to the bump to reduce swelling.",
+     "label": "standard_knowledge",
+     "note": "Applying a cold pack is a common home care measure for minor injuries to reduce swelling."
+    },
+    {
+     "claim": "Take over-the-counter pain relief if needed.",
+     "label": "standard_knowledge",
+     "note": "Using over-the-counter pain relief for mild headaches is standard advice."
+    }
+   ],
+   "cited": [
+    1,
+    2,
+    3
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": true
+    },
+    {
+     "source_number": 3,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Head Injuries",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/headinjuries.html"
+    },
+    {
+     "title": "Concussion",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/concussion.html"
+    }
+   ]
+  },
+  {
+   "id": 32,
+   "title": "Minor head bump",
+   "rag": false,
+   "level": "home_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Given the mild headache and small bump without any other concerning symptoms, it seems like a minor head injury.",
+     "label": "standard_knowledge",
+     "note": "This is a reasonable assessment based on common medical understanding of minor head injuries."
+    },
+    {
+     "claim": "You can manage this at home by applying a cold pack to the bump to reduce swelling and resting.",
+     "label": "standard_knowledge",
+     "note": "This is a common home care recommendation for minor head injuries."
+    },
+    {
+     "claim": "It's important to avoid any strenuous activities for the rest of the day.",
+     "label": "standard_knowledge",
+     "note": "This is a standard recommendation to prevent exacerbating symptoms after a minor head injury."
+    },
+    {
+     "claim": "If you notice any new symptoms like worsening headache, nausea, dizziness, confusion, or vision changes, seek medical attention right away.",
+     "label": "supported",
+     "note": "These are warning signs of more serious head injuries as noted in the reference passages."
+    }
+   ],
+   "cited": [],
+   "citation_checks": [],
+   "sources": []
+  },
+  {
+   "id": 33,
+   "title": "Underactive thyroid",
+   "rag": true,
+   "level": "clinic",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Hypothyroidism can cause fatigue, weight gain, feeling cold, dry skin, constipation, and hair thinning.",
+     "label": "supported",
+     "note": "These symptoms are listed in the reference passages as symptoms of hypothyroidism."
+    },
+    {
+     "claim": "Treatment usually involves thyroid hormone replacement, which can help alleviate your symptoms.",
+     "label": "standard_knowledge",
+     "note": "Thyroid hormone replacement is a standard treatment for hypothyroidism."
+    },
+    {
+     "claim": "Book an appointment with your doctor for a thyroid function test.",
+     "label": "standard_knowledge",
+     "note": "Thyroid function tests are commonly used to diagnose hypothyroidism."
+    },
+    {
+     "claim": "Maintain a balanced diet and stay hydrated.",
+     "label": "standard_knowledge",
+     "note": "Maintaining a balanced diet and staying hydrated is general health advice."
+    },
+    {
+     "claim": "Severe fatigue or weakness, difficulty breathing or swallowing, significant swelling in the neck are red flags to watch for.",
+     "label": "supported",
+     "note": "Difficulty breathing or swallowing and significant swelling in the neck are associated with goiter, a symptom of hypothyroidism."
+    }
+   ],
+   "cited": [
+    1,
+    2
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Hypothyroidism",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/hypothyroidism.html"
+    }
+   ]
+  },
+  {
+   "id": 33,
+   "title": "Underactive thyroid",
+   "rag": false,
+   "level": "clinic",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 2,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Hypothyroidism can lead to symptoms like fatigue, weight gain, feeling cold, dry skin, constipation, and hair thinning.",
+     "label": "supported",
+     "note": "These symptoms are listed in the reference passages as symptoms of hypothyroidism."
+    },
+    {
+     "claim": "Hypothyroidism is common in women.",
+     "label": "supported",
+     "note": "The reference passages state that women are at higher risk for hypothyroidism."
+    },
+    {
+     "claim": "Hypothyroidism can be diagnosed with a blood test.",
+     "label": "standard_knowledge",
+     "note": "While not explicitly mentioned in the passages, it is standard medical knowledge that hypothyroidism is diagnosed with blood tests measuring thyroid hormone levels."
+    },
+    {
+     "claim": "Maintaining a balanced diet and staying hydrated can help with some symptoms of hypothyroidism.",
+     "label": "standard_knowledge",
+     "note": "While not specific to hypothyroidism, maintaining a balanced diet and hydration is generally beneficial for health."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 34,
+   "title": "Type 2 diabetes",
+   "rag": true,
+   "level": "urgent_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 3,
+    "standard_knowledge": 0,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Increased thirst, frequent urination, blurry vision, and unexplained weight loss can all be signs of diabetes.",
+     "label": "supported",
+     "note": "These symptoms are listed in the reference passages as symptoms of diabetes."
+    },
+    {
+     "claim": "The symptoms you're experiencing are common in type 2 diabetes, especially with a family history.",
+     "label": "supported",
+     "note": "The symptoms listed are common in type 2 diabetes, and family history is a risk factor."
+    },
+    {
+     "claim": "If you notice any sudden changes in your vision or feel very unwell, seek medical attention right away.",
+     "label": "supported",
+     "note": "Sudden changes in vision are listed as emergency symptoms in diabetic eye problems."
+    }
+   ],
+   "cited": [
+    1,
+    2
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Diabetes",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/diabetes.html"
+    },
+    {
+     "title": "Diabetes Type 2",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/diabetestype2.html"
+    }
+   ]
+  },
+  {
+   "id": 34,
+   "title": "Type 2 diabetes",
+   "rag": false,
+   "level": "clinic",
+   "level_ok": true,
+   "counts": {
+    "supported": 4,
+    "standard_knowledge": 0,
+    "inaccurate": 0,
+    "fabricated": 1
+   },
+   "claims": [
+    {
+     "claim": "Increased thirst, frequent urination, blurry vision, and unintentional weight loss can be signs of high blood sugar levels.",
+     "label": "supported",
+     "note": "These symptoms are listed as symptoms of diabetes and hyperglycemia in the reference passages."
+    },
+    {
+     "claim": "The symptoms of increased thirst, frequent urination, blurry vision, and weight loss are common in diabetes, especially with a family history.",
+     "label": "supported",
+     "note": "These symptoms are associated with diabetes in the reference passages, and family history is a known risk factor."
+    },
+    {
+     "claim": "Increased fatigue can be a red flag to watch for in diabetes.",
+     "label": "supported",
+     "note": "Fatigue is listed as a symptom of diabetes in the reference passages."
+    },
+    {
+     "claim": "Sudden worsening of vision can be a red flag to watch for in diabetes.",
+     "label": "supported",
+     "note": "Sudden changes in vision are noted as symptoms of diabetic eye problems in the reference passages."
+    },
+    {
+     "claim": "Feeling faint or dizzy can be a red flag to watch for in diabetes.",
+     "label": "fabricated",
+     "note": "Feeling faint or dizzy is not mentioned in the reference passages as a symptom or red flag for diabetes."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 35,
+   "title": "Iron-deficiency anemia",
+   "rag": true,
+   "level": "clinic",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Iron-deficiency anemia can cause fatigue, shortness of breath, pale skin, and cravings for non-food items like ice.",
+     "label": "standard_knowledge",
+     "note": "Fatigue and shortness of breath are supported by source [2]. Cravings for non-food items like ice (pica) and pale skin are standard knowledge symptoms of iron-deficiency anemia."
+    },
+    {
+     "claim": "Heavy menstrual bleeding can lead to iron-deficiency anemia.",
+     "label": "supported",
+     "note": "Source [1] mentions heavy periods as a condition that may lead to anemia."
+    },
+    {
+     "claim": "Treatment for iron-deficiency anemia might include iron supplements.",
+     "label": "supported",
+     "note": "Source [2] states that treatment for low iron and iron-deficiency anemia is usually with iron supplements."
+    },
+    {
+     "claim": "Include iron-rich foods in your diet, like lean meats, beans, and leafy greens.",
+     "label": "standard_knowledge",
+     "note": "This is standard dietary advice for increasing iron intake."
+    },
+    {
+     "claim": "If you notice your symptoms getting worse, like increased shortness of breath or dizziness, seek medical attention sooner.",
+     "label": "standard_knowledge",
+     "note": "Worsening symptoms like shortness of breath or dizziness are standard red flags for seeking medical attention."
+    }
+   ],
+   "cited": [
+    1,
+    2
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Anemia",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/anemia.html"
+    },
+    {
+     "title": "Iron",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/iron.html"
+    }
+   ]
+  },
+  {
+   "id": 35,
+   "title": "Iron-deficiency anemia",
+   "rag": false,
+   "level": "urgent_care",
+   "level_ok": false,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 2,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Heavy periods can lead to significant blood loss, which could cause iron deficiency anemia.",
+     "label": "supported",
+     "note": "This is supported by Reference [1], which states that heavy periods can lead to anemia due to blood loss."
+    },
+    {
+     "claim": "Iron deficiency anemia can cause fatigue, shortness of breath, pale appearance, and craving for ice.",
+     "label": "standard_knowledge",
+     "note": "These are common symptoms of iron deficiency anemia, although craving ice (pica) is not mentioned in the provided references, it is a well-known symptom."
+    },
+    {
+     "claim": "If you notice any worsening symptoms like dizziness, fainting, or increased shortness of breath, seek medical attention immediately.",
+     "label": "standard_knowledge",
+     "note": "These are general warning signs that warrant medical attention, especially in the context of anemia."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 36,
+   "title": "Acid reflux (GERD)",
+   "rag": true,
+   "level": "clinic",
+   "level_ok": true,
+   "counts": {
+    "supported": 4,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "GERD is common for causing a burning sensation in the chest after meals, especially when lying down, and a sour taste in the mouth.",
+     "label": "supported",
+     "note": "This is supported by source [1], which mentions heartburn and tasting acid or food in the back of your mouth as symptoms of GERD."
+    },
+    {
+     "claim": "To manage GERD, try avoiding foods that trigger your symptoms, like spicy or fatty foods, caffeine, and alcohol.",
+     "label": "standard_knowledge",
+     "note": "Avoiding trigger foods is a common recommendation for managing GERD, although specific foods are not listed in the reference passages."
+    },
+    {
+     "claim": "Avoid lying down right after eating to manage GERD.",
+     "label": "standard_knowledge",
+     "note": "This is a common recommendation for managing GERD symptoms."
+    },
+    {
+     "claim": "Over-the-counter antacids might provide some relief for GERD.",
+     "label": "standard_knowledge",
+     "note": "Using antacids for relief from GERD symptoms is standard medical advice."
+    },
+    {
+     "claim": "If you notice any new symptoms like difficulty swallowing or unexplained weight loss, seek medical attention sooner.",
+     "label": "supported",
+     "note": "Source [1] mentions trouble swallowing as a symptom of GERD and source [5] lists unintended weight loss as a reason to see a doctor."
+    },
+    {
+     "claim": "GERD occurs when stomach acid frequently flows back into the esophagus, causing symptoms like heartburn and a sour taste.",
+     "label": "supported",
+     "note": "This is supported by source [1], which describes GERD symptoms and mentions acid backing up into the esophagus."
+    },
+    {
+     "claim": "A peptic ulcer can cause burning stomach pain, but it's less likely without pain between meals or at night.",
+     "label": "supported",
+     "note": "Source [3] describes peptic ulcer pain as starting between meals or during the night."
+    }
+   ],
+   "cited": [
+    1,
+    3
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 3,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "GERD",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/gerd.html"
+    },
+    {
+     "title": "Peptic Ulcer",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/pepticulcer.html"
+    }
+   ]
+  },
+  {
+   "id": 36,
+   "title": "Acid reflux (GERD)",
+   "rag": false,
+   "level": "clinic",
+   "level_ok": true,
+   "counts": {
+    "supported": 7,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "GERD occurs when stomach acid frequently flows back into the esophagus, causing a burning sensation and sour taste.",
+     "label": "supported",
+     "note": "This is supported by source [3], which describes GERD as stomach contents moving back up and irritating the esophagus, causing discomfort."
+    },
+    {
+     "claim": "Burning sensation in chest after meals is a symptom of GERD.",
+     "label": "supported",
+     "note": "Source [1] mentions heartburn, a burning feeling in the chest, as a common symptom of GERD."
+    },
+    {
+     "claim": "GERD symptoms worsen when lying down.",
+     "label": "supported",
+     "note": "Source [3] mentions that lying down too soon after eating can cause acid to come up into the throat, indicating symptoms can worsen when lying down."
+    },
+    {
+     "claim": "Sour taste in mouth is a symptom of GERD.",
+     "label": "supported",
+     "note": "Source [1] lists tasting acid or food in the back of your mouth as a symptom of GERD."
+    },
+    {
+     "claim": "Avoid lying down immediately after meals to manage GERD symptoms.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice for managing GERD symptoms, although not explicitly mentioned in the sources."
+    },
+    {
+     "claim": "Try over-the-counter antacids as directed to manage GERD symptoms.",
+     "label": "supported",
+     "note": "Source [5] mentions that over-the-counter medicines may help with heartburn, which is a symptom of GERD."
+    },
+    {
+     "claim": "Identify and avoid trigger foods to manage GERD symptoms.",
+     "label": "standard_knowledge",
+     "note": "Avoiding trigger foods is a common recommendation for managing GERD, although not explicitly mentioned in the sources."
+    },
+    {
+     "claim": "Difficulty swallowing is a red flag symptom for GERD.",
+     "label": "supported",
+     "note": "Source [1] lists trouble swallowing as a symptom of GERD."
+    },
+    {
+     "claim": "Unexplained weight loss is a red flag symptom for GERD.",
+     "label": "supported",
+     "note": "Source [2] mentions losing weight without trying as a symptom of esophagus disorders, which includes GERD."
+    },
+    {
+     "claim": "Persistent vomiting is a red flag symptom for GERD.",
+     "label": "standard_knowledge",
+     "note": "Persistent vomiting can be a concerning symptom in the context of GERD, although not explicitly mentioned in the sources."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 37,
+   "title": "High blood pressure",
+   "rag": true,
+   "level": "clinic",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 2,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Blood pressure readings of 150/95 fall into the Stage 2 hypertension category.",
+     "label": "supported",
+     "note": "This is supported by the reference passages, which state that Stage 2 high blood pressure is defined as a systolic of 140 or higher or a diastolic of 90 or higher."
+    },
+    {
+     "claim": "Stage 2 high blood pressure requires management to reduce cardiovascular risk.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical knowledge, as managing high blood pressure is crucial to reducing the risk of cardiovascular events."
+    },
+    {
+     "claim": "Keep monitoring your blood pressure at home, and watch for any new symptoms like severe headaches or chest pain, which would need immediate attention.",
+     "label": "standard_knowledge",
+     "note": "Monitoring blood pressure at home and watching for symptoms like severe headaches or chest pain is standard advice for managing high blood pressure."
+    }
+   ],
+   "cited": [
+    1,
+    2,
+    5
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": true
+    },
+    {
+     "source_number": 5,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "How to Prevent High Blood Pressure",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/howtopreventhighbloodpressure.html"
+    },
+    {
+     "title": "High Blood Pressure",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/highbloodpressure.html"
+    }
+   ]
+  },
+  {
+   "id": 37,
+   "title": "High blood pressure",
+   "rag": false,
+   "level": "clinic",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 5,
+    "inaccurate": 0,
+    "fabricated": 1
+   },
+   "claims": [
+    {
+     "claim": "Consistently high blood pressure readings suggest hypertension, which can increase the risk of heart disease and stroke if not managed.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known fact about hypertension."
+    },
+    {
+     "claim": "Blood pressure readings around 150/95",
+     "label": "fabricated",
+     "note": "The specific reading of 150/95 is not mentioned in the reference passages."
+    },
+    {
+     "claim": "High blood pressure usually has no symptoms.",
+     "label": "supported",
+     "note": "This is supported by the reference passages."
+    },
+    {
+     "claim": "It's important to address high blood pressure to reduce the risk of heart disease or stroke.",
+     "label": "standard_knowledge",
+     "note": "This is a widely accepted medical fact."
+    },
+    {
+     "claim": "Keep monitoring your blood pressure at home and note any changes.",
+     "label": "standard_knowledge",
+     "note": "This is a common recommendation for managing blood pressure."
+    },
+    {
+     "claim": "Schedule an appointment with your doctor to discuss your blood pressure.",
+     "label": "standard_knowledge",
+     "note": "This is a standard recommendation for managing potential hypertension."
+    },
+    {
+     "claim": "Sudden severe headache, chest pain, shortness of breath, and vision changes are red flags to watch for.",
+     "label": "standard_knowledge",
+     "note": "These are common warning signs associated with severe hypertension or hypertensive crisis."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 38,
+   "title": "Depression",
+   "rag": true,
+   "level": "clinic",
+   "level_ok": true,
+   "counts": {
+    "supported": 4,
+    "standard_knowledge": 4,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Persistent low mood, loss of interest in activities, and sleep issues are key indicators of depression.",
+     "label": "supported",
+     "note": "These symptoms are consistent with the descriptions of depression in the reference passages."
+    },
+    {
+     "claim": "It's good that you're not having thoughts of self-harm, but it's still important to address these feelings.",
+     "label": "standard_knowledge",
+     "note": "While not directly stated in the passages, it is standard knowledge that addressing depressive symptoms is important even if self-harm is not present."
+    },
+    {
+     "claim": "Scheduling an appointment with a healthcare provider or mental health professional can provide a thorough assessment and discuss treatment options like therapy or medication.",
+     "label": "supported",
+     "note": "The reference passages support seeking professional help for depression and mention therapy and medication as treatment options."
+    },
+    {
+     "claim": "Keep an eye on any changes, and reach out if things worsen.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice for managing mental health conditions."
+    },
+    {
+     "claim": "The symptoms of feeling down, losing interest in activities, and sleep disturbances for over two months align with depression.",
+     "label": "supported",
+     "note": "The reference passages describe these symptoms as indicative of depression."
+    },
+    {
+     "claim": "Consider keeping a journal of your symptoms to discuss with your provider.",
+     "label": "standard_knowledge",
+     "note": "While not in the passages, keeping a symptom journal is a common recommendation for managing mental health conditions."
+    },
+    {
+     "claim": "Emergence of thoughts of self-harm is a red flag to watch for.",
+     "label": "supported",
+     "note": "The reference passages list thoughts of self-harm as a warning sign for serious mental health issues."
+    },
+    {
+     "claim": "Worsening of mood or functioning is a red flag to watch for.",
+     "label": "standard_knowledge",
+     "note": "This is a standard warning sign for worsening mental health conditions."
+    }
+   ],
+   "cited": [
+    2,
+    3
+   ],
+   "citation_checks": [
+    {
+     "source_number": 2,
+     "supports_answer": true
+    },
+    {
+     "source_number": 3,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Stress",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/stress.html"
+    },
+    {
+     "title": "Depression",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/depression.html"
+    }
+   ]
+  },
+  {
+   "id": 38,
+   "title": "Depression",
+   "rag": false,
+   "level": "clinic",
+   "level_ok": true,
+   "counts": {
+    "supported": 3,
+    "standard_knowledge": 5,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Depression can affect your mood, interests, and sleep.",
+     "label": "supported",
+     "note": "This is supported by passages [3] and [5], which describe symptoms of depression including mood changes, loss of interest, and sleep disturbances."
+    },
+    {
+     "claim": "It's important to talk to a healthcare provider who can help assess your situation more fully and discuss treatment options.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical advice for anyone experiencing symptoms of depression or mental health issues."
+    },
+    {
+     "claim": "They might suggest therapy, lifestyle changes, or medication, depending on your needs.",
+     "label": "standard_knowledge",
+     "note": "This is standard knowledge about treatment options for depression."
+    },
+    {
+     "claim": "Try to maintain a routine, stay connected with supportive people, and engage in activities you usually enjoy, even if it's challenging right now.",
+     "label": "standard_knowledge",
+     "note": "These are common recommendations for managing depression."
+    },
+    {
+     "claim": "If anything changes or you start feeling worse, reach out for help sooner.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice for managing mental health conditions."
+    },
+    {
+     "claim": "The symptoms of persistent low mood, loss of interest in activities, and poor sleep are consistent with depression.",
+     "label": "supported",
+     "note": "This is supported by passages [3] and [5], which list these as symptoms of depression."
+    },
+    {
+     "claim": "Development of thoughts of self-harm is a red flag to watch for.",
+     "label": "supported",
+     "note": "Passage [4] lists thoughts of self-harm as a warning sign for suicide, which is a serious concern in depression."
+    },
+    {
+     "claim": "Worsening of mood or functioning is a red flag to watch for.",
+     "label": "standard_knowledge",
+     "note": "This is standard knowledge as worsening symptoms can indicate a need for more urgent care."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 39,
+   "title": "Generalized anxiety",
+   "rag": true,
+   "level": "clinic",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Generalized anxiety disorder (GAD) involves persistent and excessive worry about various aspects of life, along with physical symptoms like muscle tension and sleep difficulties.",
+     "label": "supported",
+     "note": "This is supported by source [2], which describes GAD as excessive worry about multiple domains for \u22656 months with symptoms including muscle tension and sleep disturbance."
+    },
+    {
+     "claim": "Practicing relaxation techniques, such as deep breathing or mindfulness, might help ease some of the tension.",
+     "label": "standard_knowledge",
+     "note": "Relaxation techniques are commonly recommended for anxiety management, though not specifically mentioned in the sources."
+    }
+   ],
+   "cited": [
+    1,
+    2
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Anxiety",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/anxiety.html"
+    },
+    {
+     "title": "APA Generalized Anxiety Disorder Guidelines (2023)",
+     "source": "American Psychiatric Association (summary)",
+     "url": "https://psychiatryonline.org/doi/book/10.1176/appi.books.9780890424462"
+    }
+   ]
+  },
+  {
+   "id": 39,
+   "title": "Generalized anxiety",
+   "rag": false,
+   "level": "clinic",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Anxiety can include constant worry, restlessness, muscle tension, and sleep difficulties.",
+     "label": "supported",
+     "note": "These symptoms are consistent with anxiety disorders as described in the reference passages."
+    },
+    {
+     "claim": "Trying relaxation techniques like deep breathing or mindfulness exercises might help manage the symptoms of anxiety.",
+     "label": "standard_knowledge",
+     "note": "This is a common recommendation for managing anxiety symptoms, although not explicitly mentioned in the reference passages."
+    }
+   ],
+   "cited": [],
+   "citation_checks": [],
+   "sources": []
+  },
+  {
+   "id": 40,
+   "title": "Irritable bowel syndrome",
+   "rag": true,
+   "level": "clinic",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Irritable bowel syndrome (IBS) is characterized by crampy abdominal pain and changes in bowel habits like constipation and diarrhea.",
+     "label": "supported",
+     "note": "This is supported by source [1]."
+    },
+    {
+     "claim": "It's good that there's no blood in your stool or weight loss, which makes serious conditions less likely.",
+     "label": "standard_knowledge",
+     "note": "Blood in stool and weight loss are common red flags for more serious conditions like colorectal cancer."
+    },
+    {
+     "claim": "Celiac disease can cause digestive symptoms similar to IBS, and it's important to rule it out.",
+     "label": "supported",
+     "note": "Source [4] mentions that celiac disease can cause digestive symptoms similar to IBS."
+    },
+    {
+     "claim": "Crohn's disease can cause similar symptoms but often includes weight loss and blood in stool.",
+     "label": "standard_knowledge",
+     "note": "Crohn's disease can cause weight loss and blood in stool, which are common symptoms of more serious gastrointestinal conditions."
+    },
+    {
+     "claim": "Keeping a diary of your symptoms and any food triggers can be helpful for your doctor.",
+     "label": "standard_knowledge",
+     "note": "Symptom and food diaries are commonly recommended for managing IBS and other digestive disorders."
+    }
+   ],
+   "cited": [
+    1,
+    4,
+    5
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 4,
+     "supports_answer": true
+    },
+    {
+     "source_number": 5,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Irritable Bowel Syndrome",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/irritablebowelsyndrome.html"
+    },
+    {
+     "title": "Celiac Disease",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/celiacdisease.html"
+    },
+    {
+     "title": "Crohn's Disease",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/crohnsdisease.html"
+    }
+   ]
+  },
+  {
+   "id": 40,
+   "title": "Irritable bowel syndrome",
+   "rag": false,
+   "level": "clinic",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Irritable bowel syndrome (IBS) often causes crampy abdominal pain that improves after a bowel movement and can involve alternating constipation and diarrhea.",
+     "label": "supported",
+     "note": "This is supported by source [1], which states that IBS can cause abdominal cramping and a change in bowel habits, including alternating between constipation and diarrhea."
+    },
+    {
+     "claim": "Since there's no blood in your stool or weight loss, it's less likely to be something more serious.",
+     "label": "standard_knowledge",
+     "note": "Blood in stool and weight loss are common red flags for more serious conditions like colorectal cancer, as noted in source [3]."
+    },
+    {
+     "claim": "Keeping a food and symptom diary might help identify any triggers.",
+     "label": "standard_knowledge",
+     "note": "Keeping a diary to track symptoms and potential triggers is a common recommendation for managing IBS."
+    },
+    {
+     "claim": "If you notice any new symptoms like blood in your stool or significant weight loss, seek medical attention promptly.",
+     "label": "standard_knowledge",
+     "note": "Blood in stool and significant weight loss are standard red flags for seeking medical attention, as they can indicate serious conditions."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 41,
+   "title": "Carpal tunnel syndrome",
+   "rag": true,
+   "level": "clinic",
+   "level_ok": true,
+   "counts": {
+    "supported": 3,
+    "standard_knowledge": 2,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Carpal tunnel syndrome is common in people who do repetitive hand motions, like typing.",
+     "label": "supported",
+     "note": "Passage [2] mentions that repetitive hand motions can contribute to carpal tunnel syndrome, although it notes uncertainty about typing specifically."
+    },
+    {
+     "claim": "Carpal tunnel syndrome can cause numbness and tingling in the thumb, index, and middle fingers, especially at night.",
+     "label": "supported",
+     "note": "Passage [1] confirms numbness and tingling in these fingers, especially at night."
+    },
+    {
+     "claim": "Using a wrist splint at night to keep your wrist straight can help with carpal tunnel syndrome.",
+     "label": "standard_knowledge",
+     "note": "This is a common recommendation for managing carpal tunnel syndrome, although not explicitly mentioned in the passages."
+    },
+    {
+     "claim": "Taking regular breaks from typing to rest your hands can help with carpal tunnel syndrome.",
+     "label": "standard_knowledge",
+     "note": "This is a common ergonomic recommendation to prevent or manage repetitive strain injuries, including carpal tunnel syndrome."
+    },
+    {
+     "claim": "Increasing weakness or difficulty gripping objects are red flags for carpal tunnel syndrome.",
+     "label": "supported",
+     "note": "Passage [1] mentions difficulty grasping or holding small things as symptoms that can worsen."
+    }
+   ],
+   "cited": [
+    1,
+    4
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 4,
+     "supports_answer": false
+    }
+   ],
+   "sources": [
+    {
+     "title": "Carpal Tunnel Syndrome",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/carpaltunnelsyndrome.html"
+    },
+    {
+     "title": "Finger Injuries and Disorders",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/fingerinjuriesanddisorders.html"
+    }
+   ]
+  },
+  {
+   "id": 41,
+   "title": "Carpal tunnel syndrome",
+   "rag": false,
+   "level": "clinic",
+   "level_ok": true,
+   "counts": {
+    "supported": 3,
+    "standard_knowledge": 2,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Carpal tunnel syndrome is common in people who perform repetitive hand movements, like typing.",
+     "label": "supported",
+     "note": "Passage [2] mentions that repetitive wrist and hand movements can contribute to carpal tunnel syndrome, although it notes that researchers aren't sure about long-term typing or computer use."
+    },
+    {
+     "claim": "Carpal tunnel syndrome can cause numbness and tingling in the fingers, especially at night.",
+     "label": "supported",
+     "note": "Passage [1] states that symptoms of carpal tunnel syndrome include numbness and tingling in the fingers, especially at night."
+    },
+    {
+     "claim": "Using a wrist splint at night can help relieve symptoms of carpal tunnel syndrome.",
+     "label": "standard_knowledge",
+     "note": "This is a common recommendation for managing carpal tunnel syndrome symptoms, although not explicitly mentioned in the passages."
+    },
+    {
+     "claim": "Take regular breaks from typing to stretch your hands to help with carpal tunnel syndrome.",
+     "label": "standard_knowledge",
+     "note": "Taking breaks and stretching is a common ergonomic recommendation to prevent or alleviate symptoms of repetitive strain injuries, including carpal tunnel syndrome."
+    },
+    {
+     "claim": "If you notice any new symptoms like weakness or worsening numbness, see a doctor sooner.",
+     "label": "supported",
+     "note": "Passage [1] mentions that worsening symptoms like weakness should prompt medical attention to prevent lasting damage."
+    }
+   ],
+   "cited": [],
+   "citation_checks": [],
+   "sources": []
+  },
+  {
+   "id": 42,
+   "title": "Eczema in a child",
+   "rag": true,
+   "level": "home_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 5,
+    "standard_knowledge": 2,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Eczema is also known as atopic dermatitis.",
+     "label": "supported",
+     "note": "This is supported by source [1]."
+    },
+    {
+     "claim": "Eczema is common in children and often presents as itchy, dry, red patches in areas like the creases of elbows and knees.",
+     "label": "supported",
+     "note": "This is supported by source [1]."
+    },
+    {
+     "claim": "Eczema is often linked with hay fever.",
+     "label": "supported",
+     "note": "This is supported by source [1]."
+    },
+    {
+     "claim": "To manage eczema at home, keep skin well-moisturized with a gentle, fragrance-free lotion, and try to avoid any known irritants like certain soaps or fabrics.",
+     "label": "supported",
+     "note": "This is supported by source [1]."
+    },
+    {
+     "claim": "If the rash worsens, spreads, or doesn't improve with these measures, it would be wise to have her evaluated by a healthcare provider.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical advice for worsening skin conditions."
+    },
+    {
+     "claim": "Healthcare providers can offer more specific treatments if needed, such as medicated creams.",
+     "label": "supported",
+     "note": "This is supported by source [1]."
+    },
+    {
+     "claim": "If you notice any signs of infection, like increased redness, warmth, or pus, or if the itching becomes severe and unmanageable, seek medical attention promptly.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical advice for potential skin infections."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Eczema",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/eczema.html"
+    }
+   ]
+  },
+  {
+   "id": 42,
+   "title": "Eczema in a child",
+   "rag": false,
+   "level": "clinic",
+   "level_ok": true,
+   "counts": {
+    "supported": 3,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Eczema is common in children and often linked to allergies like hay fever.",
+     "label": "supported",
+     "note": "This is supported by source [1], which states that eczema is common in children and people with eczema may also develop hay fever."
+    },
+    {
+     "claim": "Eczema can cause itchy, dry, red patches, especially in areas like the elbows and knees.",
+     "label": "supported",
+     "note": "This is supported by source [1], which describes eczema as causing dry, itchy skin and rashes on the face, inside the elbows, behind the knees, and on the hands and feet."
+    },
+    {
+     "claim": "Apply a gentle, fragrance-free moisturizer regularly to keep skin hydrated.",
+     "label": "standard_knowledge",
+     "note": "This is standard knowledge for managing eczema, although not explicitly mentioned in the sources."
+    },
+    {
+     "claim": "Use mild, fragrance-free soaps and detergents.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice for managing eczema to avoid skin irritation, although not explicitly mentioned in the sources."
+    },
+    {
+     "claim": "Try to identify and avoid any triggers that might be causing flare-ups.",
+     "label": "supported",
+     "note": "Source [1] mentions avoiding things that irritate the skin, such as certain soaps, fabrics, and lotions, which implies identifying and avoiding triggers."
+    },
+    {
+     "claim": "If you notice any signs of infection, like increased redness or pus, or if the rash doesn't improve with home care, seek medical advice sooner.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical advice for managing skin conditions like eczema, although not explicitly mentioned in the sources."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 43,
+   "title": "Typical migraine",
+   "rag": true,
+   "level": "home_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 3,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Migraine with aura can include visual disturbances like zigzag lines before the headache starts.",
+     "label": "supported",
+     "note": "This is supported by source [2], which mentions zigzag lines as part of the aura phase of migraines."
+    },
+    {
+     "claim": "Zigzag lines visual disturbance, throbbing headache on one side, nausea, and light sensitivity are characteristic of a migraine with aura.",
+     "label": "supported",
+     "note": "These symptoms are supported by sources [2] and [3], which describe the aura phase and typical migraine symptoms."
+    },
+    {
+     "claim": "Resting in a dark, quiet room can help with migraines.",
+     "label": "standard_knowledge",
+     "note": "This is a common recommendation for managing migraines, though not explicitly mentioned in the sources."
+    },
+    {
+     "claim": "Sudden severe headache unlike your usual migraines is a red flag to watch for.",
+     "label": "supported",
+     "note": "This is supported by source [1], which lists sudden onset headaches as a red flag."
+    },
+    {
+     "claim": "New neurological symptoms like weakness or confusion are red flags to watch for in migraines.",
+     "label": "standard_knowledge",
+     "note": "While not explicitly mentioned in the sources, new neurological symptoms are generally considered concerning in the context of headaches."
+    },
+    {
+     "claim": "Headache that doesn't improve with usual treatment is a red flag to watch for.",
+     "label": "standard_knowledge",
+     "note": "This is a reasonable concern, though not explicitly mentioned in the sources."
+    }
+   ],
+   "cited": [
+    1,
+    2,
+    3
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": true
+    },
+    {
+     "source_number": 3,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "AAN Headache/Migraine Guidelines (2021)",
+     "source": "American Academy of Neurology / American Headache Society (summary)",
+     "url": "https://www.aan.com/Guidelines/Home/GuidelineDetail/1043"
+    },
+    {
+     "title": "Migraine",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/migraine.html"
+    }
+   ]
+  },
+  {
+   "id": 43,
+   "title": "Typical migraine",
+   "rag": false,
+   "level": "home_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 5,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "A migraine with aura often includes visual disturbances like zigzag lines followed by a headache.",
+     "label": "supported",
+     "note": "This is supported by source [3], which mentions that an aura can include seeing zigzag lines."
+    },
+    {
+     "claim": "Rest in a dark, quiet room.",
+     "label": "standard_knowledge",
+     "note": "This is a common recommendation for managing migraines, though not explicitly mentioned in the sources."
+    },
+    {
+     "claim": "Use prescribed migraine medication if available.",
+     "label": "standard_knowledge",
+     "note": "Using prescribed medication is a standard approach for managing migraines."
+    },
+    {
+     "claim": "Stay hydrated.",
+     "label": "standard_knowledge",
+     "note": "Staying hydrated is a general health recommendation, though not specific to migraine treatment in the sources."
+    },
+    {
+     "claim": "New or unusual symptoms like weakness or confusion.",
+     "label": "standard_knowledge",
+     "note": "These could be concerning symptoms, though not specifically listed as red flags in the sources."
+    },
+    {
+     "claim": "Severe headache unlike usual migraines.",
+     "label": "supported",
+     "note": "This aligns with the 'Pattern change' red flag in source [1]."
+    },
+    {
+     "claim": "Headache with fever or stiff neck.",
+     "label": "standard_knowledge",
+     "note": "These symptoms can indicate serious conditions like meningitis, though not specifically listed in the sources."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 44,
+   "title": "Plantar fasciitis",
+   "rag": true,
+   "level": "home_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 3,
+    "standard_knowledge": 4,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Plantar fasciitis is a common cause of heel pain, especially noticeable with the first steps in the morning.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known characteristic of plantar fasciitis, although not explicitly mentioned in the provided sources."
+    },
+    {
+     "claim": "Plantar fasciitis involves inflammation of the plantar fascia, the tissue along the bottom of the foot.",
+     "label": "standard_knowledge",
+     "note": "This is a standard medical definition of plantar fasciitis."
+    },
+    {
+     "claim": "Rest the affected foot and avoid activities that worsen the pain.",
+     "label": "supported",
+     "note": "Source 1 mentions rest as a treatment for heel problems, which includes plantar fasciitis."
+    },
+    {
+     "claim": "Apply ice to the heel for 15-20 minutes several times a day.",
+     "label": "standard_knowledge",
+     "note": "Applying ice is a common recommendation for reducing inflammation and pain, although the specific duration is not mentioned in the sources."
+    },
+    {
+     "claim": "Use over-the-counter pain relievers if needed, following the package instructions.",
+     "label": "supported",
+     "note": "Source 1 mentions medicines as a treatment for heel problems."
+    },
+    {
+     "claim": "Perform stretching exercises for the foot and calf.",
+     "label": "supported",
+     "note": "Source 1 mentions exercises as a treatment for heel problems."
+    },
+    {
+     "claim": "Sudden increase in pain, swelling or redness that worsens, heel pain that doesn't improve with rest or worsens are red flags to watch.",
+     "label": "standard_knowledge",
+     "note": "These are typical red flags for worsening conditions, although not explicitly mentioned in the sources."
+    }
+   ],
+   "cited": [
+    1,
+    3
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 3,
+     "supports_answer": false
+    }
+   ],
+   "sources": [
+    {
+     "title": "Heel Injuries and Disorders",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/heelinjuriesanddisorders.html"
+    },
+    {
+     "title": "Pain",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/pain.html"
+    }
+   ]
+  },
+  {
+   "id": 44,
+   "title": "Plantar fasciitis",
+   "rag": false,
+   "level": "home_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 0,
+    "standard_knowledge": 7,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Plantar fasciitis is inflammation of the band of tissue that runs across the bottom of your foot and connects your heel bone to your toes.",
+     "label": "standard_knowledge",
+     "note": "This is a correct description of plantar fasciitis, which is common knowledge in medicine."
+    },
+    {
+     "claim": "Plantar fasciitis is common in runners and causes morning heel pain.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known characteristic of plantar fasciitis, although not explicitly mentioned in the provided sources."
+    },
+    {
+     "claim": "Stretch your calf muscles and the bottom of your foot regularly to manage plantar fasciitis at home.",
+     "label": "standard_knowledge",
+     "note": "Stretching is a common recommendation for managing plantar fasciitis."
+    },
+    {
+     "claim": "Wear supportive footwear, especially when running, to manage plantar fasciitis at home.",
+     "label": "standard_knowledge",
+     "note": "Using supportive footwear is a standard recommendation for plantar fasciitis."
+    },
+    {
+     "claim": "Apply ice to the heel for 15-20 minutes a few times a day to manage plantar fasciitis at home.",
+     "label": "standard_knowledge",
+     "note": "Applying ice is a common home care method for reducing inflammation and pain."
+    },
+    {
+     "claim": "If the pain persists or worsens, it would be a good idea to see a healthcare provider for further evaluation.",
+     "label": "standard_knowledge",
+     "note": "This is a general recommendation for persistent or worsening symptoms."
+    },
+    {
+     "claim": "They might suggest physical therapy or other treatments if needed for plantar fasciitis.",
+     "label": "standard_knowledge",
+     "note": "Physical therapy is a common treatment for plantar fasciitis."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": false
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 45,
+   "title": "Common cold",
+   "rag": true,
+   "level": "home_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 1,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "The symptoms of runny nose, sneezing, mild sore throat, and low-grade fever are typical of a common cold.",
+     "label": "supported",
+     "note": "These symptoms are listed in the reference passage as typical for a common cold."
+    },
+    {
+     "claim": "If your symptoms persist beyond 10 days, or if you develop a high fever or difficulty breathing, it's important to see a healthcare provider.",
+     "label": "standard_knowledge",
+     "note": "While not explicitly stated in the passages, this is standard medical advice for when to seek care for a common cold."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Common Cold",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/commoncold.html"
+    }
+   ]
+  },
+  {
+   "id": 45,
+   "title": "Common cold",
+   "rag": false,
+   "level": "home_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 1
+   },
+   "claims": [
+    {
+     "claim": "The common cold is usually caused by a viral infection and includes symptoms like a runny nose, sneezing, and mild sore throat.",
+     "label": "supported",
+     "note": "This is supported by source [1], which describes the common cold as a viral infection with symptoms including sneezing, runny nose, and sore throat."
+    },
+    {
+     "claim": "Common cold symptoms usually improve on their own in a few days.",
+     "label": "standard_knowledge",
+     "note": "This is standard knowledge about the common cold, which typically resolves within a week."
+    },
+    {
+     "claim": "If symptoms worsen or you develop a high fever, difficulty breathing, or persistent symptoms, it would be wise to see a healthcare provider.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice for when to seek medical attention for respiratory infections."
+    },
+    {
+     "claim": "High fever is defined as above 101.5\u00b0F.",
+     "label": "fabricated",
+     "note": "The specific threshold of 101.5\u00b0F is not mentioned in the provided sources or standard guidelines."
+    },
+    {
+     "claim": "Symptoms lasting more than 10 days are a red flag.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice for when to seek medical attention for prolonged symptoms."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 46,
+   "title": "Tension headache",
+   "rag": true,
+   "level": "home_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 3,
+    "standard_knowledge": 2,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Tension headaches often feel like a tight band around your forehead.",
+     "label": "supported",
+     "note": "This is supported by the description of tension headaches in source [1]."
+    },
+    {
+     "claim": "Tension headaches are common after stress or missing meals.",
+     "label": "supported",
+     "note": "This is supported by source [1], which mentions stress and missing meals as triggers for tension headaches."
+    },
+    {
+     "claim": "To help ease a tension headache, try to relax, stay hydrated, and have a light meal if you haven't eaten yet.",
+     "label": "standard_knowledge",
+     "note": "These are common recommendations for managing tension headaches, though not explicitly mentioned in the sources."
+    },
+    {
+     "claim": "Over-the-counter pain relievers like ibuprofen or acetaminophen can help with tension headaches.",
+     "label": "supported",
+     "note": "Source [1] mentions taking pain relievers for headaches, which includes tension headaches."
+    },
+    {
+     "claim": "If the headache persists or you notice any new symptoms, it would be a good idea to check in with a healthcare provider.",
+     "label": "standard_knowledge",
+     "note": "This is a general recommendation for persistent or changing symptoms, aligning with standard medical advice."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Headache",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/headache.html"
+    }
+   ]
+  },
+  {
+   "id": 46,
+   "title": "Tension headache",
+   "rag": false,
+   "level": "home_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 1,
+    "standard_knowledge": 4,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Tension headaches often feel like a tight band around the forehead and can be triggered by stress or skipping meals.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known description of tension headaches, though not explicitly mentioned in the provided sources."
+    },
+    {
+     "claim": "These headaches usually improve with rest, hydration, and a light meal.",
+     "label": "standard_knowledge",
+     "note": "This is a common recommendation for managing tension headaches."
+    },
+    {
+     "claim": "If you have any over-the-counter pain relievers like ibuprofen or acetaminophen, they might help, but follow the package instructions.",
+     "label": "supported",
+     "note": "Source [1] mentions NSAIDs like ibuprofen and acetaminophen for headache relief."
+    },
+    {
+     "claim": "Headache worsening or not improving with rest",
+     "label": "standard_knowledge",
+     "note": "This is a general guideline for when to seek medical attention for headaches."
+    },
+    {
+     "claim": "New symptoms like vision changes or nausea",
+     "label": "standard_knowledge",
+     "note": "These are common red flags for headaches that may indicate a more serious condition."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 47,
+   "title": "Mild sunburn",
+   "rag": true,
+   "level": "home_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 4,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Sunburn can cause redness and soreness.",
+     "label": "supported",
+     "note": "This is supported by source [2], which states that sunburns are a sign of skin damage."
+    },
+    {
+     "claim": "Applying a cool, damp cloth to sunburned skin can help it heal.",
+     "label": "standard_knowledge",
+     "note": "This is a common recommendation for soothing sunburned skin, though not explicitly mentioned in the sources."
+    },
+    {
+     "claim": "Using aloe vera gel or a moisturizer can soothe sunburned skin.",
+     "label": "standard_knowledge",
+     "note": "This is a widely accepted home remedy for sunburn relief, though not explicitly mentioned in the sources."
+    },
+    {
+     "claim": "Drinking plenty of water helps stay hydrated after a sunburn.",
+     "label": "standard_knowledge",
+     "note": "Staying hydrated is generally recommended for overall health and recovery, though not specifically mentioned in the context of sunburn in the sources."
+    },
+    {
+     "claim": "Avoid further sun exposure until your skin recovers from sunburn.",
+     "label": "supported",
+     "note": "Source [2] advises avoiding sun exposure to prevent further skin damage."
+    },
+    {
+     "claim": "If you notice any blistering, fever, or if the pain worsens, it would be wise to see a healthcare provider.",
+     "label": "standard_knowledge",
+     "note": "These are common signs that a sunburn may require medical attention, though not explicitly mentioned in the sources."
+    }
+   ],
+   "cited": [
+    2
+   ],
+   "citation_checks": [
+    {
+     "source_number": 2,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Sun Exposure",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/sunexposure.html"
+    }
+   ]
+  },
+  {
+   "id": 47,
+   "title": "Mild sunburn",
+   "rag": false,
+   "level": "home_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 2,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Sunburn occurs when skin is overexposed to UV rays, causing redness and soreness.",
+     "label": "supported",
+     "note": "This is supported by the reference passages which state that sunburns are a sign of skin damage caused by UV rays."
+    },
+    {
+     "claim": "You can manage mild sunburn at home by applying cool compresses to your shoulders, using aloe vera gel or a moisturizer, and drinking plenty of water.",
+     "label": "standard_knowledge",
+     "note": "This is standard knowledge for managing mild sunburns, although not explicitly mentioned in the reference passages."
+    },
+    {
+     "claim": "Avoid further sun exposure until your skin heals.",
+     "label": "supported",
+     "note": "This is supported by the reference passages which advise avoiding sun exposure to prevent further damage."
+    },
+    {
+     "claim": "If you notice any blisters, start feeling unwell, or develop a fever, it's important to seek medical attention.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical advice for when to seek care for sunburns, although not explicitly mentioned in the reference passages."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 48,
+   "title": "Lower back strain",
+   "rag": true,
+   "level": "home_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Strained lower back is common when lifting heavy objects.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known cause of back strain."
+    },
+    {
+     "claim": "Since you're not experiencing any numbness, leg weakness, or issues with your bladder or bowels, it's likely not a serious injury.",
+     "label": "standard_knowledge",
+     "note": "These symptoms are often associated with more serious back injuries."
+    },
+    {
+     "claim": "To help with the soreness and stiffness, you can try rest, applying ice or heat, and taking over-the-counter pain relievers if needed.",
+     "label": "supported",
+     "note": "Passage [4] supports rest, ice/heat, and OTC pain relievers for back pain."
+    },
+    {
+     "claim": "Avoid heavy lifting or activities that worsen the pain for a few days.",
+     "label": "standard_knowledge",
+     "note": "Avoiding activities that worsen pain is common advice for back strain."
+    },
+    {
+     "claim": "If the pain doesn't improve in a few days or gets worse, it would be a good idea to see a healthcare provider for further evaluation.",
+     "label": "supported",
+     "note": "Passage [4] advises seeing a provider if pain doesn't improve in a few days."
+    }
+   ],
+   "cited": [
+    1,
+    4
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 4,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Back Injuries",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/backinjuries.html"
+    },
+    {
+     "title": "Back Pain",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/backpain.html"
+    }
+   ]
+  },
+  {
+   "id": 48,
+   "title": "Lower back strain",
+   "rag": false,
+   "level": "home_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 0,
+    "standard_knowledge": 5,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Strained lower back is common when lifting heavy objects.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known cause of lower back strain."
+    },
+    {
+     "claim": "Since you don't have any numbness, leg weakness, or bladder issues, it's likely a muscle strain rather than something more serious.",
+     "label": "standard_knowledge",
+     "note": "Absence of these symptoms often suggests a less severe condition like a muscle strain."
+    },
+    {
+     "claim": "Rest, gentle stretching, and over-the-counter pain relief can help with a muscle strain.",
+     "label": "standard_knowledge",
+     "note": "These are common recommendations for managing muscle strains."
+    },
+    {
+     "claim": "Avoid heavy lifting and try applying heat or ice to the area for a muscle strain.",
+     "label": "standard_knowledge",
+     "note": "These are standard home care measures for muscle strains."
+    },
+    {
+     "claim": "If the pain worsens, or if you develop any new symptoms like numbness or weakness, see a doctor.",
+     "label": "standard_knowledge",
+     "note": "This is a standard precaution for worsening symptoms or new neurological signs."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": false
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 49,
+   "title": "Stomach bug",
+   "rag": true,
+   "level": "home_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 3,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Gastroenteritis is an inflammation of the stomach and intestines, often causing vomiting and diarrhea.",
+     "label": "standard_knowledge",
+     "note": "This is a correct and widely accepted definition of gastroenteritis."
+    },
+    {
+     "claim": "Gastroenteritis is commonly caused by viruses and can spread among people in close contact.",
+     "label": "standard_knowledge",
+     "note": "This is a correct and widely accepted understanding of gastroenteritis transmission."
+    },
+    {
+     "claim": "Since you're able to keep water down and urinate normally, it suggests you're not dehydrated.",
+     "label": "standard_knowledge",
+     "note": "Being able to keep fluids down and urinate normally are general indicators of adequate hydration."
+    },
+    {
+     "claim": "If your symptoms don't improve in a couple of days, or if you develop new symptoms like a high fever or severe abdominal pain, see a healthcare provider.",
+     "label": "supported",
+     "note": "This aligns with the warning signs for gastroenteritis and diarrhea mentioned in the reference passages."
+    },
+    {
+     "claim": "Keep an eye out for any signs of dehydration or worsening symptoms.",
+     "label": "supported",
+     "note": "The reference passages mention signs of dehydration as a reason to contact a healthcare provider."
+    }
+   ],
+   "cited": [
+    1,
+    2
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": true
+    }
+   ],
+   "sources": [
+    {
+     "title": "Gastroenteritis",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/gastroenteritis.html"
+    }
+   ]
+  },
+  {
+   "id": 49,
+   "title": "Stomach bug",
+   "rag": false,
+   "level": "home_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 3,
+    "standard_knowledge": 2,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Gastroenteritis is often caused by a virus.",
+     "label": "standard_knowledge",
+     "note": "This is a well-known fact about gastroenteritis, though not explicitly stated in the provided passages."
+    },
+    {
+     "claim": "Since you're able to keep fluids down and urinate normally, home care is appropriate.",
+     "label": "standard_knowledge",
+     "note": "This is a reasonable general guideline for mild cases of gastroenteritis."
+    },
+    {
+     "claim": "Keep drinking clear fluids like water or broth to stay hydrated, and rest as much as possible.",
+     "label": "supported",
+     "note": "Passage [2] supports the advice to rest and drink fluids for gastroenteritis."
+    },
+    {
+     "claim": "If you start feeling worse, such as developing a high fever, severe abdominal pain, or signs of dehydration, it would be important to see a doctor.",
+     "label": "supported",
+     "note": "Passage [1] lists these as warning signs for when to contact a provider."
+    },
+    {
+     "claim": "With rest and hydration, you should start feeling better soon.",
+     "label": "supported",
+     "note": "Passage [2] indicates that people with gastroenteritis usually get better on their own with rest and fluids."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": 50,
+   "title": "Seasonal allergies",
+   "rag": true,
+   "level": "home_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 4,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Hay fever is an allergic reaction to pollen, causing symptoms like sneezing, itchy eyes, and a runny nose, especially in spring.",
+     "label": "supported",
+     "note": "This is supported by source [1], which describes hay fever as an allergy to pollen with symptoms including sneezing, itchy eyes, and a runny nose."
+    },
+    {
+     "claim": "Try over-the-counter antihistamines to help reduce sneezing and itching.",
+     "label": "standard_knowledge",
+     "note": "Using antihistamines for allergy symptoms is standard medical knowledge, although not explicitly mentioned in the provided sources."
+    },
+    {
+     "claim": "Use saline nasal sprays or rinses to clear out allergens from your nasal passages.",
+     "label": "supported",
+     "note": "Source [1] supports the use of saline nasal rinses for hay fever."
+    },
+    {
+     "claim": "Keep windows closed during high pollen days and consider using an air purifier indoors.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice for managing pollen allergies, though not explicitly mentioned in the sources."
+    },
+    {
+     "claim": "If symptoms worsen or don't improve with treatment, it would be a good idea to see a healthcare provider for further evaluation.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical advice for managing persistent or worsening symptoms."
+    },
+    {
+     "claim": "If you develop difficulty breathing or wheezing, seek medical attention.",
+     "label": "standard_knowledge",
+     "note": "Difficulty breathing or wheezing can be signs of a more serious condition and warrant medical attention, which is standard medical advice."
+    }
+   ],
+   "cited": [
+    1,
+    2
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    },
+    {
+     "source_number": 2,
+     "supports_answer": false
+    }
+   ],
+   "sources": [
+    {
+     "title": "Hay Fever",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/hayfever.html"
+    },
+    {
+     "title": "Sinusitis",
+     "source": "MedlinePlus (U.S. National Library of Medicine)",
+     "url": "https://medlineplus.gov/sinusitis.html"
+    }
+   ]
+  },
+  {
+   "id": 50,
+   "title": "Seasonal allergies",
+   "rag": false,
+   "level": "home_care",
+   "level_ok": true,
+   "counts": {
+    "supported": 2,
+    "standard_knowledge": 5,
+    "inaccurate": 0,
+    "fabricated": 0
+   },
+   "claims": [
+    {
+     "claim": "Seasonal allergies, often called hay fever, are usually triggered by pollen in the air during spring.",
+     "label": "supported",
+     "note": "This is supported by source [1], which states that hay fever is triggered by pollen released by trees, weeds, and grasses each spring, summer, and fall."
+    },
+    {
+     "claim": "Over-the-counter antihistamines can reduce itching and sneezing caused by seasonal allergies.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical knowledge. Antihistamines are commonly used to treat symptoms of allergies, including itching and sneezing."
+    },
+    {
+     "claim": "If you haven't tried antihistamines before or have any health conditions, it's a good idea to check with a pharmacist or your doctor first.",
+     "label": "standard_knowledge",
+     "note": "This is standard medical advice to ensure safety when taking new medications."
+    },
+    {
+     "claim": "Keep an eye out for any changes, like difficulty breathing or a high fever, which would need medical attention.",
+     "label": "standard_knowledge",
+     "note": "Difficulty breathing and high fever are general warning signs that require medical attention."
+    },
+    {
+     "claim": "Symptoms of itchy, watery eyes, sneezing, and a clear runny nose are common signs of seasonal allergies, especially in spring.",
+     "label": "supported",
+     "note": "This is supported by source [1], which lists these symptoms as typical for hay fever."
+    },
+    {
+     "claim": "Avoid outdoor activities when pollen counts are high.",
+     "label": "standard_knowledge",
+     "note": "This is standard advice for managing pollen allergies."
+    },
+    {
+     "claim": "Keep windows closed to reduce pollen exposure.",
+     "label": "standard_knowledge",
+     "note": "This is a common recommendation to minimize exposure to allergens like pollen."
+    }
+   ],
+   "cited": [
+    1
+   ],
+   "citation_checks": [
+    {
+     "source_number": 1,
+     "supports_answer": true
+    }
+   ],
+   "sources": []
+  }
+ ]
+}

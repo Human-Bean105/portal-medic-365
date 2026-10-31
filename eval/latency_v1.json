@@ -1,0 +1,237 @@
+{
+ "pipeline": "v1",
+ "model": "gpt-4o",
+ "date": "2026-10-31",
+ "summary": {
+  "screen_ms": {
+   "mean": 0,
+   "p95": 0
+  },
+  "query_rewrite_ms": {
+   "mean": 974,
+   "p95": 1776
+  },
+  "retrieval_ms": {
+   "mean": 320,
+   "p95": 549
+  },
+  "generation_ms": {
+   "mean": 2030,
+   "p95": 2864
+  },
+  "total_ms": {
+   "mean": 3324,
+   "p95": 4360
+  },
+  "prompt_tokens": {
+   "mean": 4227,
+   "p95": 4357
+  },
+  "completion_tokens": {
+   "mean": 247,
+   "p95": 323
+  }
+ },
+ "results": [
+  {
+   "id": 1,
+   "screen_ms": 3,
+   "query_rewrite_ms": 1983,
+   "retrieval_ms": 549,
+   "generation_ms": 3097,
+   "total_ms": 5632,
+   "prompt_tokens": 4233,
+   "completion_tokens": 308
+  },
+  {
+   "id": 2,
+   "screen_ms": 0,
+   "query_rewrite_ms": 1026,
+   "retrieval_ms": 547,
+   "generation_ms": 1897,
+   "total_ms": 3470,
+   "prompt_tokens": 4215,
+   "completion_tokens": 214
+  },
+  {
+   "id": 3,
+   "screen_ms": 0,
+   "query_rewrite_ms": 1310,
+   "retrieval_ms": 741,
+   "generation_ms": 1605,
+   "total_ms": 3656,
+   "prompt_tokens": 4357,
+   "completion_tokens": 198
+  },
+  {
+   "id": 4,
+   "screen_ms": 0,
+   "query_rewrite_ms": 1083,
+   "retrieval_ms": 282,
+   "generation_ms": 1980,
+   "total_ms": 3345,
+   "prompt_tokens": 4079,
+   "completion_tokens": 232
+  },
+  {
+   "id": 5,
+   "screen_ms": 0,
+   "query_rewrite_ms": 1776,
+   "retrieval_ms": 261,
+   "generation_ms": 2323,
+   "total_ms": 4360,
+   "prompt_tokens": 4229,
+   "completion_tokens": 252
+  },
+  {
+   "id": 6,
+   "screen_ms": 0,
+   "query_rewrite_ms": 994,
+   "retrieval_ms": 236,
+   "generation_ms": 1778,
+   "total_ms": 3008,
+   "prompt_tokens": 4280,
+   "completion_tokens": 220
+  },
+  {
+   "id": 7,
+   "screen_ms": 0,
+   "query_rewrite_ms": 936,
+   "retrieval_ms": 279,
+   "generation_ms": 1951,
+   "total_ms": 3166,
+   "prompt_tokens": 4145,
+   "completion_tokens": 231
+  },
+  {
+   "id": 8,
+   "screen_ms": 0,
+   "query_rewrite_ms": 653,
+   "retrieval_ms": 286,
+   "generation_ms": 2340,
+   "total_ms": 3279,
+   "prompt_tokens": 4292,
+   "completion_tokens": 277
+  },
+  {
+   "id": 9,
+   "screen_ms": 0,
+   "query_rewrite_ms": 780,
+   "retrieval_ms": 226,
+   "generation_ms": 1974,
+   "total_ms": 2980,
+   "prompt_tokens": 4347,
+   "completion_tokens": 203
+  },
+  {
+   "id": 10,
+   "screen_ms": 0,
+   "query_rewrite_ms": 773,
+   "retrieval_ms": 266,
+   "generation_ms": 1833,
+   "total_ms": 2872,
+   "prompt_tokens": 4235,
+   "completion_tokens": 222
+  },
+  {
+   "id": 11,
+   "screen_ms": 0,
+   "query_rewrite_ms": 666,
+   "retrieval_ms": 284,
+   "generation_ms": 1742,
+   "total_ms": 2692,
+   "prompt_tokens": 4080,
+   "completion_tokens": 209
+  },
+  {
+   "id": 12,
+   "screen_ms": 0,
+   "query_rewrite_ms": 731,
+   "retrieval_ms": 260,
+   "generation_ms": 1659,
+   "total_ms": 2650,
+   "prompt_tokens": 4277,
+   "completion_tokens": 205
+  },
+  {
+   "id": 13,
+   "screen_ms": 0,
+   "query_rewrite_ms": 785,
+   "retrieval_ms": 258,
+   "generation_ms": 1725,
+   "total_ms": 2768,
+   "prompt_tokens": 4264,
+   "completion_tokens": 237
+  },
+  {
+   "id": 14,
+   "screen_ms": 0,
+   "query_rewrite_ms": 930,
+   "retrieval_ms": 227,
+   "generation_ms": 1494,
+   "total_ms": 2651,
+   "prompt_tokens": 4021,
+   "completion_tokens": 217
+  },
+  {
+   "id": 15,
+   "screen_ms": 0,
+   "query_rewrite_ms": 732,
+   "retrieval_ms": 295,
+   "generation_ms": 1883,
+   "total_ms": 2910,
+   "prompt_tokens": 4012,
+   "completion_tokens": 265
+  },
+  {
+   "id": 16,
+   "screen_ms": 0,
+   "query_rewrite_ms": 894,
+   "retrieval_ms": 296,
+   "generation_ms": 1712,
+   "total_ms": 2902,
+   "prompt_tokens": 4270,
+   "completion_tokens": 223
+  },
+  {
+   "id": 17,
+   "screen_ms": 0,
+   "query_rewrite_ms": 882,
+   "retrieval_ms": 308,
+   "generation_ms": 2127,
+   "total_ms": 3317,
+   "prompt_tokens": 4297,
+   "completion_tokens": 250
+  },
+  {
+   "id": 18,
+   "screen_ms": 0,
+   "query_rewrite_ms": 891,
+   "retrieval_ms": 233,
+   "generation_ms": 2864,
+   "total_ms": 3988,
+   "prompt_tokens": 4244,
+   "completion_tokens": 363
+  },
+  {
+   "id": 19,
+   "screen_ms": 0,
+   "query_rewrite_ms": 610,
+   "retrieval_ms": 260,
+   "generation_ms": 2295,
+   "total_ms": 3165,
+   "prompt_tokens": 4388,
+   "completion_tokens": 323
+  },
+  {
+   "id": 20,
+   "screen_ms": 0,
+   "query_rewrite_ms": 1051,
+   "retrieval_ms": 303,
+   "generation_ms": 2314,
+   "total_ms": 3668,
+   "prompt_tokens": 4268,
+   "completion_tokens": 285
+  }
+ ]
+}
