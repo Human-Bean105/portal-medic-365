@@ -3,7 +3,8 @@ import os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from api._medi import API_KEY, MODEL, handle_post, send_stream
+from medi.config import API_KEY, MODEL
+from medi.web import handle_post, send_stream
 
 HERE = Path(__file__).parent
 PORT = int(os.environ.get("DOCTOR_PORT", 8785))

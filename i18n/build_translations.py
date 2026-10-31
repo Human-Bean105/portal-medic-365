@@ -19,9 +19,12 @@ from pathlib import Path
 HERE = Path(__file__).parent
 APP = HERE.parent
 sys.path.insert(0, str(APP))
-import api._medi as medi  # noqa: E402
+from medi import config, llm  # noqa: E402
+from medi.language import LANG_NAMES  # noqa: E402
+from medi.safety.escalation import CRISIS_LINE  # noqa: E402
+from medi.safety.input_checks import RED_FLAGS  # noqa: E402
 
-LANGUAGES = {code: name for code, name in medi.LANG_NAMES.items() if code != "en"}
+LANGUAGES = {code: name for code, name in LANG_NAMES.items() if code != "en"}
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"}
 ATTRS = ("placeholder", "title", "alt", "aria-label")
 BATCH = 60
@@ -74,8 +77,8 @@ def collect():
     for raw in re.findall(r'\b(?:t|N_)\(\s*"((?:[^"\\]|\\.)*)"', script):
         texts.add(json.loads(f'"{raw}"'))
 
-    texts.update(advice for _, _, advice in medi.RED_FLAGS)
-    texts.add(medi.CRISIS_LINE.strip())
+    texts.update(advice for _, _, advice in RED_FLAGS)
+    texts.add(CRISIS_LINE.strip())
 
     html = {key: norm(inner) for _, key, inner in
             re.findall(r'<(\w+)\b[^>]*\bdata-i18n-html="([\w-]+)"[^>]*>(.*?)</\1>', page, flags=re.S)}
@@ -94,14 +97,13 @@ Return a JSON object with exactly the same keys as the input and the translated 
 
 
 def translate_batch(language, items):
-    data = medi.post_json({
-        "model": medi.MODEL,
+    out = json.loads(llm.chat_text({
+        "model": config.MODEL,
         "temperature": 0,
         "messages": [{"role": "system", "content": PROMPT.format(language=language)},
                      {"role": "user", "content": json.dumps(items, ensure_ascii=False)}],
         "response_format": {"type": "json_object"},
-    }, timeout=180)
-    out = json.loads(data["choices"][0]["message"]["content"])
+    }, timeout=180))
     missing = [k for k in items if not isinstance(out.get(k), str)]
     if missing:
         raise ValueError(f"{language}: missing {len(missing)} translations")

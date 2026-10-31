@@ -4,7 +4,7 @@ import sys
 import urllib.request
 
 sys.path.insert(0, __file__.rsplit("\\", 1)[0])
-from api._medi import screen_red_flags
+from medi.safety.input_checks import screen_red_flags
 
 print("screener:", [f["label"] for f in screen_red_flags("I have crushing chest pain and can't breathe")])
 print("negated:", screen_red_flags("headache, no chest pain, not short of breath"))

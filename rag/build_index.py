@@ -22,7 +22,7 @@ from xml.etree import ElementTree
 
 HERE = Path(__file__).parent
 sys.path.insert(0, str(HERE.parent))
-from api._medi import API_KEY  # noqa: E402
+from medi.config import API_KEY  # noqa: E402
 
 EMBED_MODEL = "text-embedding-3-small"
 DIMS = 256
