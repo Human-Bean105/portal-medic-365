@@ -64,13 +64,13 @@ def screen_red_flags(text):
     return flags
 
 
-def screen_message(text, lang="en"):
+def screen_message(text, lang="en", usage=None):
     """Keyword safety check that also works for other languages, by checking an English translation too.
     Labels stay in English (the app uses them as keys); the advice is shown in the app language."""
     flags = screen_red_flags(text)
     if not flags and text.strip() and language.needs_english(text, lang):
         try:
-            flags = screen_red_flags(language.to_english(text))
+            flags = screen_red_flags(language.to_english(text, usage=usage))
         except Exception as e:
-            print("Translation for safety check failed:", e)
+            print("Translation for safety check failed:", type(e).__name__)
     return [{**f, "advice": language.ui_text(f["advice"], lang)} for f in flags]

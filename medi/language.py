@@ -44,4 +44,4 @@ def to_english(text, usage=None):
         "max_tokens": 300,
         "messages": [{"role": "system", "content": "Translate the user's message into English. Output only the translation."},
                      {"role": "user", "content": text}],
-    }, timeout=20, usage=usage).strip()
+    }, timeout=15, usage=usage).strip()

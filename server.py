@@ -1,10 +1,9 @@
-import json
 import os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from medi.config import API_KEY, MODEL
-from medi.web import handle_post, send_stream
+from medi.web import client_ip, handle_post, respond
 
 HERE = Path(__file__).parent
 PORT = int(os.environ.get("DOCTOR_PORT", 8785))
@@ -36,12 +35,8 @@ class Handler(BaseHTTPRequestHandler):
         if self.path not in ("/consult", "/stream", "/summary", "/voice", "/screen", "/speak", "/retrieve"):
             return self._send(404, "text/plain", b"Not found")
         raw = self.rfile.read(int(self.headers.get("Content-Length", 0)))
-        status, body = handle_post(self.path.strip("/"), raw)
-        if hasattr(body, "__next__"):
-            return send_stream(self, status, body)
-        if isinstance(body, bytes):
-            return self._send(status, "audio/mpeg", body)
-        self._send(status, "application/json", json.dumps(body).encode())
+        status, body = handle_post(self.path.strip("/"), raw, self.headers, client_ip(self))
+        respond(self, status, body)
 
     def log_message(self, *args):
         pass
