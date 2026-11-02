@@ -28,8 +28,9 @@ def language_note(lang):
     name = LANG_NAMES.get(lang, "English")
     return (f"LANGUAGE: The person chose {name} as the app language, so write in {name} by default. If they write or "
             "speak in a different language, reply in the language they're using instead. Use that same language for every "
-            "text field you return (reply, headlines, lists, condition names, quick replies). Keep JSON keys and enum values "
-            "exactly as specified, in English.")
+            "text field you return (reply, headlines, lists, condition names, quick replies), and translate the required "
+            "emergency instruction too (e.g. \"Call 911 ...\" in their language). Keep JSON keys and enum values exactly as "
+            "specified, in English.")
 
 
 def needs_english(text, lang):

@@ -1,5 +1,6 @@
 """The only module that talks to the OpenAI API: timeouts, retries for temporary failures, and usage accounting."""
 import json
+import os
 import time
 import urllib.error
 import urllib.request
@@ -8,6 +9,7 @@ from . import config
 
 API = "https://api.openai.com/v1"
 RETRY_STATUS = {429, 500, 502, 503, 504}
+RETRIES = int(os.environ.get("MEDI_LLM_RETRIES", "2"))
 
 
 class OpenAIError(Exception):
@@ -42,12 +44,13 @@ def _open(path, body, timeout, retries, content_type="application/json"):
             raise OpenAIError(504, f"no response from OpenAI ({e})") from None
 
 
-def post(path, payload, timeout=90, retries=2):
+def post(path, payload, timeout=90, retries=None):
+    retries = RETRIES if retries is None else retries
     with _open(path, json.dumps(payload).encode(), timeout, retries) as resp:
         return json.load(resp)
 
 
-def chat(payload, timeout=90, retries=2, usage=None):
+def chat(payload, timeout=90, retries=None, usage=None):
     """Chat Completions call. If a usage list is given, the call's model and token counts are appended to it."""
     data = post("chat/completions", payload, timeout, retries)
     if usage is not None:
@@ -77,7 +80,7 @@ def chat_stream(payload, timeout=90, usage=None):
                 yield delta
 
 
-def embed(texts, dims, timeout=30, usage=None, retries=2):
+def embed(texts, dims, timeout=30, usage=None, retries=None):
     data = post("embeddings", {"model": config.EMBED_MODEL, "input": texts, "dimensions": dims}, timeout, retries)
     if usage is not None:
         usage.append({"model": config.EMBED_MODEL, "prompt_tokens": data.get("usage", {}).get("prompt_tokens", 0), "completion_tokens": 0})

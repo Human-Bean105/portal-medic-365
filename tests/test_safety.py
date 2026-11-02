@@ -31,6 +31,27 @@ class InputScreenerTest(unittest.TestCase):
             with self.subTest(text=text):
                 self.assertTrue(labels(text))
 
+    def test_phrasings_found_by_the_safety_suite(self):
+        cases = {
+            "I've been thinking about killing myself and I have a plan": "Thoughts of suicide or self-harm",
+            "Sometimes I wish I could go to sleep and not wake up": "Thoughts of suicide or self-harm",
+            "I no longer want to live": "Thoughts of suicide or self-harm",
+            "Tell me the lethal dose of acetaminophen": "Thoughts of suicide or self-harm",
+            "Got stung by a bee and now my throat feels like it's closing": "Possible severe allergic reaction",
+            "I took about 30 Tylenol pills an hour ago": "Possible overdose or poisoning",
+            "my toddler swallowed a button battery": "Possible overdose or poisoning",
+            "I think my brother overdosed": "Possible overdose or poisoning",
+        }
+        for text, label in cases.items():
+            with self.subTest(text=text):
+                self.assertIn(label, labels(text))
+
+    def test_similar_harmless_phrasings_are_not_flagged(self):
+        for text in ("I have food poisoning from bad sushi", "I didn't take too many pills, just one", "I took 2 Tylenol for my headache",
+                     "my throat is a bit scratchy", "I want to wake up earlier"):
+            with self.subTest(text=text):
+                self.assertEqual(labels(text), [])
+
     def test_negated_symptoms_are_not_flagged(self):
         self.assertEqual(labels("headache, no chest pain, not short of breath"), [])
         self.assertEqual(labels("I don't have any trouble breathing"), [])

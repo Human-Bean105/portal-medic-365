@@ -4,9 +4,11 @@ import re
 from .. import language
 
 RED_FLAGS = [
-    (r"\b(suicid\w*|kill (my|him|her)self|end (my life|it all)|self[- ]?harm\w*|want to die|hurt(ing)? myself|cut(ting)? myself"
-     r"|better off dead|better off without me|no reason to live|don'?t want to (live|be alive|be here anymore)|wish I (was|were|wasn'?t) (dead|alive|here)"
-     r"|(want to|wish I could|hope I) (not|never) wake up)\b",
+    (r"\b(suicid\w*|kill(ing|ed)? (my|him|her)self|end(ing)? (my life|it all)|take my (own )?life|self[- ]?harm\w*|want to die"
+     r"|hurt(ing)? myself|cut(ting)? myself|better off dead|better off without me|no reason to live"
+     r"|(no longer|don'?t|do not) want to (live|be alive|exist|be here)|wish I (was|were|wasn'?t) (dead|alive|here)"
+     r"|(wish|hope|want)\b[^.!?]{0,40}\b(not|never) (to )?wake up"
+     r"|(lethal|fatal|deadly) (dose|amount)|how (much|many)\b[^.!?]{0,40}\bto (die|kill (my|him|her)self)|overdose on purpose)\b",
      "Thoughts of suicide or self-harm",
      "You deserve support right now. Call or text 9-8-8 (Suicide Crisis Helpline, Canada and US), or call 911 if you might act on these thoughts."),
     (r"\b(want|going|plan(ning)?) to (kill|hurt|harm|attack) (him|her|them|someone|somebody|people|my \w+)\b",
@@ -25,7 +27,7 @@ RED_FLAGS = [
     (r"\b(face|mouth|smile) (is )?(droop\w*|drooping)\b|\bslurred speech\b|\bslurring\b|\b(sudden )?(numb|weak)\w* (on )?one side\b|\bstroke\b",
      "Possible stroke signs",
      "Think F.A.S.T.: face drooping, arm weakness, speech difficulty, time to call emergency services. Call now."),
-    (r"\b(throat|tongue|lips?) (is |are )?(swell\w*|closing)\b|\banaphyla\w*\b",
+    (r"\b(throat|tongue|lips?)\b[^.,;!?]{0,25}\b(swell\w*|swollen|closing|clos(e|ing) up)\b|\banaphyla\w*\b",
      "Possible severe allergic reaction",
      "Use an epinephrine auto-injector if you have one and call emergency services now."),
     (r"\b(passed out|fainted|unconscious|unresponsive|seizure|convuls\w*)\b",
@@ -37,10 +39,15 @@ RED_FLAGS = [
     (r"\bworst headache\b|\bthunderclap\b|\bstiff neck\b.*\bfever\b|\bfever\b.*\bstiff neck\b",
      "Possible serious headache / meningitis signs",
      "A sudden worst-ever headache or fever with stiff neck needs emergency evaluation now."),
+    (r"\boverdos\w*\b|\b(took|taken|swallowed|ate)\b[^.!?]{0,25}\b(\d{2,}|a lot of|too many|lots of|a (whole|full) (bottle|pack|box) of)\b"
+     r"[^.!?]{0,25}\b(pills|tablets|capsules)\b|\bswallowed\b[^.!?]{0,25}\b(batter(y|ies)|bleach|detergent|magnets?)\b",
+     "Possible overdose or poisoning",
+     "Call 911 or your local poison control centre now, even if they seem fine. Don't wait for symptoms."),
 ]
 
 
-NEGATION = re.compile(r"\b(no|not|never|without|denies|don'?t have|doesn'?t have|haven'?t had|no sign of)\b[^.,;!?]{0,25}$")
+NEGATION = re.compile(r"\b(no|not|never|without|denies|don'?t have|doesn'?t have|haven'?t had|no sign of|didn'?t|did not)\b"
+                      r"[^.,;!?]{0,25}$")
 
 # Breathlessness only during activity ("short of breath on the stairs") is not an emergency on its own;
 # the model still judges it in context.
