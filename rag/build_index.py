@@ -1,137 +1,93 @@
-"""Builds Medi's retrieval index (run once, then commit rag/medi_index.json).
+"""Builds Medi's retrieval index.
 
 Sources:
-- MedlinePlus health topics (U.S. National Library of Medicine), plain-language summaries. https://medlineplus.gov/xml.html
+- MedlinePlus health topics (U.S. National Library of Medicine), public domain. https://medlineplus.gov/xml.html
 - 62 clinical guideline summaries from github.com/bshepp/clinical-decision-support-agent (Apache-2.0),
   each pointing to the original guideline publisher.
 
-Usage (from the doctor/ folder):  python rag/build_index.py
+The downloaded documents are saved to rag/sources.json (the pinned dataset version), so every chunking setting is
+built from exactly the same text. Use --refresh to download a new snapshot.
+
+Usage (from the doctor/ folder):
+  python rag/build_index.py                         # production index: rag/medi_index.json
+  python rag/build_index.py --max-chars 600 --overlap 0 --out evaluation/indexes/c600_o0.json
 """
+import argparse
 import base64
-import html
-import io
 import json
 import math
-import re
 import sys
-import urllib.request
-import zipfile
+import time
 from array import array
 from pathlib import Path
-from xml.etree import ElementTree
 
 HERE = Path(__file__).parent
 sys.path.insert(0, str(HERE.parent))
-from medi.config import API_KEY  # noqa: E402
+from medi import llm  # noqa: E402
+from medi.rag import ingestion  # noqa: E402
+from medi.rag.chunking import build_chunks  # noqa: E402
 
-EMBED_MODEL = "text-embedding-3-small"
 DIMS = 256
-CHUNK_CHARS = 1100
-GUIDELINES_URL = ("https://api.github.com/repos/bshepp/clinical-decision-support-agent/contents/"
-                  "src/backend/app/data/clinical_guidelines.json")
+SOURCES = HERE / "sources.json"
 
 
-def fetch(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "Medi-RAG-builder (Portal Medic 365 student project)"})
-    with urllib.request.urlopen(req, timeout=120) as r:
-        return r.read()
+def load_sources(refresh):
+    if SOURCES.exists() and not refresh:
+        return json.loads(SOURCES.read_text(encoding="utf-8"))
+    mlp, mlp_info = ingestion.medlineplus_documents()
+    gl, gl_info = ingestion.guideline_documents()
+    data = {"downloaded": time.strftime("%Y-%m-%d"), **mlp_info, **gl_info, "documents": mlp + gl}
+    SOURCES.write_text(json.dumps(data, ensure_ascii=False, indent=0), encoding="utf-8")
+    return data
 
 
-def html_to_text(fragment):
-    text = re.sub(r"<li[^>]*>", "\n- ", fragment)
-    text = re.sub(r"</(p|ul|ol|h\d)>|<br\s*/?>", "\n", text)
-    text = html.unescape(re.sub(r"<[^>]+>", "", text))
-    return "\n".join(line.strip() for line in text.splitlines() if line.strip())
-
-
-def chunk(title, body):
-    """Splits text into ~CHUNK_CHARS passages on line boundaries, each labeled with its topic."""
-    parts, current = [], ""
-    for line in body.splitlines():
-        if current and len(current) + len(line) > CHUNK_CHARS:
-            parts.append(current)
-            current = ""
-        current += ("\n" if current else "") + line
-    if current:
-        parts.append(current)
-    return [f"{title}: {p}" for p in parts]
-
-
-def medlineplus_chunks():
-    page = fetch("https://medlineplus.gov/xml.html").decode("utf-8", "replace")
-    links = sorted(set(re.findall(r'href="([^"]*mplus_topics_compressed_[\d-]+\.zip)"', page)), reverse=True)
-    if not links:
-        raise SystemExit("Couldn't find the MedlinePlus download link.")
-    url = links[0] if links[0].startswith("http") else "https://medlineplus.gov/" + links[0].lstrip("/")
-    print("Downloading", url)
-    archive = zipfile.ZipFile(io.BytesIO(fetch(url)))
-    root = ElementTree.fromstring(archive.read(archive.namelist()[0]))
-    chunks = []
-    for topic in root.iter("health-topic"):
-        if topic.get("language") != "English":
-            continue
-        summary = topic.findtext("full-summary") or ""
-        if not summary.strip():
-            continue
-        title = topic.get("title")
-        aliases = [a.text for a in topic.findall("also-called") if a.text]
-        body = html_to_text(summary)
-        if aliases:
-            body = f"Also called: {', '.join(aliases)}\n{body}"
-        for text in chunk(title, body):
-            chunks.append({"t": title, "s": "MedlinePlus (U.S. National Library of Medicine)", "u": topic.get("url"), "x": text})
-    return chunks
-
-
-def guideline_chunks():
-    chunks = []
-    for g in json.loads(base64.b64decode(json.loads(fetch(GUIDELINES_URL))["content"])):
-        for text in chunk(g["title"], g["text"]):
-            chunks.append({"t": g["title"], "s": f"{g['source']} (summary)", "u": g.get("url", ""), "x": text})
-    return chunks
-
-
-def embed(texts):
+def embed_all(texts):
     vectors = []
     for start in range(0, len(texts), 200):
-        batch = texts[start:start + 200]
-        req = urllib.request.Request(
-            "https://api.openai.com/v1/embeddings",
-            data=json.dumps({"model": EMBED_MODEL, "input": batch, "dimensions": DIMS}).encode(),
-            headers={"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"},
-        )
-        with urllib.request.urlopen(req, timeout=120) as r:
-            vectors += [d["embedding"] for d in sorted(json.load(r)["data"], key=lambda d: d["index"])]
+        vectors += llm.embed(texts[start:start + 200], DIMS, timeout=120, retries=6)
         print(f"  embedded {len(vectors)}/{len(texts)}")
     return vectors
 
 
 def main():
-    chunks = medlineplus_chunks()
-    print(f"MedlinePlus: {len(chunks)} passages")
-    guidelines = guideline_chunks()
-    print(f"Guideline summaries: {len(guidelines)} passages")
-    chunks += guidelines
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--max-chars", type=int, default=900)
+    ap.add_argument("--overlap", type=int, default=1)
+    ap.add_argument("--out", default=str(HERE / "medi_index.json"))
+    ap.add_argument("--refresh", action="store_true")
+    args = ap.parse_args()
+
+    sources = load_sources(args.refresh)
+    docs = sources["documents"]
+    chunks, dropped = build_chunks(docs, args.max_chars, args.overlap)
+    print(f"{len(docs)} documents -> {len(chunks)} passages ({dropped} duplicates removed)")
 
     flat = array("f")
-    for v in embed([c["x"] for c in chunks]):
+    for v in embed_all([c["x"] for c in chunks]):
         norm = math.sqrt(sum(x * x for x in v)) or 1.0
         flat.extend(x / norm for x in v)
 
     index = {
-        "model": EMBED_MODEL,
+        "version": 2,
+        "model": "text-embedding-3-small",
         "dims": DIMS,
+        "built": time.strftime("%Y-%m-%d"),
+        "chunking": {"max_chars": args.max_chars, "overlap_sentences": args.overlap},
+        "sources": {k: v for k, v in sources.items() if k != "documents"},
         "attribution": [
             "Health topic summaries courtesy of MedlinePlus.gov, U.S. National Library of Medicine (public domain).",
             "Clinical guideline summaries from github.com/bshepp/clinical-decision-support-agent, "
             "licensed under the Apache License 2.0; each links to the original guideline publisher.",
         ],
+        "documents": {d["doc_id"]: {k: d[k] for k in ("type", "source", "title", "url", "groups", "date_created", "snapshot_date")}
+                      for d in docs},
         "chunks": chunks,
         "vectors": base64.b64encode(flat.tobytes()).decode(),
     }
-    out = HERE / "medi_index.json"
+    out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(index, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    print(f"Saved {len(chunks)} passages to {out} ({out.stat().st_size / 1e6:.1f} MB)")
+    print(f"Saved {out} ({out.stat().st_size / 1e6:.1f} MB)")
 
 
 if __name__ == "__main__":

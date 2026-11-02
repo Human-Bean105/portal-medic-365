@@ -1,0 +1,38 @@
+Tuned on half 0, tested on half 1: picked 'hybrid weighted a=0.7 + wellbeing boost'
+    hybrid weighted a=0.7, c1200_o1                    hit@5 0.951  mrr 0.839  recall@5 0.833  precision@5 0.548
+    hybrid weighted a=0.7, c1100_o0                    hit@5 0.951  mrr 0.837  recall@5 0.825  precision@5 0.551
+    hybrid weighted a=0.7                              hit@5 0.951  mrr 0.834  recall@5 0.817  precision@5 0.584
+    hybrid weighted a=0.7, wellbeing a=0.9             hit@5 0.951  mrr 0.834  recall@5 0.817  precision@5 0.584
+    hybrid weighted a=0.7, c900_o1                     hit@5 0.951  mrr 0.834  recall@5 0.817  precision@5 0.584
+  * hybrid weighted a=0.7 + wellbeing boost            hit@5 0.951  mrr 0.832  recall@5 0.817  precision@5 0.593
+    hybrid weighted a=0.7, wellbeing a=0.9 + boost     hit@5 0.951  mrr 0.832  recall@5 0.817  precision@5 0.593
+    hybrid weighted a=0.8                              hit@5 0.934  mrr 0.818  recall@5 0.817  precision@5 0.577
+    hybrid weighted a=0.7, c1500_o1                    hit@5 0.934  mrr 0.817  recall@5 0.809  precision@5 0.538
+    hybrid weighted a=0.7, c600_o1                     hit@5 0.951  mrr 0.809  recall@5 0.825  precision@5 0.623
+    hybrid weighted a=0.5                              hit@5 0.934  mrr 0.803  recall@5 0.792  precision@5 0.567
+    hybrid rrf a=0.7                                   hit@5 0.951  mrr 0.802  recall@5 0.817  precision@5 0.577
+    hybrid weighted a=0.7, c600_o0                     hit@5 0.934  mrr 0.800  recall@5 0.817  precision@5 0.600
+    vector, new index                                  hit@5 0.918  mrr 0.795  recall@5 0.784  precision@5 0.541
+    hybrid rrf a=0.5                                   hit@5 0.934  mrr 0.789  recall@5 0.801  precision@5 0.567
+    hybrid rrf a=0.5 + wellbeing boost                 hit@5 0.934  mrr 0.785  recall@5 0.801  precision@5 0.577
+    B  v1: vector, old index, cutoff 0.3               hit@5 0.902  mrr 0.774  recall@5 0.784  precision@5 0.515
+    bm25, new index                                    hit@5 0.820  mrr 0.671  recall@5 0.678  precision@5 0.466
+Tuned on half 1, tested on half 0: picked 'hybrid weighted a=0.7, c1200_o1'
+    hybrid weighted a=0.7 + wellbeing boost            hit@5 0.935  mrr 0.831  recall@5 0.868  precision@5 0.606
+    hybrid weighted a=0.7, wellbeing a=0.9 + boost     hit@5 0.935  mrr 0.831  recall@5 0.868  precision@5 0.606
+    hybrid weighted a=0.7, c600_o1                     hit@5 0.919  mrr 0.824  recall@5 0.852  precision@5 0.616
+    hybrid weighted a=0.7                              hit@5 0.935  mrr 0.823  recall@5 0.868  precision@5 0.613
+    hybrid weighted a=0.7, wellbeing a=0.9             hit@5 0.935  mrr 0.823  recall@5 0.868  precision@5 0.613
+    hybrid weighted a=0.7, c900_o1                     hit@5 0.935  mrr 0.823  recall@5 0.868  precision@5 0.613
+  * hybrid weighted a=0.7, c1200_o1                    hit@5 0.968  mrr 0.820  recall@5 0.897  precision@5 0.584
+    hybrid weighted a=0.7, c1500_o1                    hit@5 0.952  mrr 0.818  recall@5 0.892  precision@5 0.577
+    hybrid weighted a=0.8                              hit@5 0.952  mrr 0.814  recall@5 0.868  precision@5 0.623
+    hybrid weighted a=0.5                              hit@5 0.919  mrr 0.800  recall@5 0.852  precision@5 0.606
+    hybrid weighted a=0.7, c1100_o0                    hit@5 0.952  mrr 0.800  recall@5 0.892  precision@5 0.587
+    vector, new index                                  hit@5 0.919  mrr 0.796  recall@5 0.840  precision@5 0.581
+    hybrid weighted a=0.7, c600_o0                     hit@5 0.919  mrr 0.795  recall@5 0.844  precision@5 0.623
+    hybrid rrf a=0.5 + wellbeing boost                 hit@5 0.919  mrr 0.789  recall@5 0.852  precision@5 0.594
+    hybrid rrf a=0.5                                   hit@5 0.919  mrr 0.786  recall@5 0.852  precision@5 0.600
+    hybrid rrf a=0.7                                   hit@5 0.919  mrr 0.783  recall@5 0.844  precision@5 0.600
+    B  v1: vector, old index, cutoff 0.3               hit@5 0.919  mrr 0.743  recall@5 0.840  precision@5 0.545
+    bm25, new index                                    hit@5 0.823  mrr 0.651  recall@5 0.747  precision@5 0.474

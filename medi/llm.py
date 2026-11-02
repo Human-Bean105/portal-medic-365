@@ -77,8 +77,8 @@ def chat_stream(payload, timeout=90, usage=None):
                 yield delta
 
 
-def embed(texts, dims, timeout=30, usage=None):
-    data = post("embeddings", {"model": config.EMBED_MODEL, "input": texts, "dimensions": dims}, timeout)
+def embed(texts, dims, timeout=30, usage=None, retries=2):
+    data = post("embeddings", {"model": config.EMBED_MODEL, "input": texts, "dimensions": dims}, timeout, retries)
     if usage is not None:
         usage.append({"model": config.EMBED_MODEL, "prompt_tokens": data.get("usage", {}).get("prompt_tokens", 0), "completion_tokens": 0})
     return [d["embedding"] for d in sorted(data["data"], key=lambda d: d["index"])]

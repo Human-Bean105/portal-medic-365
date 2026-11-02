@@ -51,11 +51,19 @@ TRANSLATIONS_FILE = APP_DIR / "i18n" / "translations.json"
 @dataclass(frozen=True)
 class Pipeline:
     """One configuration of the answering pipeline. Experiments compare several of these on the same test data."""
-    name: str = "medi-v1"
+    name: str = "medi"
     rag: bool = os.environ.get("MEDI_RAG", "1") != "0"
-    top_k: int = 5
-    min_score: float = 0.3
-    per_topic: int = 2
+    index: str = "rag/medi_index.json"
+    retriever: str = "hybrid"        # "vector" (v1 behavior), "bm25", or "hybrid"
+    fusion: str = "weighted"         # how hybrid combines the two rankings: "rrf" or "weighted"
+    alpha: float = 0.7               # weight of vector search in hybrid fusion (chosen on the retrieval benchmark)
+    alpha_wellbeing: float = 0.9     # Wellbeing messages are everyday words, so keyword matching gets less weight
+    rrf_k: int = 60
+    candidates: int = 40             # passages considered before the final selection
+    top_k: int = 5                   # passages shown to the model
+    per_topic: int = 2               # at most this many passages from one topic
+    min_score: float = 0.3           # v1 cutoff on cosine similarity, used only by the "vector" retriever
+    wellbeing_boost: float = 0.0     # extra weight for mental-health topics in Wellbeing mode
 
     def but(self, **changes):
         return replace(self, **changes)
