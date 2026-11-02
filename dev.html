@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Medi developer view</title>
+<link rel="icon" href="/assets/medi-avatar.png" />
+<style>
+  :root { --ink: #14285e; --muted: #6b7c99; --line: #e1e9f4; --brand: #2563eb; --teal: #1fc4a5; --bg: #f5f8fc; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--ink); }
+  header { display: flex; align-items: center; gap: 12px; padding: 12px 24px; background: #fff; border-bottom: 1px solid var(--line); }
+  header img { width: 34px; height: 34px; border-radius: 50%; }
+  header h1 { font-size: 1.1rem; margin: 0; }
+  header .note { margin-left: auto; font-size: .8rem; color: var(--muted); max-width: 520px; text-align: right; }
+  main { max-width: 1200px; margin: 0 auto; padding: 20px 24px 60px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin-bottom: 16px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  textarea, input, select { font: inherit; border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; }
+  textarea { width: 100%; min-height: 70px; resize: vertical; }
+  button { font: inherit; border: none; border-radius: 10px; padding: 9px 16px; background: var(--brand); color: #fff; font-weight: 600; cursor: pointer; }
+  button.ghost { background: #fff; color: var(--brand); border: 1px solid var(--brand); }
+  button:disabled { opacity: .5; cursor: wait; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+  .tabs button { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+  .tabs button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 10px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .kv { display: grid; grid-template-columns: 150px 1fr; gap: 6px 12px; font-size: .9rem; }
+  .kv span:nth-child(odd) { color: var(--muted); }
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: .8rem; font-weight: 600; background: #eef3fb; }
+  .pill.good { background: #dcfaf3; color: #0f7a64; } .pill.warn { background: #fff4dc; color: #8a5a00; } .pill.bad { background: #ffe3e6; color: #a1182a; }
+  .timeline { display: flex; height: 34px; border-radius: 8px; overflow: hidden; margin: 6px 0 4px; }
+  .timeline div { display: flex; align-items: center; justify-content: center; color: #fff; font-size: .72rem; white-space: nowrap; overflow: hidden; min-width: 2px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .8rem; color: var(--muted); }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+  table { width: 100%; border-collapse: collapse; font-size: .86rem; }
+  th, td { text-align: left; padding: 7px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: .78rem; }
+  .bar { height: 7px; border-radius: 4px; background: #e7eefa; position: relative; min-width: 60px; }
+  .bar b { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: var(--brand); }
+  .bar.k b { background: var(--teal); }
+  .cited { color: #0f7a64; font-weight: 700; }
+  .reply { white-space: pre-wrap; line-height: 1.5; font-size: .95rem; background: #f7faff; border-radius: 10px; padding: 12px; }
+  .check { font-size: .85rem; margin: 2px 0; }
+  .muted { color: var(--muted); font-size: .85rem; }
+  ol.res { margin: 0; padding-left: 20px; font-size: .88rem; }
+  ol.res li { margin-bottom: 6px; }
+  .g3 { color: #0f7a64; } .g2 { color: #2563eb; } .g1 { color: #8a5a00; } .g0 { color: #a1182a; text-decoration: line-through; }
+  @media (max-width: 900px) { .grid, .grid3 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <img src="/assets/medi-avatar.png" alt="" />
+  <h1>Medi developer view</h1>
+  <div class="note">Shows how an answer was produced. Needs the developer token. Nothing you type here is stored; server logs keep only timings and counts.</div>
+</header>
+<main>
+  <div class="card row">
+    <input id="token" type="password" placeholder="Developer token" style="flex:1; min-width:220px" />
+    <select id="mode"><option value="health">Health</option><option value="wellbeing">Wellbeing</option></select>
+    <select id="lang"></select>
+    <button class="ghost" id="saveToken">Use token</button>
+  </div>
+
+  <div class="tabs"><button class="on" data-tab="trace">Pipeline trace</button><button data-tab="compare">Retrieval comparison</button></div>
+
+  <div class="card">
+    <textarea id="text" placeholder="Type a test message, e.g. 'what are the side effects of metformin'"></textarea>
+    <div class="row" style="margin-top:10px">
+      <button id="run">Run</button>
+      <span class="muted" id="status"></span>
+    </div>
+    <div class="row muted" style="margin-top:8px">Try: <a href="#" data-ex="I have crushing chest pain spreading to my left arm">emergency</a> ·
+      <a href="#" data-ex="what are the side effects of metformin">drug question</a> ·
+      <a href="#" data-ex="how many milligrams of melatonin can a 4 year old take">not in the library</a> ·
+      <a href="#" data-ex="I've had a sore throat and fever for two days">symptoms</a> ·
+      <a href="#" data-ex="write me a poem about the ocean">off-topic</a></div>
+  </div>
+
+  <div id="out"></div>
+</main>
+<script>
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const LANGS = { en: "English", fr: "Français", es: "Español", "zh-Hans": "简体中文", "zh-Hant": "繁體中文", pa: "ਪੰਜਾਬੀ", hi: "हिन्दी", tl: "Tagalog", ko: "한국어", vi: "Tiếng Việt", fa: "فارسی", ar: "العربية" };
+  for (const [code, name] of Object.entries(LANGS)) $("lang").add(new Option(name, code));
+  const COLORS = { safety_precheck: "#d62839", analysis: "#7c3aed", retrieval: "#2563eb", rerank: "#0ea5e9", generation: "#1fc4a5", output_validation: "#f17105" };
+  let tab = "trace";
+  $("token").value = sessionStorage.getItem("mediDevToken") || "";
+  $("saveToken").onclick = () => { sessionStorage.setItem("mediDevToken", $("token").value.trim()); $("status").textContent = "Token saved for this tab."; };
+  document.querySelectorAll("[data-tab]").forEach((b) => b.onclick = () => {
+    tab = b.dataset.tab;
+    document.querySelectorAll("[data-tab]").forEach((x) => x.classList.toggle("on", x === b));
+    $("out").innerHTML = "";
+  });
+  document.querySelectorAll("[data-ex]").forEach((a) => a.onclick = (e) => { e.preventDefault(); $("text").value = a.dataset.ex; });
+
+  async function call(path, body) {
+    const res = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json", "X-Medi-Dev": $("token").value.trim() }, body: JSON.stringify(body) });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || res.status);
+    return data;
+  }
+
+  $("run").onclick = async () => {
+    const text = $("text").value.trim();
+    if (!text) return;
+    $("run").disabled = true;
+    $("status").textContent = "Running...";
+    const started = performance.now();
+    try {
+      if (tab === "trace") {
+        const r = await call("/consult", { messages: [{ role: "user", content: text }], mode: $("mode").value, lang: $("lang").value });
+        if (!r.trace) throw new Error("No trace returned. Check the developer token.");
+        renderTrace(r);
+      } else {
+        renderCompare(await call("/inspect", { text, mode: $("mode").value }));
+      }
+      $("status").textContent = `Done in ${Math.round(performance.now() - started)} ms (browser round trip).`;
+    } catch (e) {
+      $("status").textContent = "Error: " + e.message;
+    } finally {
+      $("run").disabled = false;
+    }
+  };
+
+  function statusPill(s) {
+    const cls = { sufficient: "good", partial: "warn", insufficient: "bad", none: "bad" }[s] || "";
+    return `<span class="pill ${cls}">${esc(s)}</span>`;
+  }
+
+  function renderTrace(r) {
+    const t = r.trace;
+    const total = t.stages.reduce((a, s) => a + s.ms, 0) || 1;
+    const stages = Object.fromEntries(t.stages.map((s) => [s.stage, s]));
+    const retrieval = stages.retrieval || {};
+    const cited = new Set((r.sources || []).map((s) => s.title));
+    const a = r.analysis;
+    const checks = stages.output_validation?.checks || [];
+    const level = r.triage?.level || r.risk?.level;
+    $("out").innerHTML = `
+      <div class="card">
+        <h2>Pipeline timeline (${t.total_ms} ms on the server, ${t.tokens.prompt_tokens + t.tokens.completion_tokens} tokens, ~$${t.cost_usd})</h2>
+        <div class="timeline">${t.stages.map((s) => `<div style="flex:${Math.max(s.ms, total / 80)};background:${COLORS[s.stage] || "#888"}" title="${s.stage}: ${s.ms} ms">${s.ms > total / 12 ? `${s.stage} ${s.ms}ms` : ""}</div>`).join("")}</div>
+        <div class="legend">${t.stages.map((s) => `<span><i style="background:${COLORS[s.stage] || "#888"}"></i>${s.stage}: ${s.ms} ms${s.error ? " (error: " + esc(s.error) + ")" : ""}</span>`).join("")}</div>
+      </div>
+      <div class="grid">
+        <div class="card"><h2>Decisions</h2><div class="kv">
+          <span>Safety screener</span><span>${(r.safety_alerts || []).length ? r.safety_alerts.map((x) => `<span class="pill bad">${esc(x.label)}</span>`).join(" ") : '<span class="pill good">no alert</span>'}</span>
+          <span>Intent</span><span>${a ? esc(a.intent.replace(/_/g, " ")) : '<span class="muted">skipped (emergency fast path or analyzer off)</span>'}</span>
+          <span>Detected language</span><span>${esc(a?.language || "-")}</span>
+          <span>Search query from</span><span>${esc(retrieval.query_from || "-")}</span>
+          <span>Evidence status</span><span>${statusPill(r.evidence_status)}</span>
+          <span>${r.triage ? "Level of care" : "Wellbeing risk"}</span><span><span class="pill">${esc(level)}</span></span>
+          <span>Already answered</span><span>${esc((a?.already_answered || []).join("; ") || "-")}</span>
+          <span>Still unknown</span><span>${esc((a?.missing_information || []).join("; ") || "-")}</span>
+        </div></div>
+        <div class="card"><h2>Output checks</h2>
+          ${checks.map((c) => `<div class="check">${c.passed ? "✅" : c.action === "repaired" ? "🛠️" : "⚠️"} ${esc(c.check.replace(/_/g, " "))}${!c.passed ? ` <span class="muted">(${esc(c.action)})</span>` : ""}</div>`).join("") || '<span class="muted">No checks ran.</span>'}
+          ${(r.limitations || []).length ? `<p class="muted">Shown to the person: ℹ️ ${esc(r.limitations.join(" "))}</p>` : ""}
+        </div>
+      </div>
+      <div class="card"><h2>Reference passages shown to the model (✔ = cited in the answer)</h2>
+        ${(retrieval.passages || []).length ? `<table><tr><th>#</th><th>Topic</th><th>Fused score</th><th>Vector (cosine)</th><th>Keyword (BM25)</th><th>Reranker grade</th></tr>
+          ${retrieval.passages.map((p, i) => `<tr><td>${i + 1}</td><td>${cited.has(p.title) ? '<span class="cited">✔</span> ' : ""}<a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a>${p.heading ? ` <span class="muted">(${esc(p.heading)})</span>` : ""}</td>
+            <td>${p.score ?? "-"}</td><td><div class="bar"><b style="width:${Math.round((p.cosine || 0) * 100)}%"></b></div>${p.cosine ?? "-"}</td>
+            <td><div class="bar k"><b style="width:${Math.min(100, Math.round((p.bm25 || 0) * 4))}%"></b></div>${p.bm25 ?? "-"}</td><td>${p.grade ?? "-"}</td></tr>`).join("")}</table>`
+          : '<span class="muted">No passages (retrieval skipped, failed, or nothing relevant).</span>'}
+      </div>
+      <div class="card"><h2>Reply</h2><div class="reply">${esc(r.reply)}</div></div>`;
+  }
+
+  function renderCompare(d) {
+    $("out").innerHTML = `
+      <div class="card"><h2>Search query built by the analyzer</h2><div class="reply">${esc(d.search_query)}</div>
+        <p class="muted">Intent: ${esc(d.analysis.intent)} · cost of this comparison ~$${d.cost_usd}</p></div>
+      <div class="grid3">${Object.entries(d.results).map(([name, ps]) => `
+        <div class="card"><h2>${esc(name)}</h2><ol class="res">${ps.map((p) => `<li class="${p.grade != null ? "g" + p.grade : ""}">${esc(p.t)}
+          <div class="muted">cos ${p.cosine ?? "-"} · bm25 ${p.bm25 ?? "-"}${p.grade != null ? " · grade " + p.grade : ""}</div></li>`).join("")}</ol></div>`).join("")}
+      </div>
+      <p class="muted">Reranker grades: 3 answers the question, 2 partly useful, 1 loosely related, 0 not relevant (removed).</p>`;
+  }
+</script>
+</body>
+</html>

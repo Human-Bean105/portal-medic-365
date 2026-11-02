@@ -13,6 +13,8 @@ STATIC = {
     "/assets/logo.png": ("assets/logo.png", "image/png"),
     "/assets/medi-avatar.png": ("assets/medi-avatar.png", "image/png"),
     "/i18n/translations.json": ("i18n/translations.json", "application/json; charset=utf-8"),
+    "/dev": ("dev.html", "text/html; charset=utf-8"),
+    "/dev.html": ("dev.html", "text/html; charset=utf-8"),
 }
 
 
@@ -32,7 +34,7 @@ class Handler(BaseHTTPRequestHandler):
         self._send(200, content_type, (HERE / file).read_bytes())
 
     def do_POST(self):
-        if self.path not in ("/consult", "/stream", "/summary", "/voice", "/screen", "/speak", "/retrieve"):
+        if self.path not in ("/consult", "/stream", "/summary", "/voice", "/screen", "/speak", "/retrieve", "/inspect"):
             return self._send(404, "text/plain", b"Not found")
         raw = self.rfile.read(int(self.headers.get("Content-Length", 0)))
         status, body = handle_post(self.path.strip("/"), raw, self.headers, client_ip(self))

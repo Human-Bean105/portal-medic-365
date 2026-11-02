@@ -28,6 +28,13 @@ def rate_limited(kind, ip):
     return len(recent) > limit
 
 
+def public_error(e):
+    """What the person sees when the AI service fails. Details stay in the server log."""
+    if e.status in (401, 402):
+        return "Medi is temporarily unavailable. Please try again later. In an emergency, call 911."
+    return "Medi couldn't reach its AI service just now. Please try again in a moment. In an emergency, call 911."
+
+
 def is_developer(headers):
     token = (headers or {}).get("X-Medi-Dev", "")
     return bool(config.DEV_TOKEN) and hmac.compare_digest(token, config.DEV_TOKEN)
@@ -74,6 +81,27 @@ def respond(handler, status, body):
     handler.wfile.write(data)
 
 
+def inspect_retrieval(text, mode, trace):
+    """Developer view: the same query through three retrieval setups, side by side, with every score."""
+    from . import analyzer
+    from .rag import rerank, retrieval
+
+    analysis = analyzer.analyze([{"role": "user", "content": text}], mode, usage=trace.usage)
+    query = analyzer.search_text(analysis, text)
+    cfg = config.DEFAULT
+    qvec = retrieval.embed_query(query, retrieval.index.get(cfg.index), trace.usage)
+    fields = ("t", "u", "heading", "score", "cosine", "bm25", "grade")
+    vector = retrieval.candidates(query, cfg.but(retriever="vector", min_score=0.0), mode, qvec=qvec)
+    hybrid = retrieval.candidates(query, cfg, mode, qvec=qvec)
+    graded = rerank.rerank(text, hybrid[:cfg.rerank_pool], usage=trace.usage)
+    view = lambda ps: [{k: p.get(k) for k in fields} for p in retrieval.select(ps, cfg)]  # noqa: E731
+    return {"analysis": analysis, "search_query": query,
+            "results": {"Vector search only": view(vector), "Hybrid (vector + keyword)": view(hybrid),
+                        "Hybrid + reranker (production)": view(graded)},
+            "grades_all": [{"t": p["t"], "grade": p["grade"]} for p in graded],
+            "cost_usd": llm.cost(trace.usage)}
+
+
 def _logged_stream(events, trace):
     try:
         yield from events
@@ -113,6 +141,11 @@ def handle_post(kind, raw, headers=None, ip="local"):
             hint = str(payload.get("hint") or "")[:500]
             passages = find_references(turn.messages, turn.mode, hint, turn.lang, usage=trace.usage) if config.DEFAULT.rag else []
             status, body = 200, {"passages": [{"t": p["t"], "s": p["s"], "u": p["u"], "x": p["x"][:900]} for p in passages]}
+        elif kind == "inspect":
+            if not developer:
+                status, body = 403, {"error": "Developer token required."}
+            else:
+                status, body = 200, inspect_retrieval(str(payload.get("text", ""))[:2000], turn.mode, trace)
         elif kind == "screen":
             status, body = 200, {"alerts": screen_message(str(payload.get("text", ""))[:config.MAX_MESSAGE_CHARS], turn.lang, trace.usage)}
         elif kind == "voice":
@@ -124,9 +157,10 @@ def handle_post(kind, raw, headers=None, ip="local"):
         else:
             result = orchestrator.consult(turn, trace=trace)
             result.pop("retrieved", None)
-            result.pop("analysis", None)
             if developer:
                 result["trace"] = trace.summary()
+            else:
+                result.pop("analysis", None)
             status, body = 200, result
         return status, body
     except (intake.InvalidRequest, json.JSONDecodeError) as e:
@@ -134,7 +168,7 @@ def handle_post(kind, raw, headers=None, ip="local"):
         return status, body
     except llm.OpenAIError as e:
         trace.info["error"] = f"openai_{e.status}"
-        status, body = 502, {"error": str(e)}
+        status, body = 502, {"error": public_error(e)}
         return status, body
     except Exception as e:
         trace.info["error"] = type(e).__name__

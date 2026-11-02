@@ -123,3 +123,30 @@ Building the benchmarks and running all experiments takes a few thousand gpt-4o 
 ### Will not be done (scope control)
 
 No new user-facing features, no database, no autonomous agents, and no claims of clinical validation or regulatory compliance. Benchmark labels are produced with LLM assistance and checked by the developer; they are not clinician-reviewed, and the report will say so.
+
+## 5. Status after implementation (2026-11-01)
+
+Acceptance is judged on demonstrated behavior (tests and evaluation reports), not on files existing.
+
+| ID | Requirement | Status | Evidence |
+|---|---|---|---|
+| AI-01 | Modular orchestration | Met | `medi/orchestrator.py` runs separate stage modules; every request's trace lists the stages and their timings. |
+| AI-02 | Hybrid RAG, evaluable separately | Met | `retrieval_retrievers.md`: vector, BM25, and hybrid compared on the same 123 queries. |
+| AI-03 | Reranking, comparable to baseline | Met | `retrieval_ablation.md`: with and without reranking; kept because precision and MRR improved. |
+| AI-04 | Insufficient evidence triggers a safe fallback | Met | `evidence_calibration.md`, `knowledge.md` (8/9 unanswerable questions disclosed), unit test `test_irrelevant_references_are_withheld_and_disclosed`. |
+| AI-05 | Sources inspectable and verifiable | Met | Passages keep document id, URL, source, and dates from the source files; citations map only to retrieved records; `/dev` shows every passage and score. |
+| AI-06 | Validated structured output | Met | Strict JSON schemas for the generator, analyzer, and reranker; validated request intake. |
+| SAFE-01 | Emergency path independent of the LLM | Met | Deterministic screener; alerts sent before retrieval (`test_alert_is_sent_before_any_model_or_retrieval_call`). |
+| SAFE-02 | Documented output checks | Met | `medi/safety/output_checks.py`, `docs/SAFETY.md`. |
+| EVAL-01 | Repeatable evaluation | Met | Fixed, versioned datasets; runners in `evaluation/`; cached model outputs for retrieval ablations. |
+| EVAL-02 | Fair comparison | Met, with a caveat | A-E on identical scenarios and grading. The A-E run predates the last screener and language fixes; the rerun on final code stopped when API credits ran out. |
+| EVAL-03 | Per-case and aggregate exports | Met | `evaluation/reports/*.json`, `experiments.csv`, Markdown summaries. |
+| TECH-01 | Modular code | Met | `medi/` package; 49 offline unit tests. |
+| TECH-02 | No secrets client-side | Met | Key only in server environment; `.env` git- and deploy-ignored. |
+| TECH-03 | Failures handled safely | Met | Retrieval, analyzer, and reranker failures fall back (unit tests); AI outages give a safe message. |
+| TECH-04 | Inspectable retrieval and processing | Met | Developer trace and `/dev` dashboard (token-protected). |
+| LANG-01 | Each advertised language tested | Partly met | All 12 languages pass the 8-question suite, but questions are machine-translated and the set is small. |
+
+Not done: blinded human review of the exported sample; a clinician review of datasets; a Vercel Firewall rate-limit rule
+(dashboard setting); rebuilding UI translations for the new strings (overdose advice, limitation notes), which fall back to
+English until `i18n/build_translations.py` is rerun with API credits.

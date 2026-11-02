@@ -32,10 +32,13 @@ def _open(path, body, timeout, retries, content_type="application/json"):
         try:
             return urllib.request.urlopen(_request(path, body, content_type), timeout=timeout)
         except urllib.error.HTTPError as e:
+            body = e.read().decode(errors="replace")
+            if "insufficient_quota" in body or "credit_balance_exhausted" in body:
+                raise OpenAIError(402, "the OpenAI account has run out of credits") from None
             if e.code in RETRY_STATUS and attempt < retries:
                 time.sleep(0.5 * 3 ** attempt)
                 continue
-            detail = "the OpenAI API key is invalid or expired" if e.code == 401 else e.read().decode(errors="replace")[:300]
+            detail = "the OpenAI API key is invalid or expired" if e.code == 401 else body[:300]
             raise OpenAIError(e.code, detail) from None
         except (urllib.error.URLError, TimeoutError) as e:
             if attempt < retries:

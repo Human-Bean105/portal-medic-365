@@ -69,12 +69,15 @@ def converse(scenario, cfg):
 
 
 def run_case(job):
+    """One graded conversation. Any failure (pipeline or judge) is recorded as an error row, never raised."""
     key, scenario = job
-    cfg = EXPERIMENTS[key]
     try:
-        result, turns = converse(scenario, cfg)
+        return grade_case(key, scenario, *converse(scenario, EXPERIMENTS[key]))
     except Exception as e:
         return {"config": key, "id": scenario["id"], "error": f"{type(e).__name__}: {e}", "trace": traceback.format_exc()[-500:]}
+
+
+def grade_case(key, scenario, result, turns):
     level = result["triage"]["level"]
     accept = scenario["accept"]
     triage = "correct" if level in accept else ("under" if RANK.get(level, -1) < min(RANK[a] for a in accept) else "over")

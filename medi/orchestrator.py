@@ -91,8 +91,8 @@ def gather(turn, flags, cfg, trace):
     trace.info["evidence_status"] = status
     for st in trace.stages:
         if st["stage"] == "retrieval":
-            st["passages"] = [{"title": p["t"], "score": p.get("score"), "cosine": p.get("cosine"), "grade": p.get("grade")}
-                              for p in passages]
+            st["passages"] = [{"title": p["t"], "heading": p.get("heading"), "url": p.get("u"), "score": p.get("score"),
+                               "cosine": p.get("cosine"), "bm25": p.get("bm25"), "grade": p.get("grade")} for p in passages]
     return Context(passages, status, analysis)
 
 
@@ -167,7 +167,8 @@ def consult_stream(turn: Turn, cfg=config.DEFAULT, trace=None, include_trace=Fal
         yield sse({"type": "done", "result": result})
     except llm.OpenAIError as e:
         trace.info["error"] = f"openai_{e.status}"
-        yield sse({"type": "error", "error": str(e)})
+        from .web import public_error
+        yield sse({"type": "error", "error": public_error(e)})
     except Exception as e:
         trace.info["error"] = type(e).__name__
         yield sse({"type": "error", "error": "Medi couldn't finish that answer. Please try again."})

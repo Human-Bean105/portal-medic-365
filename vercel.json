@@ -7,7 +7,9 @@
     { "source": "/voice", "destination": "/api/voice" },
     { "source": "/screen", "destination": "/api/screen" },
     { "source": "/speak", "destination": "/api/speak" },
-    { "source": "/retrieve", "destination": "/api/retrieve" }
+    { "source": "/retrieve", "destination": "/api/retrieve" },
+    { "source": "/inspect", "destination": "/api/inspect" },
+    { "source": "/dev", "destination": "/dev.html" }
   ],
   "functions": {
     "api/*.py": { "maxDuration": 60, "includeFiles": "{medi/**,rag/medi_index.json,i18n/translations.json}" }
