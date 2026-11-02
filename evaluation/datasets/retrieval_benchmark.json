@@ -1,6 +1,16 @@
 {
+ "adjudicated": {
+  "qids": [
+   "q5",
+   "s38",
+   "s39",
+   "s8"
+  ],
+  "by": "developer",
+  "reason": "label model returned primary titles that were not exact matches to the topic list"
+ },
  "dataset": "medi-retrieval-r1",
- "created": "2026-10-31",
+ "created": "2026-11-01",
  "label_model": "gpt-4o",
  "rewrite_model": "gpt-4o-mini",
  "knowledge_base_snapshot": "10/31/2026 02:30:35",
@@ -2004,16 +2014,114 @@
     "ACS/NSTEMI Management Guidelines (2014/2021 Update)",
     "Laboratory Tests"
    ]
+  },
+  {
+   "qid": "o1",
+   "kind": "out_of_scope",
+   "mode": "health",
+   "text": "what's the right dose of semaglutide for weight loss",
+   "search_query": "what's the right dose of semaglutide for weight loss\n\"semaglutide dosage for weight loss, obesity treatment, GLP-1 receptor agonists, weight management\"",
+   "primary": [],
+   "related": []
+  },
+  {
+   "qid": "o2",
+   "kind": "out_of_scope",
+   "mode": "health",
+   "text": "can I take ashwagandha together with sertraline",
+   "search_query": "can I take ashwagandha together with sertraline\n\"Interaction between ashwagandha and sertraline; herbal supplements and SSRIs; safety of combining natural remedies with antidepressants.\"",
+   "primary": [],
+   "related": []
+  },
+  {
+   "qid": "o3",
+   "kind": "out_of_scope",
+   "mode": "health",
+   "text": "what is the half-life of lithium carbonate",
+   "search_query": "what is the half-life of lithium carbonate\n\"Half-life of lithium carbonate; pharmacokinetics of lithium; lithium toxicity; therapeutic drug monitoring.\"",
+   "primary": [],
+   "related": []
+  },
+  {
+   "qid": "o4",
+   "kind": "out_of_scope",
+   "mode": "health",
+   "text": "how do I change the brake pads on my car",
+   "search_query": "how do I change the brake pads on my car\nN/A",
+   "primary": [],
+   "related": []
+  },
+  {
+   "qid": "o5",
+   "kind": "out_of_scope",
+   "mode": "health",
+   "text": "what's the capital of Australia",
+   "search_query": "what's the capital of Australia\nNot a medical query.",
+   "primary": [],
+   "related": []
+  },
+  {
+   "qid": "o6",
+   "kind": "out_of_scope",
+   "mode": "health",
+   "text": "is the Arexvy RSV vaccine safe if I have a pacemaker",
+   "search_query": "is the Arexvy RSV vaccine safe if I have a pacemaker\n\"Arexvy RSV vaccine safety in patients with pacemakers; vaccine contraindications, cardiac device considerations, RSV vaccine efficacy.\"",
+   "primary": [],
+   "related": []
+  },
+  {
+   "qid": "o7",
+   "kind": "out_of_scope",
+   "mode": "health",
+   "text": "what are the exact macros for a keto diet",
+   "search_query": "what are the exact macros for a keto diet\n\"Keto diet macronutrient ratios; ketogenic diet guidelines; low-carb high-fat diet.\"",
+   "primary": [],
+   "related": []
+  },
+  {
+   "qid": "o8",
+   "kind": "out_of_scope",
+   "mode": "health",
+   "text": "how many milligrams of melatonin can a 4 year old take",
+   "search_query": "how many milligrams of melatonin can a 4 year old take\n\"Melatonin dosage for children, pediatric sleep disorders, melatonin safety in young children.\"",
+   "primary": [],
+   "related": []
+  },
+  {
+   "qid": "o9",
+   "kind": "out_of_scope",
+   "mode": "health",
+   "text": "is it safe to fly 3 days after a laparoscopic appendectomy",
+   "search_query": "is it safe to fly 3 days after a laparoscopic appendectomy\n\"Safety of flying after laparoscopic appendectomy; recovery time, post-operative complications, travel precautions.\"",
+   "primary": [],
+   "related": []
+  },
+  {
+   "qid": "o10",
+   "kind": "out_of_scope",
+   "mode": "health",
+   "text": "what is the CPT billing code for an ECG",
+   "search_query": "what is the CPT billing code for an ECG\nCPT code for ECG billing; topics: ECG interpretation, billing codes, cardiology procedures.",
+   "primary": [],
+   "related": []
+  },
+  {
+   "qid": "o11",
+   "kind": "out_of_scope",
+   "mode": "health",
+   "text": "which is better for acne, tretinoin 0.025% or adapalene 0.1%",
+   "search_query": "which is better for acne, tretinoin 0.025% or adapalene 0.1%\n\"Comparison of tretinoin 0.025% vs adapalene 0.1% for acne treatment; topics: acne treatment efficacy, retinoids, side effects, dosage.\"",
+   "primary": [],
+   "related": []
+  },
+  {
+   "qid": "o12",
+   "kind": "out_of_scope",
+   "mode": "health",
+   "text": "write me a poem about the ocean",
+   "search_query": "write me a poem about the ocean\n\"Oceanic poetry, creative expression, marine environment, water symbolism.\"",
+   "primary": [],
+   "related": []
   }
- ],
- "adjudicated": {
-  "qids": [
-   "q5",
-   "s38",
-   "s39",
-   "s8"
-  ],
-  "by": "developer",
-  "reason": "label model returned primary titles that were not exact matches to the topic list"
- }
+ ]
 }

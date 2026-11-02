@@ -23,6 +23,7 @@ from medi import config, llm  # noqa: E402
 from medi.language import LANG_NAMES  # noqa: E402
 from medi.safety.escalation import CRISIS_LINE  # noqa: E402
 from medi.safety.input_checks import RED_FLAGS  # noqa: E402
+from medi.rag.evidence import LIMITATION  # noqa: E402
 from medi.safety.output_checks import EMERGENCY_ACTION  # noqa: E402
 
 LANGUAGES = {code: name for code, name in LANG_NAMES.items() if code != "en"}
@@ -81,6 +82,7 @@ def collect():
     texts.update(advice for _, _, advice in RED_FLAGS)
     texts.add(CRISIS_LINE.strip())
     texts.add(EMERGENCY_ACTION)
+    texts.update(LIMITATION.values())
 
     html = {key: norm(inner) for _, key, inner in
             re.findall(r'<(\w+)\b[^>]*\bdata-i18n-html="([\w-]+)"[^>]*>(.*?)</\1>', page, flags=re.S)}

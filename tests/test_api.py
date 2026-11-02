@@ -53,7 +53,7 @@ class ApiTest(unittest.TestCase):
     def test_unknown_language_falls_back_to_english(self):
         with FakeOpenAI().installed() as fake:
             post("consult", {"lang": "xx", "messages": [{"role": "user", "content": "hi"}]})
-        system = next(p for kind, p in fake.calls if kind == "chat" and "response_format" in p)["messages"][0]["content"]
+        system = fake.generation_payload()["messages"][0]["content"]
         self.assertIn("chose English", system)
 
 

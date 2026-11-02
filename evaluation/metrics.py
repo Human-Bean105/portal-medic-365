@@ -43,7 +43,9 @@ def percentile(values, p):
 
 
 def retrieval_summary(rows):
-    """Aggregate retrieval metrics over per-query rows that hold "titles", "primary", and "relevant"."""
+    """Aggregate retrieval metrics over per-query rows that hold "titles", "primary", and "relevant". Queries with no
+    labeled topic (out-of-scope questions) have nothing to find, so they are left out."""
+    rows = [r for r in rows if r["primary"]]
     out = {"queries": len(rows)}
     for k in (5, 10):
         out[f"hit@{k}"] = mean([hit_at_k(r["titles"], r["primary"], k) for r in rows])

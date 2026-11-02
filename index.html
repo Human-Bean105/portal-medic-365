@@ -218,6 +218,7 @@
   .sources { margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--line); font-size: .78rem; color: var(--muted); line-height: 1.6; }
   .sources a { color: var(--brand); text-decoration: none; }
   .sources a:hover { text-decoration: underline; }
+  .sources.limits { font-style: italic; }
 
   .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 18px 10px; }
   .chip { border: 1px solid var(--brand); color: var(--brand); background: #fff; border-radius: 999px; padding: 5px 12px; font-size: .85rem; }
@@ -885,6 +886,15 @@
     chatEl.scrollTop = chatEl.scrollHeight;
   }
 
+  // Shown when Medi's evidence check found little in its reference library for this question.
+  function addLimitations(row, notes) {
+    if (!notes?.length) return;
+    const box = document.createElement("div");
+    box.className = "sources limits";
+    box.textContent = "ℹ️ " + notes.join(" ");
+    row.querySelector(".bubble").appendChild(box);
+  }
+
   function addMessage(role, text, image) {
     const row = document.createElement("div");
     row.className = `msg ${role}`;
@@ -1121,9 +1131,11 @@
       );
       typing.remove();
 
-      const { safety_alerts, sources, ...turn } = data;
+      const { safety_alerts, sources, limitations, evidence_status, trace, ...turn } = data;
       history.push({ role: "assistant", content: JSON.stringify(turn) });
-      addSources(addMessage("bot", turn.reply), sources);
+      const row = addMessage("bot", turn.reply);
+      addSources(row, sources);
+      addLimitations(row, limitations);
       setChips(turn.quick_replies || []);
       speak(turn.reply);
       showAlerts(safety_alerts);

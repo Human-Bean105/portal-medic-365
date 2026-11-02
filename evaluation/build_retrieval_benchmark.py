@@ -60,16 +60,23 @@ def main():
     titles = sorted({d["title"] for d in sources["documents"]})
     title_set = set(titles)
 
+    path = HERE / "datasets" / "retrieval_benchmark.json"
+    existing = {q["qid"]: q for q in json.loads(path.read_text(encoding="utf-8"))["queries"]} if path.exists() else {}
+
     def build(q):
-        primary, related = label(q, titles, title_set)
+        if q["qid"] in existing and existing[q["qid"]]["text"] == q["text"]:
+            return existing[q["qid"]]
+        primary, related = label(q, titles, title_set) if q["kind"] != "out_of_scope" else ([], [])
         rewrite = rewrite_query(q["text"]) if q["mode"] == "health" else ""
         search = f"{q['text']}\n{rewrite}" if rewrite else q["text"]
         return {**q, "search_query": search, "primary": primary, "related": related}
 
     with ThreadPoolExecutor(max_workers=3) as pool:
         rows = list(pool.map(build, QUERIES))
-    empty = [r["qid"] for r in rows if not r["primary"]]
+    empty = [r["qid"] for r in rows if not r["primary"] and r["kind"] != "out_of_scope"]
+    previous = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
     out = {
+        **{k: v for k, v in previous.items() if k == "adjudicated"},
         "dataset": "medi-retrieval-r1",
         "created": time.strftime("%Y-%m-%d"),
         "label_model": LABEL_MODEL,
@@ -79,7 +86,7 @@ def main():
                 "by the developer, not clinician-reviewed. Queries are synthetic.",
         "queries": rows,
     }
-    (HERE / "datasets" / "retrieval_benchmark.json").write_text(json.dumps(out, indent=1, ensure_ascii=False), encoding="utf-8")
+    path.write_text(json.dumps(out, indent=1, ensure_ascii=False), encoding="utf-8")
     print(f"{len(rows)} queries labeled; {len(empty)} with no primary topic: {empty}")
 
 

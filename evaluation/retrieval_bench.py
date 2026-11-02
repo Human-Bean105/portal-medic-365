@@ -65,7 +65,7 @@ def run(cfg, queries, qvecs):
 
 def summarize(rows, timings):
     out = metrics.retrieval_summary(rows)
-    for kind in sorted({r["kind"] for r in rows}):
+    for kind in sorted({r["kind"] for r in rows if r["primary"]}):
         sub = [r for r in rows if r["kind"] == kind]
         out[f"hit@5[{kind}]"] = metrics.mean([metrics.hit_at_k(r["titles"], r["primary"], 5) for r in sub])
     out["search_ms_mean"] = round(sum(timings) / len(timings), 1)

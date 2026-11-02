@@ -54,4 +54,6 @@ class Trace:
 
 def log(event, **fields):
     """One JSON line per event on stdout, which Vercel keeps in its function logs."""
+    if os.environ.get("MEDI_LOG") == "0":
+        return
     print(json.dumps({"event": event, "time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), **fields}), file=sys.stdout, flush=True)

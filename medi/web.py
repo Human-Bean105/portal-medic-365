@@ -124,6 +124,7 @@ def handle_post(kind, raw, headers=None, ip="local"):
         else:
             result = orchestrator.consult(turn, trace=trace)
             result.pop("retrieved", None)
+            result.pop("analysis", None)
             if developer:
                 result["trace"] = trace.summary()
             status, body = 200, result

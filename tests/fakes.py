@@ -16,18 +16,38 @@ HEALTH_TURN = {
 WELLBEING_TURN = {"reply": "That sounds really hard.", "risk": {"level": "none", "reason": ""}, "quick_replies": [], "citations": []}
 
 
+ANALYSIS = {"intent": "symptom_information", "language": "English", "reported_symptoms": ["headache"], "duration": "",
+            "severity": "", "relevant_context": [], "already_answered": ["has a headache"],
+            "missing_information": ["when it started"], "search_query": "headache", "search_topics": ["Headache"]}
+
+
 class FakeOpenAI:
-    def __init__(self, turn=None, rewrite="headache tension headache", fail_embed=False):
+    def __init__(self, turn=None, rewrite="headache tension headache", fail_embed=False, analysis=None, grade=3):
         self.turn = turn or HEALTH_TURN
         self.rewrite = rewrite
         self.fail_embed = fail_embed
+        self.analysis = analysis or ANALYSIS
+        self.grade = grade
         self.calls = []
 
+    def schema(self, payload):
+        fmt = payload.get("response_format") or {}
+        return fmt.get("json_schema", {}).get("name") if fmt.get("type") == "json_schema" else None
+
     def chat_text(self, payload, **kwargs):
-        self.calls.append(("chat", payload))
-        if "response_format" in payload and payload["response_format"].get("type") == "json_schema":
+        name = self.schema(payload)
+        self.calls.append((name or "chat", payload))
+        if name == "turn_analysis":
+            return json.dumps(self.analysis)
+        if name == "passage_grades":
+            count = payload["messages"][1]["content"].count("\n[") + 1
+            return json.dumps({"grades": [{"n": n, "grade": self.grade} for n in range(1, count + 1)]})
+        if name:
             return json.dumps(self.turn)
         return self.rewrite
+
+    def generation_payload(self):
+        return next(p for kind, p in self.calls if kind in ("doctor_turn", "wellbeing_turn", "stream"))
 
     def chat_stream(self, payload, **kwargs):
         self.calls.append(("stream", payload))

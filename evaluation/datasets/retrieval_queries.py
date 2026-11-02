@@ -85,6 +85,24 @@ EXTRA = [
     ("guideline", "when should someone with chest pain get a troponin test"),
 ]
 
+# Questions the knowledge base doesn't answer (specific doses, interactions, niche facts) or that aren't about health.
+# They have no relevant topics; they test whether the evidence check notices that, and are left out of hit/recall.
+OUT_OF_SCOPE = [
+    "what's the right dose of semaglutide for weight loss",
+    "can I take ashwagandha together with sertraline",
+    "what is the half-life of lithium carbonate",
+    "how do I change the brake pads on my car",
+    "what's the capital of Australia",
+    "is the Arexvy RSV vaccine safe if I have a pacemaker",
+    "what are the exact macros for a keto diet",
+    "how many milligrams of melatonin can a 4 year old take",
+    "is it safe to fly 3 days after a laparoscopic appendectomy",
+    "what is the CPT billing code for an ECG",
+    "which is better for acne, tretinoin 0.025% or adapalene 0.1%",
+    "write me a poem about the ocean",
+]
+
 QUERIES = ([{"qid": f"s{s['id']}", "kind": "scenario", "mode": "health", "text": s["message"]} for s in SCENARIOS]
            + [{"qid": f"q{n}", "kind": kind, "mode": "wellbeing" if kind == "wellbeing" else "health", "text": text}
-              for n, (kind, text) in enumerate(EXTRA, 1)])
+              for n, (kind, text) in enumerate(EXTRA, 1)]
+           + [{"qid": f"o{n}", "kind": "out_of_scope", "mode": "health", "text": text} for n, text in enumerate(OUT_OF_SCOPE, 1)])

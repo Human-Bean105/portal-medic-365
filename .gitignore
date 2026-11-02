@@ -5,3 +5,4 @@ __pycache__/
 .vercel
 .env*
 evaluation/indexes/
+evaluation/cache/

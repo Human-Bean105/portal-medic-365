@@ -64,6 +64,11 @@ class Pipeline:
     per_topic: int = 2               # at most this many passages from one topic
     min_score: float = 0.3           # v1 cutoff on cosine similarity, used only by the "vector" retriever
     wellbeing_boost: float = 0.0     # extra weight for mental-health topics in Wellbeing mode
+    analyzer: bool = True            # intent + extraction + search terms (False = v1's query rewrite)
+    rerank: bool = True              # a small model grades the top candidates
+    rerank_pool: int = 15
+    evidence: bool = True            # tell the generator how well the references cover the question
+    validate: bool = True            # deterministic output checks and repairs
 
     def but(self, **changes):
         return replace(self, **changes)
