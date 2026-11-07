@@ -182,7 +182,7 @@ The end-to-end results above were measured before this change.
 From the `doctor/` folder with `OPENAI_API_KEY` set:
 
 ```bash
-python -m unittest discover -s tests -t .          # 49 offline tests, no API key needed
+python -m unittest discover -s tests -t .          # 56 offline tests, no API key needed
 python evaluation/retrieval_bench.py               # retrievers (and --chunking for chunk sizes)
 python evaluation/heldout_check.py retrievers chunking
 python evaluation/retrieval_ablation.py            # analyzer and reranker

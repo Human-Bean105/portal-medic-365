@@ -231,10 +231,14 @@ reranker setting was rejected because it lowered precision).
 ## 9. Development and implementation
 
 - Frontend: one HTML/JavaScript page (`index.html`) and a developer dashboard (`dev.html`).
-- Backend: Python standard library only (`medi/` package, 49 automated tests), running as Vercel serverless functions.
+- Backend: Python standard library only (`medi/` package, 56 automated tests), running as Vercel serverless functions.
 - Knowledge base and evaluation: `rag/`, `evaluation/`.
 - Tested failure cases: unavailable AI service (friendly message, safety screener still works), empty or irrelevant
-  retrieval, malformed requests, oversized uploads, injected system messages.
+  retrieval, malformed requests, oversized uploads, injected system messages. With the AI service down, an emergency
+  message still opens the 911 screen within about 0.05 s and the advice stays in the chat.
+- Accessibility: screen readers announce new replies; icon buttons have names; pop-ups are labeled dialogs; the
+  emergency and crisis screens move focus to the "Call" button; form labels are linked to their fields; right-to-left
+  layout for Arabic and Farsi.
 
 **Development process.** [Ethan: describe honestly what you designed, decided, built, and tested yourself, and how AI coding
 tools were used, following the WAICY rules on AI assistance.]

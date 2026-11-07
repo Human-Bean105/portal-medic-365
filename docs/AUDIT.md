@@ -141,7 +141,7 @@ Acceptance is judged on demonstrated behavior (tests and evaluation reports), no
 | EVAL-01 | Repeatable evaluation | Met | Fixed, versioned datasets; runners in `evaluation/`; cached model outputs for retrieval ablations. |
 | EVAL-02 | Fair comparison | Met, with a caveat | A-E on identical scenarios and grading. The A-E run predates the last screener and language fixes; the rerun on final code stopped when API credits ran out. |
 | EVAL-03 | Per-case and aggregate exports | Met | `evaluation/reports/*.json`, `experiments.csv`, Markdown summaries. |
-| TECH-01 | Modular code | Met | `medi/` package; 49 offline unit tests. |
+| TECH-01 | Modular code | Met | `medi/` package; 56 offline unit tests. |
 | TECH-02 | No secrets client-side | Met | Key only in server environment; `.env` git- and deploy-ignored. |
 | TECH-03 | Failures handled safely | Met | Retrieval, analyzer, and reranker failures fall back (unit tests); AI outages give a safe message. |
 | TECH-04 | Inspectable retrieval and processing | Met | Developer trace and `/dev` dashboard (token-protected). |

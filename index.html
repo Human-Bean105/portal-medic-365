@@ -368,7 +368,7 @@
         <p class="hero-sub">Describe your symptoms in your own words. Medi checks for warning signs first, asks a few focused questions, and tells you what level of care makes sense, backed by trusted medical sources.</p>
         <form class="hero-ask" id="homeForm">
           <input id="homeInput" autocomplete="off" placeholder="Type how you feel, or tap 🎤 to just talk..." />
-          <button type="button" class="cta secondary" id="homeMicBtn" title="Talk to Medi hands-free">🎤</button>
+          <button type="button" class="cta secondary" id="homeMicBtn" title="Talk to Medi hands-free" aria-label="Talk to Medi hands-free">🎤</button>
           <button class="cta">Send →</button>
         </form>
         <div class="hero-chips" id="homeChips" data-dynamic></div>
@@ -559,13 +559,13 @@
         </div>
       </div>
     </div>
-    <div id="chat"></div>
+    <div id="chat" role="log" aria-live="polite"></div>
     <div class="chips" id="chips" data-dynamic></div>
     <div id="preview"><img alt="" /><span>Photo attached</span><button type="button" id="removePhoto">✕ remove</button></div>
     <form id="form">
       <input type="file" id="file" accept="image/*" hidden />
-      <button type="button" class="icon-btn health-only" id="photoBtn" title="Attach a photo (rash, wound, swelling...)">📷</button>
-      <button type="button" class="icon-btn" id="micBtn" title="Talk to Medi hands-free (no typing or Send needed)">🎤</button>
+      <button type="button" class="icon-btn health-only" id="photoBtn" title="Attach a photo (rash, wound, swelling...)" aria-label="Attach a photo (rash, wound, swelling...)">📷</button>
+      <button type="button" class="icon-btn" id="micBtn" title="Talk to Medi hands-free (no typing or Send needed)" aria-label="Talk to Medi hands-free (no typing or Send needed)">🎤</button>
       <textarea id="input" rows="1" placeholder="Describe how you're feeling..." data-dynamic></textarea>
       <button id="send">Send</button>
     </form>
@@ -629,31 +629,31 @@
 </div>
 
 <div class="overlay" id="profileModal">
-  <div class="modal">
-    <h3>🧾 My health profile</h3>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+    <h3 id="profileModalTitle">🧾 My health profile</h3>
     <p class="empty" style="font-style:normal" data-i18n-html="profile_intro">Optional, and only for <strong>you</strong> (the account holder). It's used only when a visit is set to "Me", never for visits about someone else.
       It's kept in this browser's storage on this device, and is sent to the AI service (OpenAI) along with your messages during a consultation. Please don't enter names, addresses, or ID numbers.</p>
     <div class="row">
-      <div><label>Age</label><input id="p_age" type="number" min="0" max="120" placeholder="e.g. 34" /></div>
-      <div><label>Sex assigned at birth</label>
+      <div><label for="p_age">Age</label><input id="p_age" type="number" min="0" max="120" placeholder="e.g. 34" /></div>
+      <div><label for="p_sex">Sex assigned at birth</label>
         <select id="p_sex"><option value="">Prefer not to say</option><option value="Female">Female</option><option value="Male">Male</option><option value="Intersex">Intersex</option></select>
       </div>
     </div>
     <div class="row">
-      <div><label>Pregnant or possibly pregnant?</label>
+      <div><label for="p_pregnant">Pregnant or possibly pregnant?</label>
         <select id="p_pregnant"><option value="">N/A</option><option value="No">No</option><option value="Yes">Yes</option><option value="Possibly">Possibly</option></select>
       </div>
-      <div><label>Weight (optional)</label><input id="p_weight" placeholder="e.g. 70 kg" /></div>
+      <div><label for="p_weight">Weight (optional)</label><input id="p_weight" placeholder="e.g. 70 kg" /></div>
     </div>
-    <label>Medical conditions</label><input id="p_conditions" placeholder="e.g. asthma, type 2 diabetes" />
-    <label>Current medications</label><input id="p_medications" placeholder="e.g. metformin 500mg, inhaler" />
-    <label>Allergies</label><input id="p_allergies" placeholder="e.g. penicillin, peanuts" />
-    <label>Relevant family history</label><input id="p_family" placeholder="e.g. father had heart disease at 50" />
+    <label for="p_conditions">Medical conditions</label><input id="p_conditions" placeholder="e.g. asthma, type 2 diabetes" />
+    <label for="p_medications">Current medications</label><input id="p_medications" placeholder="e.g. metformin 500mg, inhaler" />
+    <label for="p_allergies">Allergies</label><input id="p_allergies" placeholder="e.g. penicillin, peanuts" />
+    <label for="p_family">Relevant family history</label><input id="p_family" placeholder="e.g. father had heart disease at 50" />
     <div class="row">
-      <div><label>Breastfeeding?</label>
+      <div><label for="p_breastfeeding">Breastfeeding?</label>
         <select id="p_breastfeeding"><option value="">N/A</option><option value="No">No</option><option value="Yes">Yes</option></select>
       </div>
-      <div><label>Country / region</label><input id="p_country" placeholder="e.g. United States" /></div>
+      <div><label for="p_country">Country / region</label><input id="p_country" placeholder="e.g. United States" /></div>
     </div>
     <div class="side-actions">
       <button class="btn" data-close="profileModal">Cancel</button>
@@ -663,8 +663,8 @@
 </div>
 
 <div class="overlay crisis" id="crisisModal">
-  <div class="modal">
-    <h3>💙 You don't have to go through this alone</h3>
+  <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="crisisModalTitle">
+    <h3 id="crisisModalTitle">💙 You don't have to go through this alone</h3>
     <p id="crisisText" data-dynamic>What you're feeling matters, and there are people who want to help right now.</p>
     <div class="wb-help-actions">
       <a class="big" href="tel:988">📞 Call 9-8-8</a>
@@ -678,8 +678,8 @@
 </div>
 
 <div class="overlay emergency" id="emergencyModal">
-  <div class="modal">
-    <h3>🚨 This may be an emergency</h3>
+  <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="emergencyModalTitle">
+    <h3 id="emergencyModalTitle">🚨 This may be an emergency</h3>
     <p id="emergencyText" data-dynamic>Based on what you described, you should get emergency help now.</p>
     <a class="big" href="tel:911">📞 Call 911</a>
     <p><a href="#" id="emergencyMapLink">📍 Find the nearest emergency room</a></p>
@@ -711,9 +711,9 @@
 </div>
 
 <div class="overlay" id="mapModal">
-  <div class="modal map-modal">
+  <div class="modal map-modal" role="dialog" aria-modal="true" aria-labelledby="mapModalTitle">
     <div class="map-head">
-      <h3>📍 Find care nearby</h3>
+      <h3 id="mapModalTitle">📍 Find care nearby</h3>
       <button class="btn" data-close="mapModal">Close</button>
     </div>
     <div class="map-kinds" id="mapKinds">
@@ -735,8 +735,8 @@
 </div>
 
 <div class="overlay" id="summaryModal">
-  <div class="modal">
-    <h3>📄 Visit summary for your doctor</h3>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="summaryModalTitle">
+    <h3 id="summaryModalTitle">📄 Visit summary for your doctor</h3>
     <div id="summaryBody" data-dynamic></div>
     <div class="side-actions">
       <button class="btn" data-close="summaryModal">Close</button>
@@ -1070,6 +1070,7 @@
     shownEmergency = true;
     $("emergencyText").innerHTML = reasons.map(esc).join("<br><br>");
     $("emergencyModal").classList.add("show");
+    $("emergencyModal").querySelector("a.big").focus();
   }
 
   function showCrisis(reasons) {
@@ -1077,6 +1078,7 @@
     shownCrisis = true;
     $("crisisText").innerHTML = reasons.map(esc).join("<br><br>");
     $("crisisModal").classList.add("show");
+    $("crisisModal").querySelector("a.big").focus();
   }
 
   // Mental-health alerts open the 9-8-8 crisis screen; physical emergencies open the 911 screen.
@@ -1156,7 +1158,7 @@
     } finally {
       busy = false;
       sendBtn.disabled = false;
-      input.focus();
+      if (!document.querySelector(".overlay.show")) input.focus();
     }
   }
 
@@ -1719,6 +1721,11 @@
     $("visitNote").textContent = patient === "self" ? t("Your health profile will be used.") : t("Your saved profile will NOT be used for this person.");
   }
   document.querySelectorAll("[data-close]").forEach((b) => (b.onclick = () => $(b.dataset.close).classList.remove("show")));
+  // Escape closes the ordinary pop-ups; the emergency and crisis screens need a deliberate click.
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    for (const id of ["profileModal", "mapModal", "summaryModal"]) $(id).classList.remove("show");
+  });
 
   // ---------- Map of nearby care (Google Maps embedded in the page) ----------
 
