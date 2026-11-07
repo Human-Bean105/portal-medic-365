@@ -158,6 +158,13 @@ The first run found the Traditional Chinese emergency reply in English (the mode
 the language instruction was fixed and the rerun passed. Mean time per answer was 5-7 s depending on language (translation
 for the safety check adds time).
 
+## 6b. Safety screener alone (`screener_before.md`, `screener_after.md`)
+
+Deterministic rules only, offline. After widening the rules from the clinical red-flag list and skipping physical alerts for
+general questions: project texts 17/29 → 23/29 emergencies caught, false alarms 4/116 → 2/116; held-out phrasings
+(committed before the change, same authors) 10/24 → 24/24, false alarms 4/20 → 0/20; emergency scenarios 6/18 → 12/18.
+The end-to-end results above were measured before this change.
+
 ## 7. Performance
 
 | Measure | v1 | Full pipeline |

@@ -119,9 +119,10 @@ A rule-based screener checks every message, in every language, for signs such as
 severe allergic reactions, overdose, and suicidal thoughts. It doesn't use an AI model, so it can't be talked out of a warning
 and works even if the AI service is down. Alerts open a "Call 911" or "9-8-8" screen before Medi finishes thinking.
 
-Limits: the rules alone caught 6 of the 18 emergency test scenarios; GPT-4o caught the rest, so emergency detection relies on
-both layers and is not perfect. General questions like "how can I tell if someone is having a stroke" also trigger the
-emergency screen (cautious, but unnecessary).
+Limits: the rules alone catch 12 of the 18 emergency test scenarios (up from 6 after widening them from Medi's clinical
+red-flag list); GPT-4o catches the rest, so emergency detection relies on both layers and is not perfect. On all labeled test
+messages the rules catch 79% of emergencies with a 2% false-alarm rate. General questions ("how is a stroke treated?") no
+longer trigger the emergency screen, but crisis and self-harm rules always apply.
 
 ### 6.2 Not a diagnostic tool
 
@@ -161,7 +162,8 @@ may not represent all ages, cultures, or ways of describing symptoms.
 
 | Risk | Safeguard | Remaining gap |
 |---|---|---|
-| Missed emergency | Rule-based screener + model instructions + output check | Rules alone miss many phrasings; tested only on synthetic cases |
+| Missed emergency | Rule-based screener + model instructions + output check | Rules alone miss 21% of test emergencies; tested only on synthetic cases |
+| Unnecessary emergency alert | General-question exception, negation and exertion rules | 2% false alarms on test messages |
 | Unsupported medical claim | Retrieval, citations limited to retrieved passages, evidence check, judged tests | Judge is an AI model; some imprecisions remain |
 | Over-triage (unneeded ER visit) | Four defined care levels with examples | 1 over-triage per 50 cases in some runs |
 | Crisis handled badly | Screener, crisis screen, guaranteed 9-8-8 | Synthetic tests only |

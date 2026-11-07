@@ -46,9 +46,39 @@ class InputScreenerTest(unittest.TestCase):
             with self.subTest(text=text):
                 self.assertIn(label, labels(text))
 
+    def test_red_flags_from_the_clinical_list(self):
+        cases = {
+            "My mother suddenly can't lift her right arm and her speech is slurred": "Possible stroke signs",
+            "half of my face went numb": "Possible stroke signs",
+            "my grandfather is suddenly confused": "Sudden confusion",
+            "my 3 week old has a temperature of 38.2": "Fever in a young infant",
+            "my 6 weeks old baby has a fever": "Fever in a young infant",
+            "he hit his head and has thrown up twice": "Head injury with warning signs",
+            "my dad collapsed and isn't responding": "Loss of consciousness or seizure",
+            "there's blood in my vomit": "Serious bleeding",
+            "I'm 30 weeks pregnant and bleeding": "Bleeding in pregnancy",
+            "sudden severe pain in his testicle": "Sudden severe testicle pain",
+            "she's cold and clammy and very pale": "Possible shock",
+            "my kid drank some bleach": "Possible overdose or poisoning",
+            "I can't catch my breath sitting still": "Trouble breathing",
+        }
+        for text, label in cases.items():
+            with self.subTest(text=text):
+                self.assertIn(label, labels(text))
+
+    def test_general_questions_skip_physical_alerts_but_not_crisis_alerts(self):
+        for text in ("how can I tell if someone is having a stroke", "what is a seizure?", "can anxiety cause chest tightness?",
+                     "when should someone with chest pain get a troponin test"):
+            with self.subTest(text=text):
+                self.assertEqual(labels(text), [])
+        self.assertIn("Possible stroke signs", labels("what should I do, my dad is having a stroke"))
+        self.assertIn("Thoughts of suicide or self-harm", labels("what is the lethal dose of acetaminophen?"))
+
     def test_similar_harmless_phrasings_are_not_flagged(self):
         for text in ("I have food poisoning from bad sushi", "I didn't take too many pills, just one", "I took 2 Tylenol for my headache",
-                     "my throat is a bit scratchy", "I want to wake up earlier"):
+                     "my throat is a bit scratchy", "I want to wake up earlier", "my 6 month old has a mild fever",
+                     "I bumped my head, small bump, no other symptoms", "I cut my finger and it stopped bleeding",
+                     "I get a little short of breath when I run", "my son is 4 and has a fever of 38.5"):
             with self.subTest(text=text):
                 self.assertEqual(labels(text), [])
 
