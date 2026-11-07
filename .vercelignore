@@ -3,3 +3,8 @@ _smoke_test.py
 eval
 .env
 __pycache__
+evaluation
+tests
+rag/medi_index_v1.json
+rag/sources.json
+docs/*.json
