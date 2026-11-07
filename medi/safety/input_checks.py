@@ -48,7 +48,8 @@ RED_FLAGS = [
     (r"\b(passed out|fainted|unconscious|unresponsive|seizure|convuls\w*|collapsed|blacked out|knocked out"
      r"|(isn'?t|is not|not) responding|won'?t wake up|can'?t wake (him|her|them))\b",
      "Loss of consciousness or seizure",
-     "Fainting or seizures need urgent evaluation. Call emergency services if it is happening now or recurring."),
+     "If someone has collapsed, isn't responding, or is having a seizure, call emergency services (911) now. "
+     "A faint that has passed still needs to be checked soon."),
     (r"\b(coughing|vomiting|throwing up) (up )?blood\b|\bblood in (my|his|her|their|the) (vomit|stool|poop)\b|\bcoffee grounds\b"
      r"|\bbleeding\b[^.,;!?]{0,25}\b(won'?t|will not|doesn'?t|does not|that won'?t) stop\b|\bblack,? tarry stool\b",
      "Serious bleeding",

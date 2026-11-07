@@ -1117,6 +1117,7 @@
     const typing = showTyping();
     const bubble = typing.querySelector(".bubble");
     let shown = "";
+    let alerted = [];
     try {
       const data = await streamConsult(
         { ...requestBase(), messages: withRecentPhotos(history) },
@@ -1127,7 +1128,7 @@
           bubble.innerHTML = md(text);
           chatEl.scrollTop = chatEl.scrollHeight;
         },
-        showAlerts,
+        (alerts) => { alerted = alerts; showAlerts(alerts); },
       );
       typing.remove();
 
@@ -1149,6 +1150,8 @@
     } catch (err) {
       typing.remove();
       history.pop();
+      // The safety check's advice doesn't need the AI service, so it stays in the chat even when the answer failed.
+      if (alerted.length) addMessage("bot", alerted.map((a) => "**" + a.advice + "**").join("\n\n"));
       addMessage("bot", t("Sorry, I couldn't connect just now ({error}). Please try sending that again.", { error: err.message }));
     } finally {
       busy = false;
