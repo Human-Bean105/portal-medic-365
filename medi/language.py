@@ -88,16 +88,11 @@ def ui_text(english, lang):
 
 def language_note(lang):
     name = LANG_NAMES.get(lang, "English")
-    if lang == "en":
-        return ("LANGUAGE: The app language is English. ALWAYS write in English, even if the person writes or speaks in "
-                "another language. Understand their message, but every text field you return (reply, headlines, lists, "
-                "condition names, quick replies) and any required emergency instruction must be in English. Keep JSON "
-                "keys and enum values exactly as specified, in English.")
-    return (f"LANGUAGE: The person chose {name} as the app language, so write in {name} by default. If they write or "
-            "speak in a different language, reply in the language they're using instead. Use that same language for every "
-            "text field you return (reply, headlines, lists, condition names, quick replies), and translate the required "
-            "emergency instruction too (e.g. \"Call 911 ...\" in their language). Keep JSON keys and enum values exactly as "
-            "specified, in English.")
+    return (f"LANGUAGE: The app language is {name}. ALWAYS write in {name}, even if the person writes or speaks in a "
+            f"different language. Understand their message in whatever language they use, but every text field you return "
+            f"(reply, headlines, lists, condition names, quick replies) and any required emergency instruction must be in "
+            f"{name} (e.g. translate \"Call 911 ...\" into {name} when needed). Keep JSON keys and enum values exactly as "
+            f"specified, in English.")
 
 
 def needs_english(text, lang):
