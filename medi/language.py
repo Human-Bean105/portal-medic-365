@@ -86,13 +86,53 @@ def ui_text(english, lang):
     return _translations.get(lang, {}).get("text", {}).get(english, english)
 
 
+# Extra names the analyzer may return that should map onto a supported app language.
+_LANG_ALIASES = {
+    "chinese": "zh-Hans", "mandarin": "zh-Hans", "simplified chinese": "zh-Hans",
+    "traditional chinese": "zh-Hant", "cantonese": "zh-Hant",
+    "farsi": "fa", "persian": "fa", "persian (farsi)": "fa",
+    "filipino": "tl", "tagalog": "tl",
+    "bahasa indonesia": "id", "bahasa melayu": "ms",
+    "brazilian portuguese": "pt", "portugal portuguese": "pt",
+    "bokmal": "no", "bokmål": "no", "norwegian bokmål": "no",
+    "burmese": "my", "myanmar": "my",
+    "castilian": "es",
+}
+
+
+def code_for_detected(name):
+    """Map a free-text language name (from the analyzer) to an app language code, or None."""
+    if not name or not isinstance(name, str):
+        return None
+    key = name.strip().lower()
+    if not key:
+        return None
+    if key in _LANG_ALIASES:
+        return _LANG_ALIASES[key]
+    for code, english in LANG_NAMES.items():
+        en = english.lower()
+        if key == en or key == en.split("(")[0].strip() or en.startswith(key + " ") or key.startswith(en):
+            return code
+    return None
+
+
+def language_suggestion(detected, app_lang):
+    """If the person is writing in a different supported language, return a switch suggestion."""
+    code = code_for_detected(detected)
+    if not code or code == app_lang:
+        return None
+    return {"code": code, "name": LANG_NAMES[code], "detected": detected.strip()}
+
+
 def language_note(lang):
     name = LANG_NAMES.get(lang, "English")
     return (f"LANGUAGE: The app language is {name}. ALWAYS write in {name}, even if the person writes or speaks in a "
             f"different language. Understand their message in whatever language they use, but every text field you return "
             f"(reply, headlines, lists, condition names, quick replies) and any required emergency instruction must be in "
-            f"{name} (e.g. translate \"Call 911 ...\" into {name} when needed). Keep JSON keys and enum values exactly as "
-            f"specified, in English.")
+            f"{name} (e.g. translate \"Call 911 ...\" into {name} when needed). If they clearly write or speak in another "
+            f"language, add one short friendly sentence in {name} suggesting they switch the app language picker to that "
+            f"language so Medi can reply in it. Suggest it at most once per conversation. Keep JSON keys and enum values "
+            f"exactly as specified, in English.")
 
 
 def needs_english(text, lang):

@@ -221,6 +221,10 @@
   .sources.limits { font-style: italic; }
 
   .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 18px 10px; }
+  .lang-suggest { margin: 0 18px 10px; padding: 10px 12px; border-radius: 12px; background: #eef5ff; border: 1px solid #d5e4fb; color: var(--navy); font-size: .9rem; line-height: 1.45; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+  .lang-suggest p { margin: 0; flex: 1 1 220px; }
+  .lang-suggest .cta { padding: 8px 14px; font-size: .88rem; }
+  .lang-suggest .ghost { border: none; background: transparent; color: var(--muted); padding: 6px 8px; }
   .chip { border: 1px solid var(--brand); color: var(--brand); background: #fff; border-radius: 999px; padding: 5px 12px; font-size: .85rem; }
   .chip:hover { background: var(--brand); color: #fff; }
 
@@ -560,6 +564,7 @@
       </div>
     </div>
     <div id="chat" role="log" aria-live="polite"></div>
+    <div id="langSuggest" class="lang-suggest" hidden data-dynamic></div>
     <div class="chips" id="chips" data-dynamic></div>
     <div id="preview"><img alt="" /><span>Photo attached</span><button type="button" id="removePhoto">✕ remove</button></div>
     <form id="form">
@@ -965,6 +970,41 @@
     }
   }
 
+  function showLanguageSuggestion(sug) {
+    const box = $("langSuggest");
+    if (!sug?.code || sug.code === lang || !LANGS.some(([code]) => code === sug.code)) {
+      box.hidden = true;
+      box.innerHTML = "";
+      return;
+    }
+    const native = LANGS.find(([code]) => code === sug.code)[1];
+    const label = sug.name || native;
+    box.hidden = false;
+    box.innerHTML = "";
+    const p = document.createElement("p");
+    p.textContent = t("It looks like you're writing in {language}. Switch to {native} so Medi can reply in that language?",
+      { language: label, native });
+    const actions = document.createElement("div");
+    actions.style.display = "flex";
+    actions.style.gap = "6px";
+    actions.style.flexWrap = "wrap";
+    const go = document.createElement("button");
+    go.className = "cta";
+    go.textContent = t("Switch to {native}", { native });
+    go.onclick = async () => {
+      box.hidden = true;
+      box.innerHTML = "";
+      await setLanguage(sug.code);
+      refreshLanguage();
+    };
+    const dismiss = document.createElement("button");
+    dismiss.className = "ghost";
+    dismiss.textContent = t("Not now");
+    dismiss.onclick = () => { box.hidden = true; box.innerHTML = ""; };
+    actions.append(go, dismiss);
+    box.append(p, actions);
+  }
+
   function listHtml(items) {
     return items && items.length ? `<ul class="list">${items.map((i) => `<li>${esc(i)}</li>`).join("")}</ul>` : `<p class="empty">${esc(t("Nothing yet."))}</p>`;
   }
@@ -1033,6 +1073,7 @@
     shownCrisis = false;
     lastConditions = [];
     chatEl.innerHTML = "";
+    showLanguageSuggestion(null);
     resetPanel();
     $("summaryBtn").disabled = true;
     $("wbStatus").hidden = true;
@@ -1160,12 +1201,13 @@
       );
       typing.remove();
 
-      const { safety_alerts, sources, limitations, evidence_status, trace, ...turn } = data;
+      const { safety_alerts, sources, limitations, evidence_status, trace, language_suggestion, ...turn } = data;
       history.push({ role: "assistant", content: JSON.stringify(turn) });
       const row = addMessage("bot", turn.reply);
       addSources(row, sources);
       addLimitations(row, limitations);
       setChips(turn.quick_replies || []);
+      showLanguageSuggestion(language_suggestion);
       speak(turn.reply);
       showAlerts(safety_alerts);
       if (mode === "wellbeing") {
@@ -1414,9 +1456,10 @@
     const seq = ++assessSeq;
     try {
       const messages = withRecentPhotos(history.filter((m) => m.content));
-      const { safety_alerts, ...turn } = await postJson("/consult", { ...requestBase(), messages });
+      const { safety_alerts, language_suggestion, ...turn } = await postJson("/consult", { ...requestBase(), messages });
       if (seq !== assessSeq) return;
       showAlerts(safety_alerts);
+      showLanguageSuggestion(language_suggestion);
       if (mode === "wellbeing") {
         showWellbeing(turn);
         if (turn.risk.level !== "none") {

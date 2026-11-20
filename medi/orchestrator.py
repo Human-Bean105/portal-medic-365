@@ -129,7 +129,11 @@ def finish(result, flags, ctx, turn, trace, cfg=config.DEFAULT):
     result["evidence_status"] = ctx.status
     note = evidence.LIMITATION.get(ctx.status) if cfg.evidence else None
     result["limitations"] = [language.ui_text(note, turn.lang)] if note and not flags else []
+    detected = (ctx.analysis or {}).get("language") if not flags else None
+    result["language_suggestion"] = language.language_suggestion(detected, turn.lang) if detected else None
     trace.info["level"] = result.get("triage", {}).get("level") or result.get("risk", {}).get("level")
+    if result["language_suggestion"]:
+        trace.info["language_suggestion"] = result["language_suggestion"]["code"]
     return result
 
 
