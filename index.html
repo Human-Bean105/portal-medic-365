@@ -754,11 +754,12 @@
   // Interface text is translated ahead of time by i18n/build_translations.py into i18n/translations.json.
   // Medi itself replies in the chosen language, or in whatever language the person writes in.
 
-  // ChatGPT UI languages + English. Sorted alphabetically by English name; labels are native names.
+  // English first, then the rest alphabetically by English name; labels are native names.
   const LANGS = [
+    ["en", "English"],
     ["sq", "Shqip"], ["am", "አማርኛ"], ["ar", "العربية"], ["hy", "Հայերեն"], ["bn", "বাংলা"], ["bs", "Bosanski"],
     ["bg", "Български"], ["my", "မြန်မာ"], ["ca", "Català"], ["hr", "Hrvatski"], ["cs", "Čeština"], ["da", "Dansk"],
-    ["nl", "Nederlands"], ["en", "English"], ["et", "Eesti"], ["fi", "Suomi"], ["fr", "Français"], ["ka", "ქართული"],
+    ["nl", "Nederlands"], ["et", "Eesti"], ["fi", "Suomi"], ["fr", "Français"], ["ka", "ქართული"],
     ["de", "Deutsch"], ["el", "Ελληνικά"], ["gu", "ગુજરાતી"], ["hi", "हिन्दी"], ["hu", "Magyar"], ["is", "Íslenska"],
     ["id", "Bahasa Indonesia"], ["it", "Italiano"], ["ja", "日本語"], ["kn", "ಕನ್ನಡ"], ["kk", "Қазақша"],
     ["ko", "한국어"], ["lv", "Latviešu"], ["lt", "Lietuvių"], ["mk", "Македонски"], ["ms", "Bahasa Melayu"],
