@@ -20,12 +20,6 @@
   header .lang-select { border-radius: 10px; padding: 6px 8px; }
   header, .header-actions { flex-wrap: wrap; }
   .header-actions { justify-content: flex-end; gap: 6px; }
-  /* RTL languages: keep the page chrome LTR so the layout doesn't flip; only chat/content text goes RTL. */
-  body.lang-rtl .bubble, body.lang-rtl .side, body.lang-rtl .modal,
-  body.lang-rtl #chat, body.lang-rtl #input, body.lang-rtl .disclaimer { direction: rtl; text-align: right; }
-  body.lang-rtl .list, body.lang-rtl .bubble ul { padding-left: 0; padding-right: 20px; }
-  body.lang-rtl .msg.user { flex-direction: row-reverse; }
-  body.lang-rtl .msg.user .bubble { border-bottom-right-radius: 16px; border-bottom-left-radius: 4px; }
 
   /* ---------- Wellbeing mode: calmer colors, its own panel, health-only tools hidden ---------- */
   body.wellbeing { --bg: #f2f6f3; --brand: #4f8a7b; --brand-2: #8cbfae; --user: #4f8a7b; --line: #dde8e2; }
@@ -778,7 +772,6 @@
     ["sw", "Kiswahili"], ["sv", "Svenska"], ["tl", "Tagalog"], ["ta", "தமிழ்"], ["te", "తెలుగు"], ["th", "ไทย"],
     ["zh-Hant", "繁體中文"], ["tr", "Türkçe"], ["uk", "Українська"], ["ur", "اردو"], ["vi", "Tiếng Việt"],
   ];
-  const RTL = new Set(["ar", "fa", "ur"]);
   const savedLang = localStorage.getItem("mediLang");
   let lang = LANGS.some(([code]) => code === savedLang) ? savedLang : "en";
   let TRANSLATIONS = null;
@@ -796,8 +789,8 @@
   // Translates the fixed text in the page. Elements marked data-dynamic are filled in by code using t() instead.
   function translatePage() {
     document.documentElement.lang = lang;
-    document.documentElement.dir = "ltr"; // never mirror the whole page; RTL is content-only via .lang-rtl
-    document.body.classList.toggle("lang-rtl", RTL.has(lang));
+    document.documentElement.dir = "ltr"; // never flip/mirror the page for any language
+    document.body.classList.remove("lang-rtl");
     const skipped = (el) => el.closest("script, style, #chat, [data-dynamic], [data-i18n-html]");
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
     for (let n = walker.nextNode(); n; n = walker.nextNode()) {
