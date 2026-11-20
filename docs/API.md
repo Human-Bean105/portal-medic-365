@@ -8,7 +8,7 @@ All endpoints are `POST` with a JSON body. Locally they are served by `server.py
 |---|---|---|
 | `messages` | list | `{"role": "user" or "assistant", "content": string or parts}`. Other roles are dropped. Parts: `{"type": "text", "text": ...}` or `{"type": "image_url", "image_url": {"url": "data:image/..."}}`. |
 | `mode` | `"health"` or `"wellbeing"` | Default `health`. |
-| `lang` | one of the codes in `medi.language.LANG_NAMES` (English + ChatGPT’s 59 UI languages) | App language; Medi still replies in the language the person writes in. |
+| `lang` | one of the codes in `medi.language.LANG_NAMES` (61 languages, alphabetical by English name) | App language. English stays English even if the person writes in another language; other languages follow the person when they switch. |
 | `patient` | `"self"` or `"other"` | The profile is used only for `self`. |
 | `profile` | object | Optional self-reported health profile (strings). |
 

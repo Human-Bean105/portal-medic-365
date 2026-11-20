@@ -1,7 +1,7 @@
 # Medi (Portal Medic 365)
 
 Medi is an AI health-information and wellbeing assistant built for the World AI Competition for Youth (WAICY) 2026.
-People describe how they feel, by text or voice, in any of 60 languages. Medi checks for emergencies first, asks focused
+People describe how they feel, by text or voice, in any of 61 languages. Medi checks for emergencies first, asks focused
 questions, suggests one of four levels of care (emergency, urgent care, clinic, home care), explains possibilities without
 diagnosing, and shows the trusted sources its answer is based on. A separate Wellbeing mode supports stress, mood, and
 sleep, with immediate crisis-line support.
