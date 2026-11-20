@@ -824,9 +824,22 @@
   }
 
   for (const select of document.querySelectorAll(".lang-select")) {
-    for (const [code, name] of LANGS) select.add(new Option(name, code));
+    select.innerHTML = "";
+    // Always pin English at the very top, then a separator, then A–Z.
+    select.add(new Option("English", "en"));
+    const sep = new Option("──────────", "");
+    sep.disabled = true;
+    select.add(sep);
+    for (const [code, name] of LANGS) {
+      if (code === "en") continue;
+      select.add(new Option(name, code));
+    }
     select.value = lang;
-    select.onchange = async () => { await setLanguage(select.value); refreshLanguage(); };
+    select.onchange = async () => {
+      if (!select.value) { select.value = lang; return; }
+      await setLanguage(select.value);
+      refreshLanguage();
+    };
   }
 
   const LEVELS = {

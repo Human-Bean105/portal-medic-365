@@ -100,7 +100,15 @@
     ["sw", "Kiswahili"], ["sv", "Svenska"], ["tl", "Tagalog"], ["ta", "தமிழ்"], ["te", "తెలుగు"], ["th", "ไทย"],
     ["zh-Hant", "繁體中文"], ["tr", "Türkçe"], ["uk", "Українська"], ["ur", "اردو"], ["vi", "Tiếng Việt"],
   ];
-  for (const [code, name] of LANGS) $("lang").add(new Option(name, code));
+  $("lang").innerHTML = "";
+  $("lang").add(new Option("English", "en"));
+  const langSep = new Option("──────────", "");
+  langSep.disabled = true;
+  $("lang").add(langSep);
+  for (const [code, name] of LANGS) {
+    if (code === "en") continue;
+    $("lang").add(new Option(name, code));
+  }
   const COLORS = { safety_precheck: "#d62839", analysis: "#7c3aed", retrieval: "#2563eb", rerank: "#0ea5e9", generation: "#1fc4a5", output_validation: "#f17105" };
   let tab = "trace";
   $("token").value = sessionStorage.getItem("mediDevToken") || "";
