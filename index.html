@@ -492,7 +492,7 @@
         <div class="extra"><div class="x-icon">📍</div><div><b>Find care nearby</b><span>ERs, urgent care, clinics, and pharmacies on a map.</span></div></div>
         <div class="extra"><div class="x-icon">📄</div><div><b>Visit summary</b><span>Print it and bring it to your real appointment.</span></div></div>
         <div class="extra"><div class="x-icon">👪</div><div><b>Care for your family</b><span>Ask about yourself, a child, or a parent.</span></div></div>
-        <div class="extra"><div class="x-icon">🌐</div><div><b>61 languages</b><span>Medi answers in whatever language you use.</span></div></div>
+        <div class="extra"><div class="x-icon">🌐</div><div><b>61 languages</b><span>Pick a language and Medi stays in it for the whole visit.</span></div></div>
       </div>
     </div>
   </section>
@@ -820,10 +820,12 @@
     localStorage.setItem("mediLang", code);
     document.querySelectorAll(".lang-select").forEach((s) => (s.value = code));
     if (code !== "en" && !TRANSLATIONS) {
-      try { TRANSLATIONS = await (await fetch("/i18n/translations.json")).json(); } catch { TRANSLATIONS = {}; }
+      try { TRANSLATIONS = await (await fetch("/i18n/translations.json")).json(); }
+      catch { TRANSLATIONS = null; /* allow retry on the next language change */ }
     }
     I18N = code === "en" ? {} : TRANSLATIONS?.[code] || {};
     translatePage();
+    showLanguageSuggestion(null);
   }
 
   for (const select of document.querySelectorAll(".lang-select")) {

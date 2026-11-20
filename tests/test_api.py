@@ -54,7 +54,7 @@ class ApiTest(unittest.TestCase):
         with FakeOpenAI().installed() as fake:
             post("consult", {"lang": "xx", "messages": [{"role": "user", "content": "hi"}]})
         system = fake.generation_payload()["messages"][0]["content"]
-        self.assertIn("chose English", system)
+        self.assertIn("The app language is English", system)
 
 
 class ProfileTest(unittest.TestCase):

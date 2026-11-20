@@ -93,10 +93,12 @@ _LANG_ALIASES = {
     "farsi": "fa", "persian": "fa", "persian (farsi)": "fa",
     "filipino": "tl", "tagalog": "tl",
     "bahasa indonesia": "id", "bahasa melayu": "ms",
-    "brazilian portuguese": "pt", "portugal portuguese": "pt",
+    "brazilian portuguese": "pt", "portugal portuguese": "pt", "portugues": "pt", "português": "pt",
     "bokmal": "no", "bokmål": "no", "norwegian bokmål": "no",
     "burmese": "my", "myanmar": "my",
-    "castilian": "es",
+    "castilian": "es", "español": "es", "espanol": "es",
+    "deutsch": "de", "français": "fr", "francais": "fr", "italiano": "it",
+    "日本語": "ja", "한국어": "ko", "हिन्दी": "hi", "العربية": "ar", "فارسی": "fa",
 }
 
 
